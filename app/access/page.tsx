@@ -153,16 +153,10 @@ export default function AccessPage() {
     <ScrollProvider>
       <PageTransition>
         {/* ─── Hero with background image ─── */}
-        <section className="img-bg relative min-h-screen flex flex-col overflow-hidden">
+        <section className="relative min-h-screen flex flex-col overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="bg-photo"
-            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80"
-            alt=""
-            aria-hidden="true"
-          />
-          <div className="img-overlay bg-gradient-to-b from-black via-black/90 to-black" />
-          <div className="img-overlay grid-bg-static opacity-20" />
+          <div className="s-overlay bg-gradient-to-b from-black via-black/90 to-black" />
+          <div className="s-overlay grid-bg-static opacity-20" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(255,229,0,0.06),transparent_60%)] pointer-events-none" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 flex flex-col min-h-screen">
@@ -372,21 +366,35 @@ export default function AccessPage() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#0D0D0D]">
               {[
-                { code: 'CH_01', icon: '◈', label: 'General', sub: 'Inquiries & questions', value: 'hello@awarizon.com', href: 'mailto:hello@awarizon.com' },
-                { code: 'CH_02', icon: '⬡', label: 'Partnerships', sub: 'Business & integration', value: 'partners@awarizon.com', href: 'mailto:partners@awarizon.com' },
-                { code: 'CH_03', icon: '◉', label: 'Developers', sub: 'API & SDK access', value: 'dev@awarizon.com', href: 'mailto:dev@awarizon.com' },
-                { code: 'CH_04', icon: '◆', label: 'Location', sub: 'Headquarters', value: 'Lagos, Nigeria', href: '#' },
+                { code: 'CH_01', icon: '◈', label: 'General', sub: 'Inquiries & questions', value: 'hello@awarizon.com', href: 'mailto:hello@awarizon.com', img: null },
+                { code: 'CH_02', icon: '⬡', label: 'Partnerships', sub: 'Business & integration', value: 'partners@awarizon.com', href: 'mailto:partners@awarizon.com', img: null },
+                { code: 'CH_03', icon: '◉', label: 'Developers', sub: 'API & SDK access', value: 'dev@awarizon.com', href: 'mailto:dev@awarizon.com', img: null },
+                { code: 'CH_04', icon: '◆', label: 'Location', sub: 'Headquarters', value: 'Lagos, Nigeria', href: '#', img: 'https://images.unsplash.com/photo-1577415124269-fc1140a69e91?w=600&q=80' },
               ].map((ch) => (
                 <a
                   key={ch.code}
                   href={ch.href}
-                  className="bg-black p-7 group hover:bg-[#040404] transition-colors duration-300 reveal block"
+                  className={`relative overflow-hidden reveal block group transition-colors duration-300 ${ch.img ? '' : 'bg-black hover:bg-[#040404]'}`}
                 >
-                  <div className="sys-label opacity-40 mb-4">{ch.code}</div>
-                  <div className="text-2xl mb-4 text-dim group-hover:text-accent transition-colors duration-300">{ch.icon}</div>
-                  <div className="font-display font-semibold text-white text-lg mb-0.5 group-hover:text-accent transition-colors duration-300">{ch.label}</div>
-                  <div className="font-mono text-[10px] text-dim mb-3 tracking-widest">{ch.sub}</div>
-                  <div className="font-body text-base text-muted group-hover:text-white transition-colors duration-300">{ch.value}</div>
+                  {ch.img && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={ch.img}
+                        alt="" aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover opacity-[0.13] mix-blend-luminosity grayscale group-hover:opacity-[0.22] transition-opacity duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-black/70" />
+                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+                    </>
+                  )}
+                  <div className="relative p-7">
+                    <div className="sys-label opacity-40 mb-4">{ch.code}</div>
+                    <div className="text-2xl mb-4 text-dim group-hover:text-accent transition-colors duration-300">{ch.icon}</div>
+                    <div className="font-display font-semibold text-white text-lg mb-0.5 group-hover:text-accent transition-colors duration-300">{ch.label}</div>
+                    <div className="font-mono text-[10px] text-dim mb-3 tracking-widest">{ch.sub}</div>
+                    <div className="font-body text-base text-muted group-hover:text-white transition-colors duration-300">{ch.value}</div>
+                  </div>
                 </a>
               ))}
             </div>

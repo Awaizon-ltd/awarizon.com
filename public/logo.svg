@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none">
+  <!-- Diamond mark -->
+  <rect x="2" y="10" width="20" height="20" fill="#FFE500" transform="rotate(45 12 20)"/>
+  <!-- Wordmark -->
+  <text x="32" y="27" font-family="'Syne', sans-serif" font-weight="700" font-size="18" fill="#FFFFFF" letter-spacing="3">AWARIZON</text>
+</svg>

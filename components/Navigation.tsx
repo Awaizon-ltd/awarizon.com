@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { NAV_LAYERS } from '@/lib/constants'
 
@@ -41,13 +42,16 @@ export default function Navigation() {
         <div className="flex items-center justify-between px-6 md:px-10 h-16">
           {/* Logo */}
           <Link href="/shift" className="group flex items-center gap-3">
-            <div className="relative w-8 h-8">
-              <div className="absolute inset-0 border border-accent opacity-60 rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-              <div className="absolute inset-1 bg-accent opacity-80 rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+            <div className="relative h-8 w-auto">
+              <Image
+                src="/logo.png"
+                alt="Awarizon"
+                height={32}
+                width={120}
+                className="h-8 w-auto object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                priority
+              />
             </div>
-            <span className="font-display font-bold text-sm tracking-[0.3em] uppercase">
-              Awarizon
-            </span>
           </Link>
 
           {/* Center: current layer indicator */}
@@ -135,7 +139,15 @@ export default function Navigation() {
 
             {/* Bottom info */}
             <div className="mt-12 pt-6 border-t border-[#1A1A1A] flex items-center justify-between">
-              <span className="sys-label opacity-30">© 2024 AWARIZON LTD</span>
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/logo.png"
+                  alt="Awarizon"
+                  height={20}
+                  width={80}
+                  className="h-5 w-auto object-contain opacity-30 brightness-0 invert"
+                />
+              </div>
               <span className="sys-label opacity-30">NGN // WEST AFRICA</span>
             </div>
           </nav>
