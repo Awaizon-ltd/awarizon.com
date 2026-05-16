@@ -53,11 +53,11 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Awarizon — Technology Development & Distribution",
-        type: "image/png",
+        type: "image/jpg",
       },
     ],
   },
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
       "Building the bridge between businesses, technology, and everyday users across Nigeria and West Africa.",
     site: "@awarizon",
     creator: "@awarizon",
-    images: ["/opengraph-image"],
+    images: ["/og-image.png"],
   },
 
   icons: {

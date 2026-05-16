@@ -18,8 +18,8 @@
   --accent-dim: #B3A000;
   --accent-glow: rgba(255, 229, 0, 0.15);
   --text: #FFFFFF;
-  --muted: #888888;
-  --dim: #444444;
+  --muted: #D4D4D4;
+  --dim: #A0A0A0;
   --grid-size: 60px;
   --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
