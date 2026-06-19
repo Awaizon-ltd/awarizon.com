@@ -32,12 +32,16 @@ const NAV = [
       { id: 'writes',            label: 'Writing txns'       },
       { id: 'events',            label: 'Events'             },
       { id: 'gas',               label: 'Gas estimation'     },
+      { id: 'wallet-builtin',    label: 'Built-in Wallet'   },
+      { id: 'wallet-external',   label: 'External Wallets'  },
+      { id: 'multicall',         label: 'Multicall'         },
     ],
   },
   {
     id: 'react-sdk', label: '@awarizon/react',
     children: [
       { id: 'provider',          label: 'AwarizonProvider'  },
+      { id: 'use-wallet',        label: 'useWallet'         },
       { id: 'use-read-contract', label: 'useReadContract'   },
       { id: 'use-write-contract',label: 'useWriteContract'  },
       { id: 'use-contract',      label: 'useContract'       },
@@ -47,6 +51,13 @@ const NAV = [
     ],
   },
   { id: 'cli',          label: '@awarizon/cli'     },
+  {
+    id: 'react-native', label: '@awarizon/react-native',
+    children: [
+      { id: 'rn-storage',    label: 'Secure Storage' },
+      { id: 'use-rn-wallet', label: 'useRNWallet'    },
+    ],
+  },
   { id: 'chains',       label: 'Supported Chains'  },
   { id: 'errors',       label: 'Error Handling'    },
   { id: 'types',        label: 'TypeScript Types'  },

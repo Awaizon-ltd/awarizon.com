@@ -101,11 +101,12 @@ export default function DocsPage() {
 
         <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 mt-3 mb-2">
           <div className="font-mono text-[9px] text-dim tracking-widest mb-2">PACKAGES</div>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { pkg: '@awarizon/web3',  desc: 'Core SDK. Node.js, browser, Edge runtimes.' },
-              { pkg: '@awarizon/react', desc: 'React 18+ hooks for reads, writes, events.' },
-              { pkg: '@awarizon/cli',   desc: 'Codegen CLI. Outputs TypeScript or JavaScript.' },
+              { pkg: '@awarizon/web3',         desc: 'Core SDK. Node.js, browser, Edge runtimes.' },
+              { pkg: '@awarizon/react',         desc: 'React 18+ hooks for reads, writes, events.' },
+              { pkg: '@awarizon/react-native',  desc: 'Mobile SDK. Expo and bare React Native.' },
+              { pkg: '@awarizon/cli',           desc: 'Codegen CLI. TypeScript or JavaScript output.' },
             ].map(({ pkg, desc }) => (
               <div key={pkg}>
                 <code className="font-mono text-[11px] block mb-0.5" style={{ color: '#CE9178' }}>{pkg}</code>
@@ -160,6 +161,17 @@ export default function DocsPage() {
           <div className="p-4">
             <Sub>Installs the core SDK and the React hooks package together. One command, everything you need.</Sub>
             <ShellBlock command="npm install @awarizon/web3 @awarizon/react" label="SDK + REACT HOOKS" />
+          </div>
+        </div>
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-3">
+          <div className="px-4 py-2.5 border-b border-[#1E1E1E] flex items-center gap-2">
+            <span className="font-mono text-[9px] tracking-widest text-accent/70">TRACK C</span>
+            <span className="font-mono text-[9px] text-dim tracking-wide">— Expo · React Native (Expo SDK 49+ or bare RN 0.74+)</span>
+          </div>
+          <div className="p-4">
+            <Sub>Adds secure wallet key storage (iOS Keychain / Android Keystore) and mobile-optimised wallet hooks.</Sub>
+            <ShellBlock command="npm install @awarizon/react-native expo-secure-store" label="MOBILE" />
           </div>
         </div>
 
@@ -587,6 +599,160 @@ const unsubAll = contract.on("*", (log) => {
 )
 console.log("estimated gas:", gas) // e.g. 21000n`}
         />
+
+        {/* Built-in Wallet */}
+        <h3 id="wallet-builtin" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          Built-in Wallet
+        </h3>
+        <Sub>
+          The SDK ships a full self-custodial wallet — generate new wallets, import from a 12 or 24-word BIP-39 mnemonic,
+          or load from a raw private key. No browser extension or external library required.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`// ── Create a brand-new wallet ─────────────────────────────────────────────────
+const created = await awarizon.wallet.create()
+console.log(created.address)    // "0xAbCd..."
+console.log(created.privateKey) // "0x..."  ← returned once — store it securely
+
+// ── Import from a BIP-39 mnemonic (12 or 24 words) ────────────────────────────
+const fromPhrase = await awarizon.wallet.importMnemonic(
+  "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12",
+  0, // optional HD account index (default 0)
+)
+console.log(fromPhrase.address) // "0x..."
+
+// ── Import from a hex private key ─────────────────────────────────────────────
+const fromKey = await awarizon.wallet.importPrivateKey("0x...")
+console.log(fromKey.address) // "0x..."
+
+// Once any wallet is loaded, all write calls use it automatically:
+const tx = await usdc.transfer(recipient, 1_000_000n)
+console.log("txHash:", tx.hash)`}
+        />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">WALLET ACCESSORS</div>
+          <PropRow name="wallet.address()"           type="Address"    desc="Returns the active wallet address. Throws WalletNotConnectedError if no wallet is loaded." />
+          <PropRow name="wallet.isConnected()"       type="boolean"    desc="True when any wallet — internal or external — is active." />
+          <PropRow name="wallet.hasInternalWallet()" type="boolean"    desc="True when a locally generated or imported key/mnemonic wallet is loaded." />
+          <PropRow name="wallet.hasExternalWallet()" type="boolean"    desc="True when an external WalletClient (wagmi, RainbowKit) has been injected." />
+          <PropRow name="wallet.disconnect()"        type="void"       desc="Clears all wallet state — both internal keys and external connections." />
+          <PropRow name="getWalletInfo()"            type="WalletInfo" desc="Returns { address, chain, isExternal } — useful for displaying connected wallet state." />
+        </div>
+        <Callout icon="⚠️" variant="warn">
+          Never store private keys or mnemonic phrases in plaintext, localStorage, or client-side variables.
+          On mobile use <code className="font-mono text-[12px]">expo-secure-store</code> via <code className="font-mono text-[12px]">@awarizon/react-native</code>.
+          On server, load from environment variables only.
+        </Callout>
+
+        {/* External Wallets */}
+        <h3 id="wallet-external" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          External Wallets — wagmi · RainbowKit · WalletConnect
+        </h3>
+        <Sub>
+          Inject any viem-compatible WalletClient from wagmi, RainbowKit, or a custom EIP-1193 provider.
+          External signers always take priority over internal wallets — the user&apos;s connected wallet is used for all writes.
+        </Sub>
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">wagmi — useWalletClient()</p>
+        <CodeEditor
+          lang="tsx"
+          code={`// npm install wagmi viem @tanstack/react-query
+import { useWalletClient } from "wagmi"
+import { useEffect } from "react"
+import { useSDK } from "@awarizon/react"
+
+// Place this component inside both <WagmiProvider> and <AwarizonProvider>
+function WagmiConnector() {
+  const awarizon = useSDK()
+  const { data: walletClient } = useWalletClient()
+
+  useEffect(() => {
+    if (walletClient) {
+      awarizon.connectWallet(walletClient) // all writes now use this wallet
+    } else {
+      awarizon.disconnectWallet()
+    }
+  }, [walletClient, awarizon])
+
+  return null
+}`}
+        />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">RainbowKit — same wagmi pattern + connect button</p>
+        <CodeEditor
+          lang="tsx"
+          code={`// npm install @rainbow-me/rainbowkit wagmi viem @tanstack/react-query
+import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { useWalletClient } from "wagmi"
+import { useEffect } from "react"
+import { useSDK } from "@awarizon/react"
+
+// RainbowKit is built on wagmi — the injection pattern is identical
+function RainbowConnector() {
+  const awarizon = useSDK()
+  const { data: walletClient } = useWalletClient()
+
+  useEffect(() => {
+    if (walletClient) awarizon.connectWallet(walletClient)
+    else              awarizon.disconnectWallet()
+  }, [walletClient, awarizon])
+
+  return null // renders nothing — just syncs the wallet state
+}
+
+function Navbar() {
+  return (
+    <nav>
+      {/* RainbowKit handles MetaMask, Coinbase Wallet, WalletConnect, and more */}
+      <ConnectButton />
+      <RainbowConnector />  {/* syncs the selection into awarizon */}
+    </nav>
+  )
+}`}
+        />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">Constructor signer — pre-connected at init time</p>
+        <CodeEditor
+          lang="ts"
+          code={`// If you already have a WalletClient at init time, pass it directly.
+// Equivalent to calling awarizon.connectWallet(signer) after construction.
+const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: "awz_live_...",
+  signer: myWalletClient, // any viem WalletClient
+})`}
+        />
+
+        {/* Multicall */}
+        <h3 id="multicall" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          Multicall — batch reads
+        </h3>
+        <Sub>
+          Batch multiple view/pure reads into a single RPC round-trip via multicall3.
+          Critical for dashboards that need many values at once — 10 reads becomes 1 request.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`// 3 reads → 1 network request
+const [balance, symbol, decimals] = await awarizon.multicall([
+  { address: USDC, abi: erc20Abi, method: "balanceOf",  args: [userAddress] },
+  { address: USDC, abi: erc20Abi, method: "symbol"                          },
+  { address: USDC, abi: erc20Abi, method: "decimals"                        },
+])
+
+console.log(balance)   // 1000000n
+console.log(symbol)    // "USDC"
+console.log(decimals)  // 6n
+
+// Dashboard pattern — fetch a whole portfolio in one shot
+const [ethBal, usdcBal, daiSupply, nftOwner] = await awarizon.multicall([
+  { address: WETH,  abi: erc20Abi,  method: "balanceOf", args: [wallet] },
+  { address: USDC,  abi: erc20Abi,  method: "balanceOf", args: [wallet] },
+  { address: DAI,   abi: erc20Abi,  method: "totalSupply"               },
+  { address: NFT,   abi: erc721Abi, method: "ownerOf",   args: [1n]     },
+])`}
+        />
       </section>
 
       {/* ── @awarizon/react ──────────────────────────────────── */}
@@ -626,6 +792,66 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-4">
           <PropRow name="awarizon" type="AwarizonWeb3" req desc="A configured SDK instance. Create it once outside the component tree and pass it here." />
           <PropRow name="children" type="ReactNode"    req desc="The component subtree that can access SDK hooks." />
+        </div>
+
+        {/* useWallet */}
+        <h3 id="use-wallet" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          useWallet
+        </h3>
+        <Sub>
+          Manage wallet state reactively. Supports creating a fresh wallet, importing from mnemonic or private key,
+          and injecting an external WalletClient — all with loading and error state built in.
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { useWallet } from "@awarizon/react"
+
+function WalletPanel() {
+  const {
+    address,          // string | null — active wallet address
+    isConnected,      // boolean
+    isLoading,        // true during async wallet operations
+    error,            // Error | null
+    create,           // () => Promise<void>
+    importMnemonic,   // (phrase: string, accountIndex?: number) => Promise<void>
+    importPrivateKey, // (key: \`0x\${string}\`) => Promise<void>
+    connect,          // (walletClient: WalletClient) => void — external wallets
+    disconnect,       // () => void
+  } = useWallet()
+
+  if (isLoading) return <p>Loading…</p>
+
+  if (!isConnected) {
+    return (
+      <div>
+        <button onClick={create}>Create new wallet</button>
+        <button onClick={() => importMnemonic("word1 word2 ... word12")}>
+          Import from phrase
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <p>Connected: {address}</p>
+      {error && <p style={{ color: "red" }}>{error.message}</p>}
+      <button onClick={disconnect}>Disconnect</button>
+    </div>
+  )
+}`}
+        />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">RETURN VALUES</div>
+          <PropRow name="address"          type="string | null"  desc="Active wallet address, or null when no wallet is connected." />
+          <PropRow name="isConnected"      type="boolean"        desc="True when any wallet (internal or external) is active." />
+          <PropRow name="isLoading"        type="boolean"        desc="True during create, import, or connect operations." />
+          <PropRow name="error"            type="Error | null"   desc="Last wallet operation error. Cleared on the next successful operation." />
+          <PropRow name="create"           type="() => Promise"  desc="Generate a fresh wallet keypair and activate it." />
+          <PropRow name="importMnemonic"   type="fn"             desc="(phrase, index?) → restore from a BIP-39 mnemonic and activate." />
+          <PropRow name="importPrivateKey" type="fn"             desc="(key) → load from a hex private key and activate." />
+          <PropRow name="connect"          type="fn"             desc="(walletClient) → inject an external WalletClient (wagmi, RainbowKit)." />
+          <PropRow name="disconnect"       type="() => void"     desc="Clear all wallet state and set address to null." />
         </div>
 
         {/* useReadContract */}
@@ -810,65 +1036,247 @@ function WalletBalance({ address }: { address: \`0x\${string}\` }) {
       {/* ── CLI ─────────────────────────────────────────────── */}
       <section id="cli">
         <SectionTitle id="cli">@awarizon/cli — Code Generation</SectionTitle>
-        <Sub>Generate fully typed contract clients and React hooks from any ABI. No boilerplate.</Sub>
+        <Sub>
+          Generate a fully-typed contract client class and React hooks from any ABI file.
+          Run once — the generated files work without the CLI installed in production.
+        </Sub>
         <ShellBlock
-          command="npx @awarizon/cli codegen --name MyToken --address 0x... --abi ./abi.json --lang ts"
-          label="CLI — GENERATE FROM ABI FILE"
+          command="npx @awarizon/cli codegen --name MyToken --abi ./abi.json --address 0x... --out ./src/contracts"
+          label="CLI — GENERATE FROM ABI"
         />
-        <p className="font-mono text-[11px] text-dim mb-3 tracking-wide">
-          Outputs: <span style={{ color: '#CE9178' }}>MyTokenClient.ts</span> and <span style={{ color: '#CE9178' }}>useMyToken.ts</span>
-        </p>
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-4">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">FLAGS</div>
+          <PropRow name="--name / -n"  type="string"   req  desc='Contract name in PascalCase. Used as the generated class name — "MyToken" → MyTokenClient.' />
+          <PropRow name="--abi / -a"   type="path"     req  desc="Path to the ABI JSON file (standard Solidity output or Hardhat artifact)." />
+          <PropRow name="--address"    type="Address"       desc="Deployed contract address. Baked into the generated file so you never pass it at runtime." />
+          <PropRow name="--out / -o"   type="path"          desc="Output directory. Defaults to the current working directory." />
+          <PropRow name="--lang"       type="ts | js"       desc='Output language. "ts" for TypeScript (default), "js" for JavaScript.' />
+          <PropRow name="--no-react"   type="flag"          desc="Skip generating the React hooks file — output the client class only." />
+        </div>
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-4 mb-2">Two files are generated:</p>
+
         <CodeEditor
-          filename="MyTokenClient.ts  (auto-generated)"
+          filename="MyTokenClient.ts  (contract client — auto-generated)"
           code={`import { AwarizonWeb3 } from "@awarizon/web3"
 import type { TransactionResult } from "@awarizon/web3"
 
+const CONTRACT_ADDRESS = "0xYourDeployedAddress"
+
 export class MyTokenClient {
+  private _contract: any
+
+  // Factory — use this instead of new MyTokenClient()
   static async create(awz: AwarizonWeb3): Promise<MyTokenClient> {
     const client = new MyTokenClient()
     client._contract = await awz.contract({ address: CONTRACT_ADDRESS, abi: ABI })
     return client
   }
 
-  // Typed read methods (view / pure)
+  // ── Read methods (view / pure) ────────────────────────────────────────────────
   async balanceOf(owner: \`0x\${string}\`): Promise<bigint> {
     return this._contract.balanceOf(owner)
   }
+  async symbol():   Promise<string>  { return this._contract.symbol()   }
+  async decimals(): Promise<number>  { return this._contract.decimals() }
 
-  // Typed write methods (nonpayable / payable)
+  // ── Write methods (nonpayable / payable) ──────────────────────────────────────
   async transfer(to: \`0x\${string}\`, amount: bigint): Promise<TransactionResult> {
     return this._contract.transfer(to, amount)
   }
+  async approve(spender: \`0x\${string}\`, amount: bigint): Promise<TransactionResult> {
+    return this._contract.approve(spender, amount)
+  }
 }`}
         />
-        <CodeEditor
-          filename="useMyToken.ts  (auto-generated)"
-          code={`import { useReadContract, useWriteContract } from "@awarizon/react"
 
-// Auto-generated read hook
+        <CodeEditor
+          filename="useMyToken.ts  (React hooks — auto-generated)"
+          code={`import { useEffect } from "react"
+import { useReadContract, useWriteContract, useContract } from "@awarizon/react"
+
+const CONTRACT_ADDRESS = "0xYourDeployedAddress"
+
+// ── Read hooks — auto-fetching, re-fetches when args change ───────────────────
 export function useReadBalanceOf(owner: \`0x\${string}\`) {
   return useReadContract({
-    address: CONTRACT_ADDRESS,
-    abi:     MYTOKEN_ABI,
-    method:  "balanceOf",
-    args:    [owner],
+    address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI,
+    method: "balanceOf",       args: [owner],
   })
 }
+export function useReadSymbol() {
+  return useReadContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI, method: "symbol" })
+}
 
-// Auto-generated write hook
+// ── Write hooks — returns a write() callback ──────────────────────────────────
 export function useWriteTransfer() {
-  return useWriteContract({
-    address: CONTRACT_ADDRESS,
-    abi:     MYTOKEN_ABI,
-    method:  "transfer",
-  })
-}`}
+  return useWriteContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI, method: "transfer" })
+}
+export function useWriteApprove() {
+  return useWriteContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI, method: "approve" })
+}
+
+// ── Event hooks — subscribe/unsubscribe automatically on mount/unmount ────────
+export function useMyTokenTransferEvent(handler: (log: any) => void) {
+  const { contract } = useContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI })
+  useEffect(() => {
+    if (!contract) return
+    return contract.on("Transfer", handler) // returns the unsubscribe function
+  }, [contract, handler])
+}
+
+// Usage:
+// const { data: balance }   = useReadBalanceOf(userAddress)
+// const { write: transfer } = useWriteTransfer()
+// useMyTokenTransferEvent((log) => console.log("Transfer:", log.args))`}
         />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">awarizon info — show installed versions</p>
+        <ShellBlock command="npx @awarizon/cli info" label="CLI — VERSION INFO" />
+        <CodeEditor
+          lang="sh"
+          code={`@awarizon/cli         v1.1.0
+@awarizon/web3        v1.1.0
+@awarizon/react       v1.1.0
+@awarizon/tx-engine   v1.1.0`}
+        />
+
         <p className="text-[13px] text-muted mb-2">
           You can also generate from the{' '}
           <Link href="/dashboard/codegen" className="text-accent hover:underline">Code Generator in your dashboard</Link>
-          {' '}— paste an ABI and download the files.
+          {' '}— paste an ABI and download the files instantly.
         </p>
+      </section>
+
+      {/* ── @awarizon/react-native ──────────────────────────── */}
+      <section id="react-native">
+        <SectionTitle id="react-native">@awarizon/react-native</SectionTitle>
+        <Sub>
+          Mobile wallet management for Expo and bare React Native. Adds hardware-backed key storage
+          (iOS Keychain / Android Keystore), automatic wallet restore on app launch, and React Native-safe async crypto.
+        </Sub>
+
+        <ShellBlock
+          command="npm install @awarizon/react-native expo-secure-store"
+          label="INSTALL"
+        />
+        <Callout icon="ℹ️" variant="info">
+          Requires Expo SDK 49+ or bare React Native 0.74+. The core <code className="font-mono text-[12px]">@awarizon/web3</code> package is also required — install it following the Setup Guide above.
+        </Callout>
+
+        {/* Secure Storage */}
+        <h3 id="rn-storage" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          Secure Storage Setup
+        </h3>
+        <Sub>
+          <code className="font-mono text-accent text-[13px]">createSecureStorage</code> wraps{' '}
+          <code className="font-mono text-accent text-[13px]">expo-secure-store</code> behind a simple adapter interface.
+          Private keys are encrypted by the OS — never stored in plaintext on disk.
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import * as ExpoSecureStore from "expo-secure-store"
+import { createSecureStorage } from "@awarizon/react-native"
+import { AwarizonWeb3 } from "@awarizon/web3"
+
+// Create the secure storage adapter — wrap the ExpoSecureStore module
+const storage = createSecureStorage(ExpoSecureStore)
+
+// Create the SDK instance (same as on web)
+const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.EXPO_PUBLIC_AWARIZON_API_KEY!,
+})
+
+// Pass both to useRNWallet in your component (see below)`}
+        />
+        <Callout icon="💡" variant="tip">
+          On iOS, keys are stored in the Keychain and survive app reinstalls by default. On Android, they are encrypted with the Android Keystore and tied to the app package. Neither platform writes the key to disk in plaintext.
+        </Callout>
+
+        {/* useRNWallet */}
+        <h3 id="use-rn-wallet" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          useRNWallet
+        </h3>
+        <Sub>
+          The main hook for React Native. Handles wallet creation, import, and secure persistence.
+          On every app launch, it automatically restores the last saved wallet from secure storage —
+          no login screen needed.
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { Text, View, Button } from "react-native"
+import { useRNWallet, createSecureStorage } from "@awarizon/react-native"
+import * as ExpoSecureStore from "expo-secure-store"
+import { awarizon } from "./lib/awarizon"
+
+const storage = createSecureStorage(ExpoSecureStore)
+
+function WalletScreen() {
+  const {
+    address,          // string | null — active wallet address
+    isConnected,      // boolean
+    isLoading,        // true during create / import / auto-restore
+    error,            // Error | null
+    create,           // () => Promise<CreatedWallet> — saves key to secure storage
+    importMnemonic,   // (phrase, accountIndex?) => Promise<void>
+    importPrivateKey, // (key: \`0x\${string}\`) => Promise<void>
+    deleteWallet,     // () => Promise<void> — removes from secure storage (logout)
+  } = useRNWallet({
+    awarizon,
+    storage,          // required — the secure storage adapter
+    walletId: "main", // optional — storage namespace (default: "default")
+    autoRestore: true,// optional — restore on mount (default: true)
+  })
+
+  if (isLoading) return <Text>Loading wallet…</Text>
+
+  if (!isConnected) {
+    return (
+      <View>
+        <Button title="Create Wallet" onPress={create} />
+        <Button
+          title="Import from Phrase"
+          onPress={() => importMnemonic("word1 word2 ... word12")}
+        />
+        {error && <Text style={{ color: "red" }}>{error.message}</Text>}
+      </View>
+    )
+  }
+
+  return (
+    <View>
+      <Text>Connected: {address}</Text>
+      <Button title="Log Out" onPress={deleteWallet} />
+    </View>
+  )
+}`}
+        />
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">OPTIONS</div>
+          <PropRow name="awarizon"    type="AwarizonWeb3"         req  desc="The SDK instance to attach the wallet to." />
+          <PropRow name="storage"     type="SecureStorageAdapter" req  desc="Adapter created by createSecureStorage(ExpoSecureStore)." />
+          <PropRow name="walletId"    type="string"                    desc='Storage namespace key. Use different IDs for multi-wallet apps. Default: "default".' />
+          <PropRow name="autoRestore" type="boolean"                   desc="Auto-restore the last saved wallet from secure storage on mount. Default: true." />
+        </div>
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">RETURN VALUES</div>
+          <PropRow name="address"          type="string | null"  desc="Active wallet address, or null when no wallet is loaded." />
+          <PropRow name="isConnected"      type="boolean"        desc="True when a wallet is active (restored or newly created)." />
+          <PropRow name="isLoading"        type="boolean"        desc="True during create, import, auto-restore, or deleteWallet." />
+          <PropRow name="error"            type="Error | null"   desc="Last operation error. Cleared on the next successful operation." />
+          <PropRow name="create"           type="() => Promise"  desc="Generate a fresh wallet. Private key is saved to secure storage immediately." />
+          <PropRow name="importMnemonic"   type="fn"             desc="(phrase, index?) → import from BIP-39 mnemonic and save to secure storage." />
+          <PropRow name="importPrivateKey" type="fn"             desc="(key) → import from hex private key and save to secure storage." />
+          <PropRow name="deleteWallet"     type="() => Promise"  desc="Remove the wallet from secure storage and clear all state. Use this as your logout action." />
+        </div>
+
+        <Callout icon="💡" variant="tip">
+          <strong>Auto-restore priority:</strong> on mount, <code className="font-mono text-[12px]">useRNWallet</code> checks for a saved private key first, then a saved mnemonic. If neither is found and <code className="font-mono text-[12px]">autoRestore</code> is true, the hook stays in a clean disconnected state — no error is thrown, no prompt required.
+        </Callout>
       </section>
 
       {/* ── Chains ──────────────────────────────────────────── */}
@@ -939,7 +1347,7 @@ try {
       {/* ── TypeScript Types ─────────────────────────────────── */}
       <section id="types">
         <SectionTitle id="types">TypeScript Types</SectionTitle>
-        <Sub>All exported types from <code className="font-mono text-accent text-[13px]">@awarizon/web3</code> and <code className="font-mono text-accent text-[13px]">@awarizon/react</code>.</Sub>
+        <Sub>All exported types across the Awarizon SDK packages.</Sub>
         <CodeEditor
           lang="ts"
           code={`// ── @awarizon/web3 ───────────────────────────────────────────────────────────
@@ -949,18 +1357,16 @@ import type {
   ContractRegistryEntry,
   TransactionResult,
   TransactionReceipt,
-  // ERC standard contract interfaces
-  Erc20Contract,
-  Erc721Contract,
-  Erc1155Contract,
-  // ERC ABIs (use in your own contract() calls or register())
-  ERC20_ABI,
+  Erc20Contract,      // typed interface for awarizon.erc20()
+  Erc721Contract,     // typed interface for awarizon.erc721()
+  Erc1155Contract,    // typed interface for awarizon.erc1155()
+  ERC20_ABI,          // pre-bundled ABI — use in register() or contract()
   ERC721_ABI,
   ERC1155_ABI,
 } from "@awarizon/web3"
 
 interface AwarizonConfig {
-  chain:    string        // chain alias or viem Chain object
+  chain:    string        // chain alias string or viem Chain object
   apiKey:   string        // "awz_live_..."
   rpcUrl?:  string        // custom RPC endpoint override
   signer?:  WalletClient  // pre-connected external signer
@@ -983,14 +1389,31 @@ interface TransactionReceipt {
   status:      "success" | "reverted"
 }
 
+interface WalletInfo {
+  address:    \`0x\${string}\`
+  chain:      string
+  isExternal: boolean  // true for wagmi/RainbowKit, false for internal
+}
+
 // ── @awarizon/react ───────────────────────────────────────────────────────────
 import type {
+  UseWalletReturn,
   UseTokenReturn,
   UseNFTReturn,
   UseNativeBalanceReturn,
   UseReadContractReturn,
   UseWriteContractReturn,
 } from "@awarizon/react"
+
+interface UseWalletReturn {
+  address: string | null;  isConnected: boolean
+  isLoading: boolean;      error: Error | null
+  create(): Promise<void>
+  importMnemonic(phrase: string, accountIndex?: number): Promise<void>
+  importPrivateKey(key: \`0x\${string}\`): Promise<void>
+  connect(walletClient: WalletClient): void
+  disconnect(): void
+}
 
 interface UseTokenReturn {
   name: string | null;  symbol: string | null
@@ -1014,6 +1437,35 @@ interface UseNativeBalanceReturn {
   balance: bigint | null;  formatted: string | null
   isLoading: boolean;  error: Error | null
   refetch(): Promise<void>
+}
+
+// ── @awarizon/react-native ────────────────────────────────────────────────────
+import type {
+  UseRNWalletReturn,
+  UseRNWalletOptions,
+  SecureStorageAdapter,
+} from "@awarizon/react-native"
+
+interface UseRNWalletOptions {
+  awarizon:     AwarizonWeb3
+  storage:      SecureStorageAdapter    // from createSecureStorage(ExpoSecureStore)
+  walletId?:    string                  // storage namespace, default: "default"
+  autoRestore?: boolean                 // restore on mount, default: true
+}
+
+interface UseRNWalletReturn {
+  address: string | null;  isConnected: boolean
+  isLoading: boolean;      error: Error | null
+  create(): Promise<CreatedWallet>
+  importMnemonic(phrase: string, accountIndex?: number): Promise<void>
+  importPrivateKey(key: \`0x\${string}\`): Promise<void>
+  deleteWallet(): Promise<void>  // removes from secure storage — use as logout
+}
+
+interface SecureStorageAdapter {
+  getItem(key: string): Promise<string | null>
+  setItem(key: string, value: string): Promise<void>
+  deleteItem(key: string): Promise<void>
 }`}
         />
       </section>
