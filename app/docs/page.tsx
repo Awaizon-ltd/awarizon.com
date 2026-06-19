@@ -33,6 +33,38 @@ function PropRow({ name, type, req, desc }: { name: string; type: string; req?: 
   )
 }
 
+function StepHeading({ id, n, title }: { id: string; n: string; title: string }) {
+  return (
+    <div id={id} className="flex items-center gap-3 mt-10 mb-2 scroll-mt-20">
+      <span
+        className="font-mono text-[9px] tracking-widest border border-accent/40 text-accent/80 px-1.5 py-0.5 flex-shrink-0"
+        style={{ lineHeight: 1.5 }}
+      >
+        {n}
+      </span>
+      <h3 className="font-display font-semibold text-white text-base">{title}</h3>
+    </div>
+  )
+}
+
+function Callout({ icon, children, variant = 'info' }: {
+  icon: string
+  children: React.ReactNode
+  variant?: 'tip' | 'warn' | 'info'
+}) {
+  const styles: Record<string, string> = {
+    tip:  'border-accent/25 bg-accent/5',
+    warn: 'border-orange-500/30 bg-orange-500/5',
+    info: 'border-sky-500/25 bg-sky-500/5',
+  }
+  return (
+    <div className={`border flex gap-3 px-4 py-3 my-3 ${styles[variant]}`}>
+      <span className="text-sm flex-shrink-0 mt-0.5">{icon}</span>
+      <p className="font-body text-[13px] text-muted leading-relaxed">{children}</p>
+    </div>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DocsPage() {
@@ -84,37 +116,279 @@ export default function DocsPage() {
         </div>
       </section>
 
+      {/* ── Setup Guide ─────────────────────────────────────── */}
+      <section id="setup">
+        <SectionTitle id="setup">Setup Guide</SectionTitle>
+        <Sub>Five steps from zero to live blockchain data. Follow them in order — each one builds on the last.</Sub>
+
+        {/* Step 1 — API Key */}
+        <StepHeading id="setup-apikey" n="STEP 1" title="Get your API key" />
+        <Sub>Every SDK call is authenticated with an API key. It links your usage to your account and unlocks the full feature set.</Sub>
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 my-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest mb-2">KEY FORMAT</div>
+          <code className="font-mono text-[13px]" style={{ color: '#CE9178' }}>awz_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxx</code>
+          <p className="font-body text-[12px] text-dim mt-2 leading-relaxed">
+            Go to your{' '}
+            <Link href="/dashboard/api-keys" className="text-accent hover:underline">dashboard → API Keys</Link>
+            {' '}→ click <strong className="text-muted font-semibold">Create key</strong>. Copy it immediately — it will not be shown again.
+          </p>
+        </div>
+        <Callout icon="⚠️" variant="warn">
+          Never commit your API key to Git or paste it directly in source files. Store it as an environment variable and ensure <code className="font-mono text-[12px]">.env</code> is in your <code className="font-mono text-[12px]">.gitignore</code>.
+        </Callout>
+
+        {/* Step 2 — Install */}
+        <StepHeading id="setup-install" n="STEP 2" title="Install the right package" />
+        <Sub>Pick your track below. You can install more packages any time — they are fully independent.</Sub>
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <div className="px-4 py-2.5 border-b border-[#1E1E1E] flex items-center gap-2">
+            <span className="font-mono text-[9px] tracking-widest text-accent/70">TRACK A</span>
+            <span className="font-mono text-[9px] text-dim tracking-wide">— Node.js · scripts · backend · Vite (non-React)</span>
+          </div>
+          <div className="p-4">
+            <Sub>Core SDK only. Works in Node 18+, Deno, Bun, Edge runtimes, and browser bundles.</Sub>
+            <ShellBlock command="npm install @awarizon/web3" label="CORE SDK" />
+          </div>
+        </div>
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-3">
+          <div className="px-4 py-2.5 border-b border-[#1E1E1E] flex items-center gap-2">
+            <span className="font-mono text-[9px] tracking-widest text-accent/70">TRACK B</span>
+            <span className="font-mono text-[9px] text-dim tracking-wide">— React · Next.js · Vite React (requires React 18+)</span>
+          </div>
+          <div className="p-4">
+            <Sub>Installs the core SDK and the React hooks package together. One command, everything you need.</Sub>
+            <ShellBlock command="npm install @awarizon/web3 @awarizon/react" label="SDK + REACT HOOKS" />
+          </div>
+        </div>
+
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-3">
+          <div className="px-4 py-2.5 border-b border-[#1E1E1E] flex items-center gap-2">
+            <span className="font-mono text-[9px] tracking-widest text-dim">OPTIONAL</span>
+            <span className="font-mono text-[9px] text-dim tracking-wide">— CLI code generation (install globally once)</span>
+          </div>
+          <div className="p-4">
+            <Sub>Generates a fully typed contract client and React hooks from any ABI file. Use it to skip writing boilerplate for custom contracts.</Sub>
+            <ShellBlock command="npm install -g @awarizon/cli" label="CLI (GLOBAL)" />
+          </div>
+        </div>
+
+        {/* Step 3 — Env Variable */}
+        <StepHeading id="setup-env" n="STEP 3" title="Store your key as an environment variable" />
+        <Sub>Create a <code className="font-mono text-accent text-[13px]">.env</code> file in your project root and add your key. Your framework loads it automatically.</Sub>
+        <CodeEditor
+          filename=".env  ·  Node.js, Vite, scripts"
+          code={`# Loaded via process.env — never sent to the browser
+AWARIZON_API_KEY=awz_live_...`}
+        />
+        <CodeEditor
+          filename=".env.local  ·  Next.js"
+          code={`# NEXT_PUBLIC_ exposes the value to browser bundles.
+# Use this only for public-facing read-only API keys.
+NEXT_PUBLIC_AWARIZON_API_KEY=awz_live_...`}
+        />
+        <Callout icon="💡" variant="tip">
+          Create a <code className="font-mono text-[12px]">.env.example</code> file with placeholder values and commit that instead. Other developers on your team will know which variables are required without ever seeing the real key.
+        </Callout>
+
+        {/* Step 4a — Node.js / Scripts */}
+        <StepHeading id="setup-vanilla" n="STEP 4A" title="Initialize — Node.js / Scripts / Backend" />
+        <Sub>
+          Create the SDK instance once in a shared file and export it. Every other file imports from there — the connection pool is reused automatically.
+        </Sub>
+        <CodeEditor
+          filename="lib/awarizon.ts"
+          code={`import { AwarizonWeb3 } from "@awarizon/web3"
+
+export const awarizon = new AwarizonWeb3({
+  chain:  "base",                          // the EVM chain to connect to
+  apiKey: process.env.AWARIZON_API_KEY!,   // loaded from .env
+})
+
+// Import this file anywhere you need blockchain access:
+// import { awarizon } from "@/lib/awarizon"`}
+        />
+        <Callout icon="💡" variant="tip">
+          Not sure which chain to pick? Start with <code className="font-mono text-[12px]">"base-sepolia"</code> — it is a free test network where transactions cost no real money. Switch to <code className="font-mono text-[12px]">"base"</code> when you are ready for production.
+        </Callout>
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-2 mt-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">AVAILABLE CHAINS</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-px bg-[#1E1E1E]">
+            {[
+              ['"base"',            'Recommended for new projects'],
+              ['"base-sepolia"',    'Base testnet — free, no real funds'],
+              ['"ethereum"',        'Ethereum mainnet'],
+              ['"sepolia"',         'Ethereum testnet'],
+              ['"polygon"',         'Polygon PoS mainnet'],
+              ['"arbitrum"',        'Arbitrum One L2'],
+              ['"optimism"',        'Optimism L2'],
+              ['"bnb"',             'BNB Smart Chain'],
+              ['"avalanche"',       'Avalanche C-Chain'],
+            ].map(([id, desc]) => (
+              <div key={id} className="bg-[#0A0A0A] px-3 py-2.5">
+                <code className="font-mono text-[11px] block mb-0.5" style={{ color: '#CE9178' }}>{id}</code>
+                <span className="font-body text-[11px] text-dim leading-tight">{desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Step 4b — React / Next.js */}
+        <StepHeading id="setup-react" n="STEP 4B" title="Initialize — React / Next.js" />
+        <Sub>
+          React uses a <strong className="text-muted font-semibold">Provider</strong> pattern. You create the SDK instance once and wrap your app with{' '}
+          <code className="font-mono text-accent text-[13px]">AwarizonProvider</code> — every hook in every component automatically gets access to it.
+        </Sub>
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">1 of 3 — Create the SDK instance</p>
+        <CodeEditor
+          filename="lib/awarizon.ts"
+          code={`import { AwarizonWeb3 } from "@awarizon/web3"
+
+// Create OUTSIDE of any component — never recreated on re-renders
+export const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.NEXT_PUBLIC_AWARIZON_API_KEY!,
+})`}
+        />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">2 of 3 — Create a Providers wrapper (Next.js App Router needs <code className="font-mono text-[10px]">"use client"</code>)</p>
+        <CodeEditor
+          filename="components/Providers.tsx"
+          code={`"use client"
+import { AwarizonProvider } from "@awarizon/react"
+import { awarizon } from "@/lib/awarizon"
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <AwarizonProvider awarizon={awarizon}>
+      {children}
+    </AwarizonProvider>
+  )
+}
+
+// If you are on Vite React (no App Router) you can skip this file
+// and wrap directly in main.tsx or App.tsx:
+//
+// import { AwarizonProvider } from "@awarizon/react"
+// import { awarizon } from "./lib/awarizon"
+//
+// <AwarizonProvider awarizon={awarizon}><App /></AwarizonProvider>`}
+        />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">3 of 3 — Add the Provider to your root layout</p>
+        <CodeEditor
+          filename="app/layout.tsx  (Next.js App Router)"
+          code={`import { Providers } from "@/components/Providers"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
+}
+
+// Done. Every component inside <Providers> can now call useToken(),
+// useNFT(), useReadContract(), etc. — no prop drilling needed.`}
+        />
+
+        {/* Step 5 — First Call */}
+        <StepHeading id="setup-first" n="STEP 5" title="Make your first call" />
+        <Sub>
+          Reading blockchain data requires <strong className="text-muted font-semibold">no wallet and no gas</strong>.
+          You can query any contract on any chain right now, instantly.
+        </Sub>
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">Node.js / Script</p>
+        <CodeEditor
+          filename="scripts/check-balance.ts"
+          code={`import { awarizon } from "./lib/awarizon"
+
+// USDC on Base mainnet — no ABI file needed
+const usdc = await awarizon.erc20("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+
+const symbol   = await usdc.symbol()   // "USDC"
+const decimals = await usdc.decimals() // 6
+
+// Check any wallet address
+const raw       = await usdc.balanceOf("0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045")
+const formatted = Number(raw) / 10 ** decimals
+
+console.log(\`Balance: \${formatted} \${symbol}\`)
+// → "Balance: 1234.56 USDC"
+
+// Reading state costs nothing — no gas, no wallet, no transaction`}
+        />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-5 mb-1">React component</p>
+        <CodeEditor
+          filename="components/USDCBalance.tsx"
+          code={`import { useState, useEffect } from "react"
+import { useToken } from "@awarizon/react"
+
+// USDC on Base mainnet
+const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+
+export function USDCBalance({ wallet }: { wallet: \`0x\${string}\` }) {
+  const { symbol, decimals, balanceOf, isLoading } = useToken(USDC_BASE)
+  const [balance, setBalance] = useState<string>("…")
+
+  useEffect(() => {
+    if (decimals === null) return
+    balanceOf(wallet)
+      .then(raw => setBalance((Number(raw) / 10 ** decimals).toFixed(2)))
+  }, [wallet, balanceOf, decimals])
+
+  if (isLoading) return <p>Loading token…</p>
+
+  return <p>Balance: {balance} {symbol}</p>
+  //          → "Balance: 1234.56 USDC"
+}`}
+        />
+
+        <Callout icon="💡" variant="tip">
+          Token amounts are always stored as raw integers on-chain — no decimal point. 1 USDC is <code className="font-mono text-[12px]">1_000_000n</code> because USDC has 6 decimals. Always divide by <code className="font-mono text-[12px]">{"10 ** decimals"}</code> before displaying to users.
+        </Callout>
+
+        <Callout icon="ℹ️" variant="info">
+          To <strong>send</strong> transactions (transfers, minting, staking) you also need a wallet connected. See the Writing transactions section below for the full write flow.
+        </Callout>
+      </section>
+
       {/* ── Quick Start ─────────────────────────────────────── */}
       <section id="quickstart">
         <SectionTitle id="quickstart">Quick Start</SectionTitle>
-        <Sub>Initialise the SDK, attach to a contract, read state, and send a transaction.</Sub>
+        <Sub>Initialise the SDK, interact with an ERC-20 token with zero ABI boilerplate, and send a transaction.</Sub>
         <CodeEditor
           filename="quickstart.ts"
           code={`import { AwarizonWeb3 } from "@awarizon/web3"
 
 // 1. Initialise with your chain and API key
-const awz = new AwarizonWeb3({
+const awarizon = new AwarizonWeb3({
   chain:  "base",
   apiKey: process.env.AWARIZON_API_KEY, // awz_live_...
 })
 
-// 2. Attach to any EVM contract
-const usdc = await awz.contract({
-  address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-  abi:     USDC_ABI,
-})
+// 2. ERC-20 token — no ABI import needed
+const usdc = await awarizon.erc20("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
 
 // 3. Read on-chain state (no gas, no wallet)
 const balance = await usdc.balanceOf("0xYourAddress")
-console.log(balance) // 1000000n  (USDC has 6 decimals)
+console.log(balance)           // 1000000n  (USDC has 6 decimals)
+console.log(await usdc.symbol())     // "USDC"
+console.log(await usdc.decimals())   // 6
 
 // 4. Write a transaction
 const tx = await usdc.transfer("0xRecipient", 500_000n)
-console.log("hash:", tx.hash)
+console.log("hash:", tx.hash)  // 0x...
 
-// 5. Wait for confirmation
-const receipt = await tx.wait()
-console.log("block:", receipt.blockNumber) // e.g. 12345678`}
+// 5. Or load any custom contract with your own ABI
+const staking = await awarizon.contract({ address: "0x...", abi: STAKING_ABI })
+await staking.stake(100n)`}
         />
       </section>
 
@@ -131,7 +405,7 @@ console.log("block:", receipt.blockNumber) // e.g. 12345678`}
           lang="ts"
           code={`import { AwarizonWeb3 } from "@awarizon/web3"
 
-const awz = new AwarizonWeb3({
+const awarizon = new AwarizonWeb3({
   chain:   "base",         // required — target EVM chain
   apiKey:  "awz_live_...", // required — from dashboard.awarizon.com
   timeout: 30_000,         // optional, ms  (default: 30 000)
@@ -156,6 +430,80 @@ const awz = new AwarizonWeb3({
   address: "0xContractAddress", // EIP-55 checksum address
   abi:     ABI_ARRAY,            // standard JSON ABI
 })`}
+        />
+
+        {/* ERC Standard Clients */}
+        <h3 id="erc-standards" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          ERC Standard Clients
+        </h3>
+        <Sub>
+          Load ERC-20, ERC-721, and ERC-1155 contracts with zero ABI imports. Every method is fully typed — your editor autocompletes the entire standard interface.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`// ── ERC-20 Token ─────────────────────────────────────────────────────────────
+const usdc = await awarizon.erc20("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
+
+const name     = await usdc.name()              // "USD Coin"
+const symbol   = await usdc.symbol()            // "USDC"
+const decimals = await usdc.decimals()          // 6
+const supply   = await usdc.totalSupply()       // bigint
+const balance  = await usdc.balanceOf(owner)    // bigint
+const allowed  = await usdc.allowance(owner, spender)
+
+await usdc.transfer(recipient, 1_000_000n)      // 1 USDC
+await usdc.approve(spender, 500_000n)
+await usdc.transferFrom(from, to, 1_000_000n)
+
+// ── ERC-721 NFT Collection ────────────────────────────────────────────────────
+const nft = await awarizon.erc721("0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D")
+
+const owner = await nft.ownerOf(1n)             // \`0x\${string}\`
+const uri   = await nft.tokenURI(1n)            // "ipfs://..."
+const count = await nft.balanceOf(wallet)       // bigint
+
+await nft.safeTransferFrom(from, to, 1n)
+await nft.approve(operator, 1n)
+await nft.setApprovalForAll(operator, true)
+
+// ── ERC-1155 Multi-Token ──────────────────────────────────────────────────────
+const items = await awarizon.erc1155("0x...")
+
+const qty     = await items.balanceOf(user, 42n)        // bigint
+const uri     = await items.uri(42n)                    // metadata URI
+const batched = await items.balanceOfBatch([u1, u2], [1n, 2n])
+
+await items.safeTransferFrom(from, to, 42n, 1n, "0x")
+await items.setApprovalForAll(operator, true)`}
+        />
+
+        {/* Contract Registry */}
+        <h3 id="registry" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          Contract Registry
+        </h3>
+        <Sub>
+          Register contracts once by name at startup. Reference them anywhere in your app without repeating addresses or ABIs. Chains are
+          automatically taken from the SDK instance.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`// Register at startup — returns \`this\` for chaining
+awarizon
+  .register("USDC",  { address: "0x...", abi: erc20Abi  })
+  .register("Vault", { address: "0x...", abi: vaultAbi  })
+  .register("NFT",   { address: "0x...", abi: erc721Abi })
+
+// Use by name anywhere — address and ABI never repeated again
+const usdc  = await awarizon.use("USDC")
+const vault = await awarizon.use("Vault")
+const nft   = await awarizon.use("NFT")
+
+await usdc.transfer(recipient, 100_000n)
+await vault.deposit(1_000n)
+
+// Inspect or clean up
+awarizon.registeredContracts() // ["USDC", "Vault", "NFT"]
+awarizon.unregister("Vault")`}
         />
 
         {/* Reads */}
@@ -250,26 +598,35 @@ console.log("estimated gas:", gas) // e.g. 21000n`}
         <h3 id="provider" className="font-display font-semibold text-white text-base mt-6 mb-1 scroll-mt-20">
           AwarizonProvider
         </h3>
-        <Sub>Wrap your app (or a subtree) once. All hooks read config from the nearest provider.</Sub>
+        <Sub>
+          Wraps your component tree and makes the SDK available to every hook inside it.
+          Accepts a single <code className="font-mono text-accent text-[13px]">awarizon</code> prop — a configured{' '}
+          <code className="font-mono text-accent text-[13px]">AwarizonWeb3</code> instance created outside the component tree.
+        </Sub>
         <CodeEditor
-          filename="app/layout.tsx"
-          code={`import { AwarizonProvider } from "@awarizon/react"
+          filename="components/Providers.tsx"
+          code={`"use client"
+import { AwarizonProvider } from "@awarizon/react"
+import { AwarizonWeb3 } from "@awarizon/web3"
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+// Create the instance OUTSIDE any component — never re-created on re-renders
+const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.NEXT_PUBLIC_AWARIZON_API_KEY!,
+})
+
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <AwarizonProvider
-          chain="base"
-          apiKey={process.env.NEXT_PUBLIC_AWARIZON_KEY}
-        >
-          {children}
-        </AwarizonProvider>
-      </body>
-    </html>
+    <AwarizonProvider awarizon={awarizon}>
+      {children}
+    </AwarizonProvider>
   )
 }`}
         />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-4">
+          <PropRow name="awarizon" type="AwarizonWeb3" req desc="A configured SDK instance. Create it once outside the component tree and pass it here." />
+          <PropRow name="children" type="ReactNode"    req desc="The component subtree that can access SDK hooks." />
+        </div>
 
         {/* useReadContract */}
         <h3 id="use-read" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
@@ -344,6 +701,108 @@ function TransferFeed() {
   }, [contract])
 
   return null
+}`}
+        />
+        {/* useToken */}
+        <h3 id="use-token" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          useToken
+        </h3>
+        <Sub>Zero-ABI hook for ERC-20 tokens. Fetches name, symbol, decimals, and total supply on mount. Exposes fully typed read and write helpers.</Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { useToken } from "@awarizon/react"
+
+function TokenCard({ address }: { address: \`0x\${string}\` }) {
+  const {
+    name, symbol, decimals, totalSupply,
+    isLoading, error,
+    balanceOf, transfer, approve,
+  } = useToken(address)
+
+  const [balance, setBalance] = useState<bigint | null>(null)
+
+  useEffect(() => {
+    balanceOf(userAddress).then(setBalance)
+  }, [balanceOf])
+
+  if (isLoading) return <span>Loading…</span>
+  if (error)     return <span>{error.message}</span>
+
+  return (
+    <div>
+      <p>{name} ({symbol}) — {decimals} decimals</p>
+      <p>Balance: {balance?.toString()}</p>
+      <button onClick={() => transfer(recipient, 1_000_000n)}>
+        Send 1 {symbol}
+      </button>
+    </div>
+  )
+}`}
+        />
+
+        {/* useNFT */}
+        <h3 id="use-nft" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          useNFT
+        </h3>
+        <Sub>Zero-ABI hook for ERC-721 collections. Loads collection name and symbol on mount. Exposes all standard ownership and transfer helpers.</Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { useNFT } from "@awarizon/react"
+
+function NFTCard({ address, tokenId }: { address: \`0x\${string}\`; tokenId: bigint }) {
+  const {
+    name, symbol, isLoading,
+    ownerOf, tokenURI, safeTransferFrom,
+  } = useNFT(address)
+
+  const [owner, setOwner] = useState<string | null>(null)
+  const [uri,   setUri]   = useState<string | null>(null)
+
+  useEffect(() => {
+    Promise.all([ownerOf(tokenId), tokenURI(tokenId)])
+      .then(([o, u]) => { setOwner(o); setUri(u) })
+  }, [tokenId, ownerOf, tokenURI])
+
+  if (isLoading) return <span>Loading collection…</span>
+
+  return (
+    <div>
+      <p>{name} #{tokenId.toString()} ({symbol})</p>
+      <p>Owner: {owner}</p>
+      <img src={uri ?? ''} alt="NFT" />
+      <button onClick={() => safeTransferFrom(owner!, recipient, tokenId)}>
+        Transfer
+      </button>
+    </div>
+  )
+}`}
+        />
+
+        {/* useNativeBalance */}
+        <h3 id="use-native" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          useNativeBalance
+        </h3>
+        <Sub>
+          Fetch the native currency balance (ETH, MATIC, BNB…) for any address.
+          Pass a <code className="font-mono text-accent text-[13px]">pollingInterval</code> in ms to keep it live.
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { useNativeBalance } from "@awarizon/react"
+
+function WalletBalance({ address }: { address: \`0x\${string}\` }) {
+  // Polls every 12 s — matches Ethereum's ~12 s block time
+  const { formatted, balance, isLoading, refetch } = useNativeBalance(address, 12_000)
+
+  if (isLoading) return <span>Loading…</span>
+
+  return (
+    <div>
+      <p>{formatted} ETH</p>           {/* "1.2345"  — human-readable */}
+      <p>{balance?.toString()} wei</p> {/* raw bigint */}
+      <button onClick={refetch}>Refresh</button>
+    </div>
+  )
 }`}
         />
       </section>
@@ -439,31 +898,39 @@ export function useWriteTransfer() {
       {/* ── Errors ──────────────────────────────────────────── */}
       <section id="errors">
         <SectionTitle id="errors">Error Handling</SectionTitle>
-        <Sub>The SDK exports typed error classes. Catch them specifically for targeted recovery.</Sub>
+        <Sub>
+          The SDK exports typed error classes for targeted recovery. Simulation errors automatically surface the
+          human-readable revert reason from the contract — no manual ABI decoding required.
+        </Sub>
         <CodeEditor
           lang="ts"
           code={`import {
-  AwarizonError, // base — catches any SDK error
-  AuthError,     // invalid or revoked API key
-  ChainError,    // transaction reverted or RPC error
-  TimeoutError,  // exceeded the configured timeout
+  SimulationError,        // contract reverted during simulation (before gas is spent)
+  ContractExecutionError, // broadcast or receipt error
+  GasEstimationError,     // gas estimation failed
+  ApiKeyRequiredError,    // missing API key
+  InvalidApiKeyError,     // revoked or malformed key
+  UnsupportedChainError,  // chain string not recognised
+  WalletNotConnectedError,// write attempted with no wallet
 } from "@awarizon/web3"
 
 try {
-  const tx = await contract.transfer(to, amount)
-  await tx.wait()
+  await usdc.transfer(to, amount)
 } catch (err) {
-  if (err instanceof AuthError) {
-    // Redirect to /dashboard/api-keys to regenerate
-    console.error("Auth failed:", err.message)
-  } else if (err instanceof ChainError) {
-    // Smart contract reverted
-    console.error("Revert reason:", err.reason) // e.g. "ERC20: insufficient balance"
-    console.error("Error code:",    err.code)
-  } else if (err instanceof TimeoutError) {
-    console.error("Timed out after", err.duration, "ms")
-  } else if (err instanceof AwarizonError) {
-    console.error("SDK error:", err.message)
+  if (err instanceof SimulationError) {
+    // Revert reason is extracted automatically — no hex decoding needed
+    console.error(err.message)
+    // → "Simulation failed: transfer: ERC20: transfer amount exceeds balance"
+    // → "Simulation failed: mint: MintLimitReached(500, 500)"  (custom errors too)
+  } else if (err instanceof WalletNotConnectedError) {
+    // Prompt user to connect a wallet
+    console.error("No wallet connected")
+  } else if (err instanceof InvalidApiKeyError) {
+    // Redirect to /dashboard/api-keys
+    console.error("API key invalid or revoked")
+  } else if (err instanceof ContractExecutionError) {
+    console.error("Execution failed:", err.message)
+    console.error("Function:", err.functionName)
   }
 }`}
         />
@@ -475,43 +942,78 @@ try {
         <Sub>All exported types from <code className="font-mono text-accent text-[13px]">@awarizon/web3</code> and <code className="font-mono text-accent text-[13px]">@awarizon/react</code>.</Sub>
         <CodeEditor
           lang="ts"
-          code={`import type {
+          code={`// ── @awarizon/web3 ───────────────────────────────────────────────────────────
+import type {
   AwarizonConfig,
-  SupportedChain,
   ContractInstance,
+  ContractRegistryEntry,
   TransactionResult,
   TransactionReceipt,
-  EventLog,
+  // ERC standard contract interfaces
+  Erc20Contract,
+  Erc721Contract,
+  Erc1155Contract,
+  // ERC ABIs (use in your own contract() calls or register())
+  ERC20_ABI,
+  ERC721_ABI,
+  ERC1155_ABI,
 } from "@awarizon/web3"
 
-type SupportedChain =
-  | "base" | "ethereum" | "polygon" | "arbitrum"
-  | "optimism" | "bnb" | "avalanche" | "zksync" | "linea"
-
 interface AwarizonConfig {
-  chain:    SupportedChain
-  apiKey:   string
-  timeout?: number   // ms, default 30 000
-  retries?: number   // default 3
+  chain:    string        // chain alias or viem Chain object
+  apiKey:   string        // "awz_live_..."
+  rpcUrl?:  string        // custom RPC endpoint override
+  signer?:  WalletClient  // pre-connected external signer
+}
+
+interface ContractRegistryEntry {
+  address: \`0x\${string}\`
+  abi:     Abi
 }
 
 interface TransactionResult {
-  hash: \`0x\${string}\`
-  wait(confirmations?: number): Promise<TransactionReceipt>
+  hash:    \`0x\${string}\`
+  receipt: TransactionReceipt
 }
 
 interface TransactionReceipt {
-  blockNumber: number
+  blockNumber: bigint
   blockHash:   \`0x\${string}\`
   gasUsed:     bigint
   status:      "success" | "reverted"
-  logs:        EventLog[]
 }
 
-interface EventLog {
-  name:    string
-  address: \`0x\${string}\`
-  args:    Record<string, unknown>
+// ── @awarizon/react ───────────────────────────────────────────────────────────
+import type {
+  UseTokenReturn,
+  UseNFTReturn,
+  UseNativeBalanceReturn,
+  UseReadContractReturn,
+  UseWriteContractReturn,
+} from "@awarizon/react"
+
+interface UseTokenReturn {
+  name: string | null;  symbol: string | null
+  decimals: number | null;  totalSupply: bigint | null
+  isLoading: boolean;  error: Error | null
+  balanceOf(owner: Address): Promise<bigint>
+  allowance(owner: Address, spender: Address): Promise<bigint>
+  transfer(to: Address, amount: bigint): Promise<TransactionResult>
+  approve(spender: Address, amount: bigint): Promise<TransactionResult>
+}
+
+interface UseNFTReturn {
+  name: string | null;  symbol: string | null
+  isLoading: boolean;  error: Error | null
+  ownerOf(tokenId: bigint): Promise<Address>
+  tokenURI(tokenId: bigint): Promise<string>
+  safeTransferFrom(from: Address, to: Address, tokenId: bigint): Promise<TransactionResult>
+}
+
+interface UseNativeBalanceReturn {
+  balance: bigint | null;  formatted: string | null
+  isLoading: boolean;  error: Error | null
+  refetch(): Promise<void>
 }`}
         />
       </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import PageTransition from "@/components/motion/PageTransition";
 import ScrollProvider from "@/components/motion/ScrollProvider";
 import Button from "@/components/ui/Button";
@@ -295,6 +296,188 @@ export default function ShiftPage() {
           </div>
         </section>
 
+        {/* ── SDK SHOWCASE ──────────────────────────────────── */}
+        <section className="relative py-28 px-6 md:px-12 lg:px-20 bg-[#020202] border-t border-[#0E0E0E] overflow-hidden">
+          <div className="absolute inset-0 grid-bg-static opacity-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 w-[40vw] h-[40vw] bg-accent/[0.03] blur-3xl pointer-events-none" />
+
+          <div className="relative max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+              {/* Left — copy */}
+              <div className="reveal">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-accent/70 block mb-5">
+                  THE PRODUCT // AWARIZON SDK
+                </span>
+                <h2
+                  className="font-display font-extrabold text-white leading-[0.92] mb-6"
+                  style={{ fontSize: "clamp(2.4rem, 5vw, 4.5rem)" }}
+                >
+                  One SDK.<br />
+                  Any chain.<br />
+                  <span className="gradient-text">Ship faster.</span>
+                </h2>
+                <p className="font-body text-lg text-muted leading-relaxed mb-8 max-w-md">
+                  <code className="font-mono text-accent text-sm">@awarizon/web3</code> gives
+                  developers typed reads, writes, events, and codegen across 15+ EVM chains —
+                  without configuring RPC providers, managing ABIs by hand, or writing boilerplate.
+                </p>
+
+                <div className="grid grid-cols-2 gap-y-3 gap-x-6 mb-8">
+                  {[
+                    "15+ EVM chains",
+                    "Full TypeScript",
+                    "React hooks built-in",
+                    "CLI code generation",
+                    "Zero config reads",
+                    "Event subscriptions",
+                  ].map((f) => (
+                    <div key={f} className="flex items-center gap-2">
+                      <span className="w-1 h-1 bg-accent flex-shrink-0" />
+                      <span className="font-mono text-[11px] text-muted tracking-wide">{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/sdk"
+                    className="font-mono text-[10px] tracking-widest px-5 py-3 bg-accent text-black font-semibold hover:bg-white transition-colors"
+                  >
+                    EXPLORE THE SDK →
+                  </Link>
+                  <Link
+                    href="/docs"
+                    className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors"
+                  >
+                    DOCUMENTATION
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right — styled code preview */}
+              <div className="reveal" style={{ transitionDelay: "150ms" }}>
+                {/* Install bar */}
+                <div className="border border-[#2D2D2D] mb-3">
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b border-[#2D2D2D]">
+                    <span className="font-mono text-[9px] tracking-widest text-[#9D9D9D]">INSTALL</span>
+                    <div className="flex gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 px-5 py-4 bg-[#1E1E1E]">
+                    <span className="font-mono text-sm text-[#28CA41] select-none">$</span>
+                    <span className="font-mono text-sm text-[#D4D4D4]">
+                      npm install{" "}
+                      <span style={{ color: "#CE9178" }}>@awarizon/web3</span>{" "}
+                      <span style={{ color: "#CE9178" }}>@awarizon/react</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Code block */}
+                <div className="border border-[#2D2D2D]">
+                  <div className="flex items-center gap-3 px-4 py-2.5 bg-[#252526] border-b border-[#2D2D2D]">
+                    <div className="flex gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+                    </div>
+                    <span className="font-mono text-[11px] text-[#9D9D9D]">quickstart.ts</span>
+                  </div>
+                  <pre className="font-mono text-[13px] leading-[1.75] p-5 bg-[#1E1E1E] overflow-x-auto whitespace-pre">
+                    <span style={{ color: "#C586C0" }}>import</span>
+                    <span style={{ color: "#D4D4D4" }}>{" { "}</span>
+                    <span style={{ color: "#4EC9B0" }}>AwarizonWeb3</span>
+                    <span style={{ color: "#D4D4D4" }}>{" } "}</span>
+                    <span style={{ color: "#C586C0" }}>from</span>
+                    <span style={{ color: "#CE9178" }}>{' "@awarizon/web3"'}</span>
+                    {"\n\n"}
+                    <span style={{ color: "#C586C0" }}>const</span>
+                    <span style={{ color: "#D4D4D4" }}> awz </span>
+                    <span style={{ color: "#D4D4D4" }}>=</span>
+                    <span style={{ color: "#C586C0" }}> new </span>
+                    <span style={{ color: "#DCDCAA" }}>AwarizonWeb3</span>
+                    <span style={{ color: "#D4D4D4" }}>{"({"}</span>
+                    {"\n"}
+                    <span style={{ color: "#D4D4D4" }}>{"  "}</span>
+                    <span style={{ color: "#9CDCFE" }}>chain</span>
+                    <span style={{ color: "#D4D4D4" }}>{"  : "}</span>
+                    <span style={{ color: "#CE9178" }}>"base"</span>
+                    <span style={{ color: "#D4D4D4" }}>,</span>
+                    {"\n"}
+                    <span style={{ color: "#D4D4D4" }}>{"  "}</span>
+                    <span style={{ color: "#9CDCFE" }}>apiKey</span>
+                    <span style={{ color: "#D4D4D4" }}>{": "}</span>
+                    <span style={{ color: "#9CDCFE" }}>process</span>
+                    <span style={{ color: "#D4D4D4" }}>.</span>
+                    <span style={{ color: "#9CDCFE" }}>env</span>
+                    <span style={{ color: "#D4D4D4" }}>.</span>
+                    <span style={{ color: "#9CDCFE" }}>AWARIZON_API_KEY</span>
+                    {"\n"}
+                    <span style={{ color: "#D4D4D4" }}>{"})"})</span>
+                    {"\n\n"}
+                    <span style={{ color: "#6A9955" }}>{"// ERC-20 in one line — no ABI import"}</span>
+                    {"\n"}
+                    <span style={{ color: "#C586C0" }}>const</span>
+                    <span style={{ color: "#D4D4D4" }}> token </span>
+                    <span style={{ color: "#D4D4D4" }}>=</span>
+                    <span style={{ color: "#C586C0" }}> await </span>
+                    <span style={{ color: "#9CDCFE" }}>awz</span>
+                    <span style={{ color: "#D4D4D4" }}>.</span>
+                    <span style={{ color: "#DCDCAA" }}>erc20</span>
+                    <span style={{ color: "#CE9178" }}>("0x8335..."</span>
+                    <span style={{ color: "#D4D4D4" }}>)</span>
+                    {"\n"}
+                    <span style={{ color: "#C586C0" }}>const</span>
+                    <span style={{ color: "#D4D4D4" }}> bal </span>
+                    <span style={{ color: "#D4D4D4" }}>=</span>
+                    <span style={{ color: "#C586C0" }}> await </span>
+                    <span style={{ color: "#9CDCFE" }}>token</span>
+                    <span style={{ color: "#D4D4D4" }}>.</span>
+                    <span style={{ color: "#DCDCAA" }}>balanceOf</span>
+                    <span style={{ color: "#D4D4D4" }}>(</span>
+                    <span style={{ color: "#CE9178" }}>"0xYourAddress"</span>
+                    <span style={{ color: "#D4D4D4" }}>)</span>
+                    {"\n"}
+                    <span style={{ color: "#6A9955" }}>{"// → 1000000n"}</span>
+                    {"\n\n"}
+                    <span style={{ color: "#C586C0" }}>const</span>
+                    <span style={{ color: "#D4D4D4" }}> tx </span>
+                    <span style={{ color: "#D4D4D4" }}>=</span>
+                    <span style={{ color: "#C586C0" }}> await </span>
+                    <span style={{ color: "#9CDCFE" }}>token</span>
+                    <span style={{ color: "#D4D4D4" }}>.</span>
+                    <span style={{ color: "#DCDCAA" }}>transfer</span>
+                    <span style={{ color: "#D4D4D4" }}>(</span>
+                    <span style={{ color: "#CE9178" }}>"0xRecipient"</span>
+                    <span style={{ color: "#D4D4D4" }}>, </span>
+                    <span style={{ color: "#B5CEA8" }}>500_000n</span>
+                    <span style={{ color: "#D4D4D4" }}>)</span>
+                    {"\n"}
+                    <span style={{ color: "#C586C0" }}>await </span>
+                    <span style={{ color: "#9CDCFE" }}>tx</span>
+                    <span style={{ color: "#D4D4D4" }}>.</span>
+                    <span style={{ color: "#DCDCAA" }}>wait</span>
+                    <span style={{ color: "#D4D4D4" }}>()</span>
+                  </pre>
+                </div>
+
+                {/* Package chips */}
+                <div className="grid grid-cols-3 gap-px bg-[#111] mt-3">
+                  {["@awarizon/web3", "@awarizon/react", "@awarizon/cli"].map((p) => (
+                    <div key={p} className="bg-[#020202] px-3 py-2.5 text-center">
+                      <code className="font-mono text-[10px] text-dim">{p}</code>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── CHAINS MARQUEE ────────────────────────────────── */}
         <ChainsMarquee />
 
@@ -302,17 +485,14 @@ export default function ShiftPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-[#111]">
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-8">
             <div className="reveal">
-              <span className="sys-label opacity-40 block mb-2">
-                NEXT_LAYER
-              </span>
+              <span className="sys-label opacity-40 block mb-2">NEXT_LAYER</span>
               <p className="font-display font-semibold text-3xl text-white">
-                Enter the Infrastructure.
+                Build on the infrastructure.
               </p>
             </div>
-            <div className="reveal reveal-delay-2">
-              <Button href="/infrastructure" variant="primary" size="lg">
-                Infrastructure Layer →
-              </Button>
+            <div className="reveal reveal-delay-2 flex flex-wrap gap-3">
+              <Button href="/sdk" variant="primary" size="lg">SDK →</Button>
+              <Button href="/infrastructure" variant="ghost" size="lg">Infrastructure Layer</Button>
             </div>
           </div>
         </section>
