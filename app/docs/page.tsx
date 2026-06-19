@@ -1415,16 +1415,17 @@ const session = await auth.verify({
           <PropRow name="uri"        type="string"             req desc="Full URI of the resource, e.g. &quot;https://myapp.com&quot;." />
           <PropRow name="statement"  type="string"                 desc="Human-readable prompt shown to the user inside their wallet." />
           <PropRow name="expiresIn"  type="number"                 desc="Session validity in seconds. Default: 3600 (1 hour). Pass 0 to omit expiry." />
-          <PropRow name="getNonce"   type="() => Promise<string>"  desc="Fetch a server-generated nonce before signing. Required in production — client nonces cannot be invalidated after use." />
-          <PropRow name="onVerify"   type="({ message, signature }) => Promise<unknown>" desc="POST to your server here. Your server verifies the signature, invalidates the nonce, and returns session data. Whatever you return is stored in session.serverData." />
+          <PropRow name="getNonce"   type="() => Promise<string>"  desc="Return a nonce before signing. Omit to generate one locally. Fetch server-side when you need replay protection or persistent sessions." />
+          <PropRow name="onVerify"   type="({ message, signature }) => Promise<unknown>" desc="Optional. POST to your backend for server-side verification and session creation. Whatever you return is stored in session.serverData. Omit for client-only dApps." />
           <PropRow name="onSignOut"  type="() => Promise<void>"    desc="Called when signOut() is invoked. Use to clear the server-side session or cookie." />
         </div>
 
-        <Callout icon="⚠️" variant="warn">
-          <strong>Always provide both <code className="font-mono text-[12px]">getNonce</code> and <code className="font-mono text-[12px]">onVerify</code> in production.</strong>{' '}
-          Without a server-generated nonce the same signed message can be replayed multiple times.
-          Without <code className="font-mono text-[12px]">onVerify</code>, no backend session is created and
-          authentication resets on every page refresh.
+        <Callout icon="ℹ️" variant="info">
+          A backend is optional. <code className="font-mono text-[12px]">verifySiweSignature()</code> uses elliptic
+          curve math to prove wallet ownership — the same cryptographic guarantee whether run in the browser or on a
+          server. Add <code className="font-mono text-[12px]">getNonce</code> +{' '}
+          <code className="font-mono text-[12px]">onVerify</code> when you need persistent sessions (survive page
+          refresh), replay protection, or server-issued tokens like JWTs.
         </Callout>
 
         <div className="border border-[#1A1A1A] my-4">
@@ -1488,9 +1489,10 @@ function AuthButton() {
   )
 }
 
-// ── Client-only (demos / prototypes only) ────────────────────────────────────
-// WARNING: without getNonce + onVerify, nonces cannot be invalidated.
-// Replay attacks are possible. Do NOT use in production.
+// ── Client-only (pure dApps with no backend) ─────────────────────────────────
+// verifySiweSignature uses elliptic curve math — equally valid in the browser.
+// The session lives in React state (lost on refresh). Add onVerify if you need
+// a persistent server session or want to issue JWTs.
 const { signIn } = useSiwe({ domain: "myapp.com", uri: "https://myapp.com" })`} />
 
         {/* Server Verification */}
