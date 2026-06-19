@@ -153,10 +153,137 @@ const balance = await usdc.balanceOf("0xOwner") // fully typed, bigint`,
   },
 ]
 
+// ─── Framework scaffold data ──────────────────────────────────────────────────
+
+const FRAMEWORKS = [
+  {
+    tab:     'Next.js',
+    filename: 'app/layout.tsx',
+    install:  'npx create-awarizon-app my-app --template nextjs',
+    tags:    ['App Router', 'Server + Client', 'NEXT_PUBLIC_ env'],
+    tree: `my-app/
+├── app/
+│   ├── layout.tsx       ← AwarizonProvider wired here
+│   ├── page.tsx         ← live USDC read demo
+│   └── globals.css
+├── lib/
+│   └── awarizon.ts      ← server-side SDK singleton
+├── .env.local
+└── package.json`,
+    code: `// app/layout.tsx
+import { AwarizonProvider } from '@awarizon/react'
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <AwarizonProvider
+          chain="base"
+          apiKey={process.env.NEXT_PUBLIC_AWARIZON_API_KEY!}
+        >
+          {children}
+        </AwarizonProvider>
+      </body>
+    </html>
+  )
+}
+
+// lib/awarizon.ts — for Server Actions & API routes
+import { AwarizonWeb3 } from '@awarizon/web3'
+export const awz = new AwarizonWeb3({
+  chain:  'base',
+  apiKey: process.env.AWARIZON_API_KEY!,
+})`,
+  },
+  {
+    tab:     'React + Vite',
+    filename: 'src/main.tsx',
+    install:  'npx create-awarizon-app my-app --template react',
+    tags:    ['Vite 5', 'React 18+', 'VITE_ env'],
+    tree: `my-app/
+├── src/
+│   ├── main.tsx         ← AwarizonProvider wired here
+│   ├── App.tsx          ← live USDC read demo
+│   └── index.css
+├── .env
+├── vite.config.ts
+└── package.json`,
+    code: `// src/main.tsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { AwarizonProvider } from '@awarizon/react'
+import App from './App'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AwarizonProvider
+      chain="base"
+      apiKey={import.meta.env.VITE_AWARIZON_API_KEY}
+    >
+      <App />
+    </AwarizonProvider>
+  </StrictMode>,
+)
+
+// src/App.tsx — read any contract, live
+import { useReadContract } from '@awarizon/react'
+
+const { data: symbol } = useReadContract({
+  address:      '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  abi:          ERC20_ABI,
+  functionName: 'symbol',
+})`,
+  },
+  {
+    tab:     'Expo',
+    filename: 'app/_layout.tsx',
+    install:  'npx create-awarizon-app my-app --template expo',
+    tags:    ['Expo SDK 51', 'Expo Router', 'React Native', 'EXPO_PUBLIC_ env'],
+    tree: `my-app/
+├── app/
+│   ├── _layout.tsx      ← AwarizonProvider + Stack nav
+│   └── (tabs)/
+│       ├── _layout.tsx  ← Tab bar
+│       └── index.tsx    ← live USDC read demo
+├── .env
+├── app.json
+└── package.json`,
+    code: `// app/_layout.tsx
+import { Stack } from 'expo-router'
+import { AwarizonProvider } from '@awarizon/react-native'
+
+export default function RootLayout() {
+  return (
+    <AwarizonProvider
+      chain="base"
+      apiKey={process.env.EXPO_PUBLIC_AWARIZON_API_KEY!}
+    >
+      <Stack
+        screenOptions={{
+          headerStyle:     { backgroundColor: '#000' },
+          headerTintColor: '#fff',
+        }}
+      />
+    </AwarizonProvider>
+  )
+}
+
+// app/(tabs)/index.tsx — on-chain data in React Native
+import { useReadContract } from '@awarizon/react-native'
+
+const { data: symbol } = useReadContract({
+  address:      '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  abi:          ERC20_ABI,
+  functionName: 'symbol',
+})`,
+  },
+]
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function SDKPage() {
   const [activeTab, setActiveTab] = useState(0)
+  const [activeFramework, setActiveFramework] = useState(0)
 
   return (
     <ScrollProvider>
@@ -338,6 +465,76 @@ console.log("confirmed:", receipt.blockNumber)`}
               filename={`${EXAMPLES[activeTab].tab.toLowerCase()}.ts`}
               code={EXAMPLES[activeTab].code}
             />
+          </div>
+        </section>
+
+        {/* ── SCAFFOLD ─────────────────────────────────────── */}
+        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-[#030303]">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-10 reveal">
+              <span className="sys-label opacity-40 block mb-3">CREATE_APP // SCAFFOLD A PROJECT</span>
+              <div className="h-px bg-gradient-to-r from-accent/30 to-transparent mb-6" />
+              <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
+                Scaffold a full project<br className="hidden sm:block" /> in one command.
+              </h2>
+              <p className="font-body text-lg text-muted max-w-xl">
+                One command gives you a complete starter wired with <code className="font-mono text-accent/80">AwarizonProvider</code>, env vars, and a live on-chain read demo — for Next.js, React + Vite, or Expo.
+              </p>
+            </div>
+
+            <div className="mb-8 reveal">
+              <ShellBlock command="npx create-awarizon-app my-app" label="SCAFFOLD" />
+            </div>
+
+            {/* Framework tabs */}
+            <div className="flex gap-0 border border-[#1A1A1A] w-fit mb-0">
+              {FRAMEWORKS.map((fw, i) => (
+                <button
+                  key={fw.tab}
+                  onClick={() => setActiveFramework(i)}
+                  className={`font-mono text-[10px] tracking-widest px-5 py-3 transition-colors border-r border-[#1A1A1A] last:border-0 ${
+                    activeFramework === i
+                      ? 'bg-accent text-black'
+                      : 'bg-[#080808] text-dim hover:text-white'
+                  }`}
+                >
+                  {fw.tab.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {/* Framework panel */}
+            <div className="border border-t-0 border-[#1A1A1A]">
+              <div className="grid lg:grid-cols-2">
+                {/* File tree */}
+                <div className="border-b lg:border-b-0 lg:border-r border-[#1A1A1A] p-6 bg-[#060606]">
+                  <p className="font-mono text-[10px] text-dim tracking-widest mb-4">FILE STRUCTURE</p>
+                  <pre className="font-mono text-[12px] text-muted leading-[1.7] whitespace-pre">
+                    {FRAMEWORKS[activeFramework].tree}
+                  </pre>
+                </div>
+
+                {/* Setup code */}
+                <div>
+                  <CodeEditor
+                    filename={FRAMEWORKS[activeFramework].filename}
+                    code={FRAMEWORKS[activeFramework].code}
+                  />
+                  <div className="px-6 pb-5 flex flex-wrap gap-2">
+                    {FRAMEWORKS[activeFramework].tags.map(t => (
+                      <span key={t} className="font-mono text-[9px] px-2 py-1 bg-[#0A0A0A] text-dim border border-[#1A1A1A]">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Create command */}
+              <div className="border-t border-[#1A1A1A] px-4 py-4">
+                <ShellBlock command={FRAMEWORKS[activeFramework].install} label="RUN" />
+              </div>
+            </div>
           </div>
         </section>
 
