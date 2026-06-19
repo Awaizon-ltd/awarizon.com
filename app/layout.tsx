@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import ClientShell from "@/components/ClientShell";
 
 const siteName = "Awarizon";
 const siteUrl = "https://awarizon.com";
@@ -144,14 +143,7 @@ export default function RootLayout({
         <div className="scan-overlay" />
         <div className="noise-overlay" />
 
-        {/* Navigation */}
-        <Navigation />
-
-        {/* Main content */}
-        <main className="relative">{children}</main>
-
-        {/* Global footer */}
-        <Footer />
+        <ClientShell>{children}</ClientShell>
 
         {/* Global progress bar */}
         <div
