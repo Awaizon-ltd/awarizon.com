@@ -22,14 +22,6 @@ const CITIES = [
     country: "Nigeria",
     lat: 6.5,
     lng: 3.4,
-    primary: true,
-  },
-  {
-    id: "abuja",
-    name: "Abuja",
-    country: "Nigeria",
-    lat: 9.1,
-    lng: 7.5,
     primary: false,
   },
   {
@@ -140,14 +132,14 @@ const CITIES = [
 
 /* ── Connection routes ──────────────────────────────────────────────── */
 const ROUTES = [
-  { from: "lagos", to: "nyc" },
-  { from: "lagos", to: "london" },
-  { from: "lagos", to: "dubai" },
-  { from: "accra", to: "paris" },
-  { from: "lagos", to: "sydney" },
   { from: "nyc", to: "london" },
-  { from: "lagos", to: "singapore" },
-  { from: "lagos", to: "joburg" },
+  { from: "nyc", to: "saopaulo" },
+  { from: "london", to: "dubai" },
+  { from: "london", to: "accra" },
+  { from: "dubai", to: "singapore" },
+  { from: "singapore", to: "sydney" },
+  { from: "lagos", to: "london" },
+  { from: "nairobi", to: "dubai" },
 ];
 
 /* ── Continent outlines (simplified equirectangular 1000×500) ───────── */

@@ -11,31 +11,31 @@ const THESIS_SECTIONS = [
   {
     phase: "PROBLEM",
     code: "PHASE_01",
-    headline: "The next major technology opportunity is not invention.",
-    sub: "It is adoption.",
-    body: "In markets like Nigeria, many businesses do not need abstract innovation. They have seen it. The problem is execution — not awareness.",
+    headline: "The next major blockchain opportunity is not a new chain.",
+    sub: "It is global adoption.",
+    body: "Across global markets — especially emerging ones — developers and businesses know they need Web3 infrastructure. The protocols exist. Getting them deployed into real operations, at real scale, for real users, is where the industry stalls.",
   },
   {
     phase: "INSIGHT",
     code: "PHASE_02",
-    headline: "Technology without execution remains theoretical.",
-    sub: "Reality requires implementation.",
-    body: "Businesses need systems that fit operational realities. Technology that respects infrastructure constraints. Tools that can be deployed, not just demonstrated.",
+    headline: "Web3 without distribution remains a whitepaper.",
+    sub: "Reality requires on-chain deployment.",
+    body: "Builders need blockchain infrastructure that integrates with real systems. Developers need APIs that work in production. Businesses need tooling that doesn't require a PhD in cryptography to operate at scale.",
   },
   {
     phase: "OPPORTUNITY",
     code: "PHASE_03",
     headline:
-      "Emerging markets won't be transformed by copying foreign patterns.",
-    sub: "They will be transformed by local intelligence.",
-    body: "The companies that win here understand how to make technology usable, practical, and scalable within local conditions — contextual by design.",
+      "Global markets won't be transformed by copying existing DeFi patterns.",
+    sub: "They will be transformed by locally-intelligent blockchain distribution.",
+    body: "The infrastructure companies that win globally will be those that understand how to make Web3 usable, practical, and scalable within the real constraints of each market — contextual by design.",
   },
   {
     phase: "STRATEGY",
     code: "PHASE_04",
     headline: "That is where Awarizon operates.",
-    sub: "Inside the gap. Solving the real problem.",
-    body: "We build the infrastructure, distribution systems, and consumer interfaces that move technology from possibility to adoption. Thesis made operational.",
+    sub: "Inside the adoption gap. Solving the real problem.",
+    body: "We build the blockchain infrastructure, global distribution systems, and consumer interfaces that move Web3 from possibility to adoption. Thesis made operational.",
   },
 ];
 
@@ -72,19 +72,19 @@ export default function ThesisPage() {
               {/* Left: thesis */}
               <div>
                 <span className="sys-label opacity-40 block mb-5 reveal">
-                  EMERGING MARKETS THESIS
+                  GLOBAL ADOPTION THESIS
                 </span>
                 <h1
                   className="font-display font-extrabold leading-[0.92] reveal"
                   style={{ fontSize: "clamp(2.2rem, 5.5vw, 6rem)" }}
                 >
                   <span className="block text-white">The next major</span>
-                  <span className="block text-white">technology</span>
+                  <span className="block text-white">blockchain</span>
                   <span className="block text-white">opportunity</span>
-                  <span className="block text-white">is not invention.</span>
+                  <span className="block text-white">is not a new chain.</span>
                 </h1>
                 <p className="font-display font-bold text-2xl md:text-3xl text-accent mt-4 mb-10 reveal reveal-delay-1">
-                  It is adoption.
+                  It is global adoption.
                 </p>
 
                 {/* Phase tabs */}
@@ -167,14 +167,13 @@ export default function ThesisPage() {
               </span>
               <div className="h-rule mb-8" />
               <p className="font-display font-bold text-2xl md:text-4xl text-white leading-snug">
-                Emerging markets will not be transformed by copying foreign
-                software patterns.
+                Global markets will not be transformed by repackaging existing
+                DeFi protocols.
               </p>
             </div>
             <div className="reveal reveal-delay-1">
               <p className="font-body text-xl md:text-2xl text-muted leading-relaxed">
-                They will be transformed by companies that understand how to
-                make technology{" "}
+                They will be transformed by companies that build blockchain infrastructure that is{" "}
                 <em className="not-italic text-white font-semibold">usable</em>,{" "}
                 <em className="not-italic text-white font-semibold">
                   practical
@@ -183,7 +182,7 @@ export default function ThesisPage() {
                 <em className="not-italic text-white font-semibold">
                   scalable
                 </em>{" "}
-                within local conditions.
+                within the real conditions of each market.
               </p>
             </div>
             <div className="reveal reveal-delay-2 border-l-2 border-accent pl-8">
@@ -211,18 +210,18 @@ export default function ThesisPage() {
               {[
                 {
                   code: "GEO_01",
-                  title: "Nigeria",
-                  desc: "Africa's largest economy. 200M+ people. The continent's most significant digital opportunity.",
+                  title: "Emerging Economies",
+                  desc: "High mobile penetration, growing developer communities, and urgent demand for financial infrastructure make emerging economies the fastest-growing blockchain markets.",
                 },
                 {
                   code: "GEO_02",
-                  title: "West Africa",
-                  desc: "A $700B+ combined GDP region with rapidly expanding digital infrastructure and growing middle class.",
+                  title: "Enterprise & B2B",
+                  desc: "Businesses globally are seeking blockchain rails for payments, identity, and supply chain. The infrastructure layer they need doesn't yet exist at scale.",
                 },
                 {
                   code: "GEO_03",
-                  title: "Emerging Markets",
-                  desc: "Where technology adoption gaps are largest — and where the infrastructure we build matters most.",
+                  title: "Global Markets",
+                  desc: "Where blockchain adoption gaps are largest — and where the infrastructure we build creates the most durable, compounding value across every continent.",
                 },
               ].map((geo, i) => (
                 <div

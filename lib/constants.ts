@@ -36,7 +36,7 @@ export const NAV_LAYERS = [
   },
   {
     href: '/thesis',
-    label: 'Emerging Markets Thesis',
+    label: 'Global Adoption Thesis',
     code: 'MARKET_THESIS',
     sublabel: 'Why We Exist Here',
     num: '06',
@@ -48,79 +48,86 @@ export const NAV_LAYERS = [
     sublabel: 'Entry into the System',
     num: '07',
   },
+  {
+    href: '/learn',
+    label: 'Web3 Academy',
+    code: 'LEARN_LAYER',
+    sublabel: 'Blockchain Education Hub',
+    num: '08',
+  },
 ]
 
 export const INFRASTRUCTURE_NODES = [
   {
     id: 'wallet',
-    label: 'Wallet Systems',
+    label: 'Crypto Wallets',
     code: 'WALLET_INFRA',
-    description: 'Digital wallet infrastructure enabling secure value storage, transfer, and programmable money logic for businesses and consumers.',
+    description: 'Non-custodial wallet infrastructure enabling businesses and developers to build secure digital asset management — custody, multi-sig, and programmable spending logic at protocol level.',
     x: 50,
     y: 20,
     color: '#FFE500',
-    tags: ['Custody', 'Multi-sig', 'Programmable'],
+    tags: ['Non-custodial', 'Multi-sig', 'Self-custody'],
   },
   {
     id: 'payments',
-    label: 'Payments Engine',
+    label: 'On-chain Payments',
     code: 'PAY_ENGINE',
-    description: 'High-throughput transaction processing with support for multiple payment rails, real-time settlement, and merchant integrations.',
+    description: 'Blockchain-native payment processing with stablecoin support, cross-border settlement, and developer APIs for integrating crypto payments into any product or business operation.',
     x: 80,
     y: 45,
     color: '#FFE500',
-    tags: ['Real-time', 'Multi-rail', 'Settlement'],
+    tags: ['Stablecoins', 'Cross-chain', 'Settlement'],
   },
   {
     id: 'identity',
-    label: 'Identity Layer',
+    label: 'Decentralized Identity',
     code: 'ID_LAYER',
-    description: 'Authentication and identity verification infrastructure for digital onboarding, KYC/AML compliance, and access control.',
+    description: 'Web3-native identity and verification infrastructure — wallet-based onboarding, on-chain KYC/AML compliance, and self-sovereign identity for any application or protocol.',
     x: 65,
     y: 75,
     color: '#FFE500',
-    tags: ['KYC/AML', 'Auth', 'Verification'],
+    tags: ['DID', 'On-chain KYC', 'Self-sovereign'],
   },
   {
     id: 'apis',
-    label: 'APIs / SDKs',
+    label: 'Web3 APIs / SDKs',
     code: 'API_LAYER',
-    description: 'Developer-first interface layer exposing Awarizon infrastructure through clean, documented APIs and language-native SDKs.',
+    description: 'Developer-first blockchain interface layer — EVM-compatible SDKs, REST APIs, and protocol connectors built for developers who need to ship Web3 products fast.',
     x: 20,
     y: 65,
     color: '#FFE500',
-    tags: ['REST', 'WebSocket', 'SDKs'],
+    tags: ['EVM', 'REST', 'SDKs'],
   },
   {
     id: 'automation',
-    label: 'Business Automation',
+    label: 'Smart Contract Systems',
     code: 'AUTO_SYS',
-    description: 'Operational tooling and workflow automation systems that replace manual processes with programmable, auditable pipelines.',
+    description: 'Programmable on-chain workflows and smart contract infrastructure that replace manual processes with auditable, trust-minimized automation at scale.',
     x: 15,
     y: 35,
     color: '#FFE500',
-    tags: ['Workflows', 'Pipelines', 'Auditable'],
+    tags: ['Smart Contracts', 'On-chain', 'Auditable'],
   },
 ]
 
 export const ADOPTION_FLOW = [
-  { id: 'business', label: 'Business', icon: '◈', desc: 'Organization identifies need for modern digital infrastructure' },
-  { id: 'integration', label: 'Integration', icon: '⬡', desc: 'Awarizon systems connect with existing operational environment' },
-  { id: 'activation', label: 'Activation', icon: '◉', desc: 'Systems go live, staff trained, processes modernized' },
-  { id: 'usage', label: 'Usage', icon: '◆', desc: 'Real-world operation generates data and behavioral signals' },
-  { id: 'feedback', label: 'Feedback Loop', icon: '↺', desc: 'Intelligence feeds back into system refinement and improvement' },
+  { id: 'business', label: 'Business', icon: '◈', desc: 'Developer or business identifies need for blockchain rails and on-chain infrastructure' },
+  { id: 'integration', label: 'Integration', icon: '⬡', desc: 'Awarizon Web3 APIs and SDKs connect with existing systems and operational environments' },
+  { id: 'activation', label: 'Activation', icon: '◉', desc: 'Protocols go live, teams onboarded, operations move on-chain' },
+  { id: 'usage', label: 'Usage', icon: '◆', desc: 'Real on-chain activity generates transaction data and behavioral intelligence' },
+  { id: 'feedback', label: 'Feedback Loop', icon: '↺', desc: 'On-chain data loops back into protocol refinement and ecosystem growth' },
 ]
 
 export const CONSUMER_PRODUCTS = [
   {
     id: 'zela',
     name: 'Zela',
-    tagline: 'Consumer Application Layer',
-    description: 'A consumer-facing product that transforms digital infrastructure into practical daily financial experiences.',
+    tagline: 'Crypto Consumer Layer',
+    description: 'A consumer-facing app that transforms blockchain infrastructure into practical daily crypto experiences — stablecoins, on-chain payments, and self-custody made simple.',
     status: 'ACTIVE',
     version: 'v2.1.0',
-    category: 'Fintech Consumer',
-    metrics: ['50K+ Users', 'Real-time Payments', 'Mobile-first'],
+    category: 'Crypto Consumer',
+    metrics: ['50K+ Users', 'On-chain Payments', 'Mobile-first'],
   },
 ]
 
@@ -133,10 +140,10 @@ export const ECOSYSTEM_NODES = [
 ]
 
 export const MARKET_STATS = [
-  { label: 'Internet Users in Nigeria', value: '103M+', change: '+12%' },
-  { label: 'Unbanked Adults (West Africa)', value: '350M+', change: 'Opportunity' },
-  { label: 'Mobile Money Transactions (2023)', value: '$1.4T', change: '+25% YoY' },
-  { label: 'Digital Business Adoption Gap', value: '68%', change: 'Addressable' },
+  { label: 'Global Crypto Users', value: '560M+', change: '+32% YoY' },
+  { label: 'Global DeFi TVL', value: '$100B+', change: 'On-Chain Value' },
+  { label: 'Blockchain Transactions (2024)', value: '$20T+', change: '+45% YoY' },
+  { label: 'Global Adoption Gap', value: '72%', change: 'Addressable' },
 ]
 
 export const SYSTEM_VERSION = 'v3.2.1-PROD'

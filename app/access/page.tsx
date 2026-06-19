@@ -56,7 +56,7 @@ const INTENT_FIELDS: Record<string, { label: string; type: string; placeholder: 
     { label: 'Organization', type: 'text', placeholder: 'Company or project name', required: true },
     { label: 'Email Address', type: 'email', placeholder: 'hello@yourcompany.com', required: true },
     { label: 'Target Market Size', type: 'text', placeholder: 'Estimated users / organisation size' },
-    { label: 'Geography', type: 'text', placeholder: 'e.g. Lagos, Nigeria, West Africa' },
+    { label: 'Geography', type: 'text', placeholder: 'e.g. United States, Europe, Southeast Asia' },
     { label: 'Message', type: 'textarea', placeholder: 'Tell us about your deployment goals…', required: true },
   ],
 }
@@ -369,7 +369,7 @@ export default function AccessPage() {
                 { code: 'CH_01', icon: '◈', label: 'General', sub: 'Inquiries & questions', value: 'hello@awarizon.com', href: 'mailto:hello@awarizon.com', img: null },
                 { code: 'CH_02', icon: '⬡', label: 'Partnerships', sub: 'Business & integration', value: 'partners@awarizon.com', href: 'mailto:partners@awarizon.com', img: null },
                 { code: 'CH_03', icon: '◉', label: 'Developers', sub: 'API & SDK access', value: 'dev@awarizon.com', href: 'mailto:dev@awarizon.com', img: null },
-                { code: 'CH_04', icon: '◆', label: 'Location', sub: 'Headquarters', value: 'Lagos, Nigeria', href: '#', img: 'https://images.unsplash.com/photo-1577415124269-fc1140a69e91?w=600&q=80' },
+                { code: 'CH_04', icon: '◆', label: 'Location', sub: 'Headquarters', value: 'Global', href: '#', img: null },
               ].map((ch) => (
                 <a
                   key={ch.code}

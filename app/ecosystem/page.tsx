@@ -6,18 +6,18 @@ import ScrollProvider from '@/components/motion/ScrollProvider'
 import Button from '@/components/ui/Button'
 
 const ECOSYSTEM_NODES = [
-  { id:'infra',    label:'Infrastructure', code:'INFRA_LAYER',   x:50, y:16, size:60, primary:true,  desc:'Wallets, Payments, APIs, Identity, Automation — the technical foundation.',              connections:['distribution','market'] },
-  { id:'distribution', label:'Distribution',  code:'DISTRIB_SYS', x:80, y:50, size:50, primary:false, desc:'Deployment pathways and integration support that move infrastructure into real environments.',connections:['consumer'] },
-  { id:'consumer', label:'Consumer',      code:'CONSUMER_LAYER', x:60, y:83, size:50, primary:false, desc:'Products like Zela that surface infrastructure as natural daily experiences.',               connections:['feedback'] },
-  { id:'feedback', label:'Feedback',      code:'FEEDBACK_LOOP',  x:22, y:66, size:46, primary:false, desc:'Real-world usage data and market signals that continuously improve the system.',            connections:['infra'] },
-  { id:'market',   label:'Market',        code:'MARKET_NODE',    x:18, y:33, size:46, primary:false, desc:'Businesses, consumers, and economic activity across emerging markets.',                    connections:['infra'] },
+  { id:'infra',    label:'Infrastructure', code:'INFRA_LAYER',   x:50, y:16, size:60, primary:true,  desc:'Crypto wallets, on-chain payments, Web3 APIs, decentralized identity, smart contracts — the blockchain foundation.',              connections:['distribution','market'] },
+  { id:'distribution', label:'Distribution',  code:'DISTRIB_SYS', x:80, y:50, size:50, primary:false, desc:'Global deployment pathways and integration support that move blockchain protocols into real-world operational environments.',connections:['consumer'] },
+  { id:'consumer', label:'Consumer',      code:'CONSUMER_LAYER', x:60, y:83, size:50, primary:false, desc:'Products like Zela that surface blockchain infrastructure as natural daily crypto experiences — proof the protocol works.',               connections:['feedback'] },
+  { id:'feedback', label:'Feedback',      code:'FEEDBACK_LOOP',  x:22, y:66, size:46, primary:false, desc:'Real on-chain usage data and market signals that continuously sharpen the protocol and product.',            connections:['infra'] },
+  { id:'market',   label:'Market',        code:'MARKET_NODE',    x:18, y:33, size:46, primary:false, desc:'Developers, businesses, consumers, and on-chain economic activity across global markets.',                    connections:['infra'] },
 ]
 
 const LOOP_STEPS = [
-  { label:'Infrastructure creates capability',  detail:'Technical systems that make digital operations possible' },
-  { label:'Distribution creates reach',          detail:'Deployment pathways that bring systems into real environments' },
-  { label:'Consumer products create validation', detail:'Real usage that generates intelligence and trust' },
-  { label:'Feedback improves the system',        detail:'Behavioural data loops back into infrastructure refinement' },
+  { label:'Blockchain infrastructure creates capability',  detail:'On-chain protocols — wallets, payments, identity — that make crypto operations possible at any scale' },
+  { label:'Distribution creates global reach',            detail:'Deployment pathways that bring blockchain infrastructure into real business and consumer environments worldwide' },
+  { label:'Consumer products create proof',               detail:'Real on-chain usage through Zela that generates trust, intelligence, and market validation' },
+  { label:'Feedback sharpens the protocol',               detail:'On-chain behavioral data that loops back into infrastructure refinement and product improvement' },
 ]
 
 export default function EcosystemPage() {
@@ -127,7 +127,7 @@ export default function EcosystemPage() {
                 ) : (
                   <div className="border border-[#1A1A1A] bg-[#040404] p-6">
                     <div className="sys-label opacity-40 mb-4">SYSTEM_MANIFEST</div>
-                    <p className="font-body text-base text-muted leading-relaxed mb-5">Each layer strengthens the next. Infrastructure creates capability. Distribution creates reach. Consumer products create validation.</p>
+                    <p className="font-body text-base text-muted leading-relaxed mb-5">Each layer strengthens the next. Blockchain infrastructure creates capability. Distribution creates global reach. Consumer products create on-chain proof.</p>
                     <div className="h-px bg-gradient-to-r from-accent/20 to-transparent mb-5" />
                     <div className="font-mono text-xs text-dim space-y-1">
                       <div>TOTAL NODES: {ECOSYSTEM_NODES.length}</div>
@@ -189,8 +189,8 @@ export default function EcosystemPage() {
             </div>
             <p className="font-display font-bold text-2xl md:text-3xl text-white max-w-3xl mx-auto leading-relaxed">
               Awarizon operates as a{' '}
-              <span className="text-accent">technology development and distribution company</span>{' '}
-              focused on turning digital capability into real-world utility.
+              <span className="text-accent">global blockchain infrastructure and distribution company</span>{' '}
+              focused on turning on-chain capability into real-world utility — for developers, businesses, and consumers.
             </p>
           </div>
         </section>
@@ -203,7 +203,7 @@ export default function EcosystemPage() {
               <p className="font-display font-semibold text-3xl text-white">Why we exist here.</p>
             </div>
             <div className="reveal reveal-delay-2">
-              <Button href="/thesis" variant="primary" size="lg">Emerging Markets Thesis →</Button>
+              <Button href="/thesis" variant="primary" size="lg">Global Adoption Thesis →</Button>
             </div>
           </div>
         </section>

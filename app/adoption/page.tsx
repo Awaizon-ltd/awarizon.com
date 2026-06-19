@@ -7,10 +7,10 @@ import Button from '@/components/ui/Button'
 import { ADOPTION_FLOW } from '@/lib/constants'
 
 const PRINCIPLES = [
-  { code:'PRIN_01', title:'Products people can actually use', desc:'Designed for the operational reality of emerging markets — not imported assumptions about user behaviour.' },
-  { code:'PRIN_02', title:'Deployment businesses can implement', desc:'Integration pathways built for real organisational constraints, not theoretical ideal environments.' },
-  { code:'PRIN_03', title:'Systems that reduce friction', desc:'Technology should simplify operations, not introduce new complexity layers to manage.' },
-  { code:'PRIN_04', title:'Integration that fits local behaviour', desc:'Distribution is architecture — designed around how people and businesses actually operate.' },
+  { code:'PRIN_01', title:'Blockchain products developers can actually ship', desc:'Built for real developer and business constraints — not imported assumptions about how Web3 adoption works in practice.' },
+  { code:'PRIN_02', title:'Infrastructure businesses can integrate', desc:'Deployment pathways built for organizations without dedicated blockchain teams, with compliance requirements, and operating in markets with unique constraints.' },
+  { code:'PRIN_03', title:'Protocols that reduce friction', desc:'Web3 infrastructure should simplify operations — not introduce new complexity that requires specialist knowledge to manage.' },
+  { code:'PRIN_04', title:'Distribution that fits local behaviour', desc:'Global distribution is architecture — designed around how people and businesses in each market actually earn, spend, and transact on-chain.' },
 ]
 
 export default function AdoptionPage() {
@@ -37,22 +37,22 @@ export default function AdoptionPage() {
                 <span className="sys-label opacity-40 block mb-5 reveal">DISTRIBUTION AS INFRASTRUCTURE</span>
                 <h1 className="font-display font-extrabold leading-[0.92] mb-8 reveal" style={{ fontSize: 'clamp(2.4rem, 6vw, 6.5rem)' }}>
                   <span className="block text-white">Building</span>
-                  <span className="block text-white">technology is only</span>
+                  <span className="block text-white">blockchain is only</span>
                   <span className="block text-accent">half</span>
                   <span className="block text-white">the equation.</span>
                 </h1>
                 <div className="space-y-4 reveal reveal-delay-2">
-                  <p className="font-body text-xl text-muted leading-relaxed">Distribution completes the system.</p>
+                  <p className="font-body text-xl text-muted leading-relaxed">Distribution completes the protocol.</p>
                   <p className="font-body text-base text-dim/90 leading-relaxed max-w-md">
-                    Many companies can build software. Fewer can create adoption. Awarizon is structured around both.
+                    Many teams can ship a smart contract. Fewer can drive real-world Web3 adoption. Awarizon is built around both.
                   </p>
                 </div>
                 <div className="mt-12 border-l-2 border-accent pl-6 reveal reveal-delay-3">
                   <p className="font-body text-base text-accent/80 italic leading-relaxed">
-                    "We deploy systems into operational environments."
+                    "We deploy blockchain protocols into real operational environments."
                   </p>
                   <p className="font-mono text-xs text-dim mt-2 tracking-wide">
-                    "Distribution is infrastructure execution."
+                    "Distribution is on-chain execution."
                   </p>
                 </div>
               </div>
@@ -143,10 +143,10 @@ export default function AdoptionPage() {
         <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-b border-[#0D0D0D] bg-[#030303]">
           <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { val:'2×',   label:'Faster integration vs manual' },
-              { val:'94%',  label:'Adoption retention rate'      },
-              { val:'72h',  label:'Avg time to deploy'          },
-              { val:'∞',    label:'Feedback loop iterations'    },
+              { val:'2×',   label:'Faster integration vs legacy systems' },
+              { val:'94%',  label:'On-chain adoption retention'          },
+              { val:'72h',  label:'Avg time to go live on-chain'         },
+              { val:'∞',    label:'Protocol feedback iterations'         },
             ].map((s, i) => (
               <div key={i} className="reveal" style={{ transitionDelay: `${i*80}ms` }}>
                 <div className="font-display font-extrabold text-4xl md:text-5xl text-accent mb-2 accent-glow">{s.val}</div>

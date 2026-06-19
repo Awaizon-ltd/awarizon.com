@@ -8,47 +8,47 @@ import Button from "@/components/ui/Button";
 const PRODUCT_FEATURES = [
   {
     icon: "⚡",
-    label: "Real-time Payments",
-    desc: "Instant money movement across all major payment networks with sub-second clearing.",
+    label: "On-chain Payments",
+    desc: "Instant crypto and stablecoin transfers across all major blockchain networks — sub-second confirmation, real-time settlement.",
   },
   {
     icon: "🔒",
-    label: "Secure Identity",
-    desc: "Biometric and multi-factor authentication built into every transaction flow.",
+    label: "Web3 Identity",
+    desc: "Wallet-based authentication and biometric verification built into every on-chain transaction flow.",
   },
   {
     icon: "◈",
-    label: "Wallet Infrastructure",
-    desc: "Programmable value storage, transfer, and spending rules in one interface.",
+    label: "Crypto Wallet",
+    desc: "Non-custodial digital asset storage with self-sovereign key management and programmable DeFi access in one interface.",
   },
   {
     icon: "◉",
     label: "Merchant Connect",
-    desc: "Accept payments from any business or individual — QR, link, or tap.",
+    desc: "Accept crypto and stablecoin payments from any source — QR, payment link, or direct wallet transfer — with instant settlement.",
   },
   {
     icon: "⬡",
-    label: "Analytics Layer",
-    desc: "Real-time behavioral intelligence and financial insights dashboard.",
+    label: "On-chain Analytics",
+    desc: "Real-time blockchain intelligence and DeFi portfolio insights built from live transaction data.",
   },
   {
     icon: "∞",
-    label: "API Access",
-    desc: "Developer tools for deep custom integrations and workflow automation.",
+    label: "Web3 API Access",
+    desc: "Developer tools for integrating Awarizon's blockchain infrastructure directly into any product — the same APIs that power Zela.",
   },
 ];
 
 const WHY_CONSUMER = [
   {
     code: "REASON_01",
-    text: "Validate infrastructure under real usage conditions",
+    text: "Validate blockchain infrastructure under real on-chain transaction conditions",
   },
-  { code: "REASON_02", text: "Understand behavior at scale" },
+  { code: "REASON_02", text: "Understand crypto adoption behavior at scale" },
   {
     code: "REASON_03",
-    text: "Refine product design using real-world feedback",
+    text: "Refine Web3 product design using real transaction data and user feedback",
   },
-  { code: "REASON_04", text: "Create direct market trust and familiarity" },
+  { code: "REASON_04", text: "Build direct market trust in on-chain financial products" },
 ];
 
 function PhoneMockup({ active }: { active: boolean }) {
@@ -216,12 +216,12 @@ export default function ConsumerPage() {
                 >
                   <span className="block text-white">Consumer products</span>
                   <span className="block text-white">are where</span>
-                  <span className="block gradient-text">infrastructure</span>
+                  <span className="block gradient-text">blockchain</span>
                   <span className="block text-white">meets reality.</span>
                 </h1>
                 <p className="font-body text-xl text-muted leading-relaxed mb-8 reveal reveal-delay-2">
-                  Real adoption does not begin with architecture diagrams. It
-                  begins when technology becomes natural to use.
+                  Real adoption does not begin with whitepapers. It begins when
+                  on-chain technology becomes as natural to use as anything else.
                 </p>
                 <div className="inline-flex items-center gap-4 border border-accent/30 bg-accent/5 px-5 py-3.5 reveal reveal-delay-3">
                   <div className="w-10 h-10 bg-accent flex items-center justify-center">
@@ -234,7 +234,7 @@ export default function ConsumerPage() {
                       Zela
                     </div>
                     <div className="font-mono text-[10px] text-accent/60">
-                      Consumer Application Layer
+                      Crypto Consumer Layer
                     </div>
                   </div>
                   <div className="ml-4 font-mono text-[10px] text-green-400 flex items-center gap-1.5">
@@ -286,12 +286,12 @@ export default function ConsumerPage() {
               <div className="reveal reveal-delay-2">
                 <div className="border-l-2 border-accent/30 pl-8 py-4 mb-8">
                   <p className="font-display font-medium text-xl md:text-2xl text-white/80 leading-relaxed mb-6">
-                    "Technology becomes powerful when it disappears into
-                    behavior."
+                    "Crypto becomes powerful when it disappears into everyday
+                    behaviour."
                   </p>
                   <p className="font-body text-base text-muted leading-relaxed">
                     Not as isolated apps. But as active interfaces between
-                    infrastructure and everyday life.
+                    blockchain infrastructure and daily life.
                   </p>
                 </div>
                 <div className="grid grid-cols-3 gap-px bg-[#0D0D0D]">

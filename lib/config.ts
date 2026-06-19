@@ -2,7 +2,7 @@ export const SITE_CONFIG = {
   name: 'Awarizon',
   tagline: 'Technology Development & Distribution',
   description: 'Awarizon helps businesses adopt modern digital systems and builds consumer products that make technology useful in everyday life.',
-  location: 'Nigeria, West Africa',
+  location: 'Global',
   email: 'hello@awarizon.com',
   twitter: '@awarizon',
   linkedin: 'awarizon',

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { NAV_LAYERS } from "@/lib/constants";
+import { LEARN_ARTICLES } from "@/lib/learn-content";
 
 // EmailJS send helper — works without SSR
 async function sendViaEmailJS(data: {
@@ -80,9 +81,9 @@ export default function Footer() {
             </Link>
 
             <p className="font-body text-sm text-muted leading-relaxed mb-6 max-w-xs">
-              Technology development and distribution — building the bridge
-              between businesses, technology, and everyday users in emerging
-              markets.
+              Global blockchain infrastructure and distribution — building the
+              protocols that connect developers, businesses, and consumers to
+              the on-chain economy.
             </p>
 
             {/* System badge */}
@@ -98,7 +99,7 @@ export default function Footer() {
           <div>
             <h4 className="sys-label mb-5 opacity-50">NAVIGATION LAYERS</h4>
             <ul className="space-y-2.5">
-              {NAV_LAYERS.map((layer) => (
+              {NAV_LAYERS.filter((l) => l.href !== "/learn").map((layer) => (
                 <li key={layer.href}>
                   <Link
                     href={layer.href}
@@ -140,7 +141,7 @@ export default function Footer() {
                 {
                   code: "LOCATION",
                   label: "Headquarters",
-                  value: "Lagos, Nigeria",
+                  value: "Global",
                   href: "#",
                 },
               ].map((c) => (
@@ -224,6 +225,26 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Learn Web3 row */}
+        <div className="mb-12 pt-10 border-t border-[#0D0D0D]">
+          <div className="flex items-center gap-4 mb-6">
+            <h4 className="sys-label opacity-50 whitespace-nowrap">LEARN WEB3</h4>
+            <div className="flex-1 h-px bg-gradient-to-r from-accent/20 to-transparent" />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-2.5">
+            {LEARN_ARTICLES.map((article) => (
+              <Link
+                key={article.slug}
+                href={article.slug === "what-is-awarizon" ? "/learn" : `/learn/${article.slug}`}
+                className="group flex items-start gap-2 text-muted hover:text-white transition-colors duration-200"
+              >
+                <span className="font-mono text-[10px] text-dim group-hover:text-accent transition-colors mt-0.5 flex-shrink-0">→</span>
+                <span className="font-body text-sm leading-snug">{article.title}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* Divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-[#1A1A1A] to-transparent mb-10" />
 
@@ -235,13 +256,13 @@ export default function Footer() {
             </span>
             <span className="font-mono text-[10px] text-[#1F1F1F]">|</span>
             <span className="font-mono text-[10px] text-dim tracking-widest">
-              RC: NGN_CORP_2024
+              AWZ_GLOBAL_2024
             </span>
           </div>
 
           <div className="flex items-center gap-6">
             <span className="font-mono text-[10px] text-dim">
-              NIGERIA // WEST AFRICA
+              GLOBAL // ON-CHAIN
             </span>
             <div className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-accent animate-pulse" />

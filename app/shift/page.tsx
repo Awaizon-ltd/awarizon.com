@@ -4,13 +4,14 @@ import { useEffect, useState, useRef } from "react";
 import PageTransition from "@/components/motion/PageTransition";
 import ScrollProvider from "@/components/motion/ScrollProvider";
 import Button from "@/components/ui/Button";
+import ChainsMarquee from "@/components/ui/ChainsMarquee";
 
 const BOOT_SEQUENCE = [
-  { text: "INITIALIZING AWARENESS LAYER…", delay: 200, speed: 32 },
-  { text: "SCANNING OPERATIONAL ENVIRONMENT…", delay: 600, speed: 26 },
-  { text: "DETECTING ADOPTION GAP…", delay: 500, speed: 32 },
+  { text: "INITIALIZING CHAIN AWARENESS LAYER…", delay: 200, speed: 32 },
+  { text: "SCANNING GLOBAL BLOCKCHAIN ENVIRONMENT…", delay: 600, speed: 26 },
+  { text: "DETECTING WEB3 ADOPTION GAP…", delay: 500, speed: 32 },
   { text: "CALIBRATING MARKET PARAMETERS…", delay: 500, speed: 26 },
-  { text: "LOADING INFRASTRUCTURE MODULES…", delay: 600, speed: 22 },
+  { text: "LOADING PROTOCOL MODULES…", delay: 600, speed: 22 },
   { text: "● SYSTEM ONLINE: AWARIZON", delay: 400, speed: 40 },
 ];
 
@@ -18,23 +19,23 @@ const PROBLEM_LAYERS = [
   {
     code: "SIGNAL_01",
     num: "01",
-    title: "Technology exists everywhere.",
+    title: "Blockchain exists everywhere.",
     sub: "Adoption does not.",
-    body: "Across emerging markets, businesses know they need better systems. They know speed, automation, payments, identity, and data will define the next decade.",
+    body: "Across global markets, developers and businesses know they need Web3 infrastructure. The protocols exist. Getting them deployed into real operations — at scale, for real users — is where the industry stalls.",
   },
   {
     code: "SIGNAL_02",
     num: "02",
-    title: "The challenge is no longer access.",
-    sub: "The challenge is execution.",
-    body: "Businesses struggle with fragmented workflows, disconnected payment systems, poor internal tooling, and unreliable digital processes. Technology without integration becomes noise.",
+    title: "The challenge is no longer the chain.",
+    sub: "The challenge is distribution.",
+    body: "Builders struggle with fragmented Web3 tooling, no clear integration pathways, and infrastructure that works in whitepapers but not in production. Blockchain without distribution creates no value.",
   },
   {
     code: "SIGNAL_03",
     num: "03",
-    title: "Technology without adoption",
+    title: "Web3 without adoption",
     sub: "creates no leverage.",
-    body: "Awarizon focuses on usable systems, not theoretical transformation. We exist inside the gap between what technology promises and what businesses actually experience.",
+    body: "Awarizon focuses on deployable on-chain infrastructure, not theoretical decentralization. We exist inside the gap between what crypto promises and what the world actually runs on.",
   },
 ];
 
@@ -154,7 +155,7 @@ export default function ShiftPage() {
                 THE SHIFT // ENTRY LAYER
               </span>
               <h1 className="font-display font-extrabold leading-[0.92] mb-10 break-words text-5xl lg:text-[8rem] ">
-                <span className="block text-white">Technology</span>
+                <span className="block text-white">Web3</span>
                 <span className="block text-white">exists</span>
                 <span className="block gradient-text">everywhere.</span>
               </h1>
@@ -166,7 +167,7 @@ export default function ShiftPage() {
                 <div className="h-px bg-gradient-to-r from-accent/40 via-transparent to-transparent mb-6" />
                 <p className="font-body text-lg text-dim/90 leading-relaxed">
                   Awarizon builds the bridge between{" "}
-                  {["businesses", "technology", "everyday users"].map(
+                  {["developers", "blockchain", "everyday users"].map(
                     (word, i, arr) => (
                       <span key={word}>
                         <button
@@ -184,12 +185,12 @@ export default function ShiftPage() {
                 {tooltip && (
                   <div className="mt-4 px-4 py-3 border border-accent/20 bg-accent/5 animate-slide-up">
                     <p className="font-mono text-sm text-accent/90">
-                      {tooltip === "businesses" &&
-                        "Organizations that need modern digital infrastructure to operate competitively."}
-                      {tooltip === "technology" &&
-                        "Digital systems — wallets, payments, identity, APIs, automation."}
+                      {tooltip === "developers" &&
+                        "Builders who need production-ready Web3 APIs, EVM SDKs, and blockchain infrastructure — without starting from zero."}
+                      {tooltip === "blockchain" &&
+                        "On-chain systems — crypto wallets, stablecoin payments, decentralized identity, smart contracts, DeFi protocols."}
                       {tooltip === "everyday users" &&
-                        "End consumers whose daily lives improve when technology becomes usable."}
+                        "End consumers whose financial lives improve when crypto is as simple and reliable as the apps they already use."}
                     </p>
                   </div>
                 )}
@@ -267,8 +268,8 @@ export default function ShiftPage() {
               OPERATIONAL CONTEXT
             </span>
             <blockquote className="font-display font-bold leading-tight text-3xl md:text-5xl text-white mb-10">
-              "We design the systems that help businesses move from{" "}
-              <span className="text-accent">manual operations</span> to modern
+              "We build the blockchain protocols that move businesses from{" "}
+              <span className="text-accent">legacy operations</span> to on-chain
               infrastructure."
             </blockquote>
             <div className="flex items-center gap-8 flex-wrap">
@@ -277,7 +278,7 @@ export default function ShiftPage() {
                 <div>
                   <p className="font-mono text-xs text-accent">POSITIONING</p>
                   <p className="font-body text-base text-muted">
-                    Technology Development & Distribution
+                    Blockchain Infrastructure & Global Distribution
                   </p>
                 </div>
               </div>
@@ -286,13 +287,16 @@ export default function ShiftPage() {
                 <div>
                   <p className="font-mono text-xs text-dim">MARKET</p>
                   <p className="font-body text-base text-muted">
-                    Nigeria, West Africa & Emerging Markets
+                    Global — Multi-Market Distribution
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
+
+        {/* ── CHAINS MARQUEE ────────────────────────────────── */}
+        <ChainsMarquee />
 
         {/* ── CTA ───────────────────────────────────────────── */}
         <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-[#111]">

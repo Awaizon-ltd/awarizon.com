@@ -68,6 +68,22 @@ export default function Navigation() {
             )}
           </div>
 
+          {/* Auth buttons */}
+          <div className="flex items-center gap-2 mr-2">
+            <Link
+              href="/auth"
+              className="font-mono text-[10px] tracking-widest text-muted hover:text-white transition-colors duration-200 px-3 py-2 hidden sm:block"
+            >
+              SIGN IN
+            </Link>
+            <Link
+              href="/auth"
+              className="font-mono text-[10px] tracking-widest px-4 py-2 bg-accent text-black hover:bg-white transition-colors duration-200"
+            >
+              GET STARTED →
+            </Link>
+          </div>
+
           {/* Right: hamburger / nav toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -148,7 +164,7 @@ export default function Navigation() {
                   className="h-5 w-auto object-contain opacity-30 brightness-0 invert"
                 />
               </div>
-              <span className="sys-label opacity-30">NGN // WEST AFRICA</span>
+              <span className="sys-label opacity-30">GLOBAL // ON-CHAIN</span>
             </div>
           </nav>
         </div>

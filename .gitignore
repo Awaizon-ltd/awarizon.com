@@ -1,6 +1,6 @@
-@"
 node_modules
 .next
 .env.local
 .env
-"@ | Set-Content .gitignore
+*.json.key
+*firebase-adminsdk*.json

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import PageTransition from '@/components/motion/PageTransition'
 import ScrollProvider from '@/components/motion/ScrollProvider'
 import Button from '@/components/ui/Button'
+import ChainsMarquee from '@/components/ui/ChainsMarquee'
 import { INFRASTRUCTURE_NODES } from '@/lib/constants'
 
 const CONNECTIONS = [
@@ -37,12 +38,12 @@ export default function InfrastructurePage() {
             <div className="mb-12 reveal">
               <h1 className="font-display font-extrabold leading-[0.92] mb-6" style={{ fontSize: 'clamp(2.8rem, 7.5vw, 9rem)' }}>
                 <span className="block text-white">We build</span>
-                <span className="block text-white">the systems</span>
-                <span className="block gradient-text">that make digital</span>
+                <span className="block text-white">the protocols</span>
+                <span className="block gradient-text">that make on-chain</span>
                 <span className="block text-white">operations possible.</span>
               </h1>
               <p className="font-body text-xl text-muted max-w-xl leading-relaxed">
-                Modular infrastructure layers designed for how businesses actually work — not isolated software products.
+                Modular blockchain infrastructure — wallets, payments, identity, and APIs — designed for how developers and businesses actually build.
               </p>
             </div>
 
@@ -148,16 +149,19 @@ export default function InfrastructurePage() {
           </div>
         </section>
 
+        {/* ── CHAINS MARQUEE ─────────────────────────────── */}
+        <ChainsMarquee />
+
         {/* ── WHY ────────────────────────────────────────── */}
         <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-4xl mx-auto reveal">
             <span className="sys-label opacity-40 block mb-6">STRATEGIC CONTEXT</span>
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white mb-8 leading-tight">
-              The next generation of businesses will not be defined by who{' '}
-              <em className="not-italic text-muted">uses</em> technology.
+              The next generation of global businesses will not be defined by who{' '}
+              <em className="not-italic text-muted">uses</em> blockchain.
             </h2>
             <p className="font-body text-xl text-muted leading-relaxed mb-10 max-w-2xl">
-              They will be defined by who integrates technology deeply enough to become faster, more scalable, and more resilient.
+              They will be defined by who integrates on-chain infrastructure deeply enough to become faster, more programmable, and more resilient than any legacy competitor.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button href="/adoption" variant="primary">Adoption Layer →</Button>
