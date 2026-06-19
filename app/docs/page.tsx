@@ -1415,10 +1415,17 @@ const session = await auth.verify({
           <PropRow name="uri"        type="string"             req desc="Full URI of the resource, e.g. &quot;https://myapp.com&quot;." />
           <PropRow name="statement"  type="string"                 desc="Human-readable prompt shown to the user inside their wallet." />
           <PropRow name="expiresIn"  type="number"                 desc="Session validity in seconds. Default: 3600 (1 hour). Pass 0 to omit expiry." />
-          <PropRow name="getNonce"   type="() => Promise<string>"  desc="Fetch a nonce from your server before signing. Recommended in production to prevent replay attacks." />
-          <PropRow name="onVerify"   type="({ message, signature }) => Promise<void>" desc="Called after the wallet signs. POST message + signature to your server here." />
-          <PropRow name="onSignOut"  type="() => Promise<void>"    desc="Called when signOut() is invoked. Use to clear the server-side session." />
+          <PropRow name="getNonce"   type="() => Promise<string>"  desc="Fetch a server-generated nonce before signing. Required in production — client nonces cannot be invalidated after use." />
+          <PropRow name="onVerify"   type="({ message, signature }) => Promise<unknown>" desc="POST to your server here. Your server verifies the signature, invalidates the nonce, and returns session data. Whatever you return is stored in session.serverData." />
+          <PropRow name="onSignOut"  type="() => Promise<void>"    desc="Called when signOut() is invoked. Use to clear the server-side session or cookie." />
         </div>
+
+        <Callout icon="⚠️" variant="warn">
+          <strong>Always provide both <code className="font-mono text-[12px]">getNonce</code> and <code className="font-mono text-[12px]">onVerify</code> in production.</strong>{' '}
+          Without a server-generated nonce the same signed message can be replayed multiple times.
+          Without <code className="font-mono text-[12px]">onVerify</code>, no backend session is created and
+          authentication resets on every page refresh.
+        </Callout>
 
         <div className="border border-[#1A1A1A] my-4">
           <div className="px-4 py-2 border-b border-[#1A1A1A]">
@@ -1426,21 +1433,42 @@ const session = await auth.verify({
           </div>
           <PropRow name="isAuthenticated" type="boolean"          desc="True after a successful signIn()." />
           <PropRow name="address"         type="string | null"    desc="Verified Ethereum address, or null if not signed in." />
-          <PropRow name="session"         type="SiweSession | null" desc="Full session object: address, chainId, issuedAt, expiresAt, message, signature." />
+          <PropRow name="session"         type="SiweSession | null" desc="Full session object: address, chainId, issuedAt, expiresAt, message, signature, serverData (whatever your onVerify returned)." />
           <PropRow name="isLoading"       type="boolean"          desc="True during signIn / signOut async operations." />
           <PropRow name="error"           type="Error | null"     desc="Last error. Cleared on the next signIn attempt." />
           <PropRow name="signIn"          type="() => Promise<void>" desc="Trigger the full SIWE flow: get nonce → sign → verify." />
           <PropRow name="signOut"         type="() => Promise<void>" desc="Clear the session and call onSignOut()." />
         </div>
 
-        <CodeEditor lang="tsx" code={`// ── Basic (client-only verification) ─────────────────────────────────────────
-import { useSiwe } from "@awarizon/react"
+        <CodeEditor lang="tsx" code={`import { useSiwe } from "@awarizon/react"
 
+// ── Production (server-side session) — recommended ───────────────────────────
 function AuthButton() {
-  const { isAuthenticated, address, signIn, signOut, isLoading, error } = useSiwe({
-    domain: "myapp.com",
-    uri:    "https://myapp.com",
+  const { isAuthenticated, address, session, signIn, signOut, isLoading, error } = useSiwe({
+    domain:    "myapp.com",
+    uri:       "https://myapp.com",
+    statement: "Sign in to access your account.",
+
+    // 1. Server generates and stores the nonce (prevents replay attacks)
+    getNonce: () => fetch("/api/auth/nonce").then(r => r.text()),
+
+    // 2. Server verifies the signature. Whatever you return is in session.serverData.
+    onVerify: async ({ message, signature }) => {
+      const res = await fetch("/api/auth/verify", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ message, signature }),
+      })
+      if (!res.ok) throw new Error("Server rejected the signature")
+      return res.json()   // e.g. { userId, jwt, role } — stored as session.serverData
+    },
+
+    // 3. Server clears the session cookie
+    onSignOut: () => fetch("/api/auth/signout", { method: "POST" }),
   })
+
+  // session.serverData contains whatever your server returned from /api/auth/verify
+  const jwt = (session?.serverData as { jwt?: string })?.jwt
 
   if (isAuthenticated) {
     return (
@@ -1460,24 +1488,10 @@ function AuthButton() {
   )
 }
 
-// ── Production (server-side session) ─────────────────────────────────────────
-const { signIn } = useSiwe({
-  domain:    "myapp.com",
-  uri:       "https://myapp.com",
-  statement: "Sign in to access your account.",
-  // Generate nonce server-side to prevent replay attacks
-  getNonce:  () => fetch("/api/auth/nonce").then(r => r.text()),
-  // POST to your server for verification and session creation
-  onVerify: async ({ message, signature }) => {
-    const res = await fetch("/api/auth/verify", {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ message, signature }),
-    })
-    if (!res.ok) throw new Error("Verification failed")
-  },
-  onSignOut: () => fetch("/api/auth/signout", { method: "POST" }),
-})`} />
+// ── Client-only (demos / prototypes only) ────────────────────────────────────
+// WARNING: without getNonce + onVerify, nonces cannot be invalidated.
+// Replay attacks are possible. Do NOT use in production.
+const { signIn } = useSiwe({ domain: "myapp.com", uri: "https://myapp.com" })`} />
 
         {/* Server Verification */}
         <h3 id="auth-server" className="font-display font-semibold text-white text-base mt-8 mb-2 scroll-mt-20">
