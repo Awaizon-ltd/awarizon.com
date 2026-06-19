@@ -1344,6 +1344,251 @@ try {
         />
       </section>
 
+      {/* ── @awarizon/auth ───────────────────────────────────── */}
+      <section id="auth-sdk">
+        <SectionTitle id="auth-sdk">@awarizon/auth — Sign-In with Ethereum</SectionTitle>
+        <Sub>
+          Add wallet-based authentication to any app using{' '}
+          <a href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank" rel="noreferrer"
+            className="text-accent hover:underline">EIP-4361 (SIWE)</a>.
+          Users sign a human-readable message with their wallet — no passwords, no OAuth.
+          Verification works identically on client and server (Node.js, Next.js, Edge runtime, Deno).
+        </Sub>
+
+        <ShellBlock command="npm install @awarizon/auth" label="INSTALL" />
+
+        {/* How SIWE Works */}
+        <h3 id="auth-flow" className="font-display font-semibold text-white text-base mt-8 mb-2 scroll-mt-20">
+          How SIWE Works
+        </h3>
+        <Sub>Three-step flow — nonce, sign, verify.</Sub>
+        <CodeEditor lang="ts" code={`// ─── Step 1: Server generates a nonce and stores it in the session ───────────
+// GET /api/auth/nonce
+const nonce = generateNonce()   // random 32-char hex
+req.session.nonce = nonce
+res.send(nonce)
+
+// ─── Step 2: Client builds the SIWE message and signs it ─────────────────────
+import { AwarizonAuth } from "@awarizon/auth"
+
+const auth = new AwarizonAuth(awarizon, {
+  domain:    "myapp.com",
+  uri:       "https://myapp.com",
+  statement: "Sign in to MyApp.",
+})
+
+const nonce = await fetch("/api/auth/nonce").then(r => r.text())
+const { message, signature } = await auth.signIn({ nonce })
+// → message  is a human-readable EIP-4361 string
+// → signature is a 0x... hex string signed by the connected wallet
+
+// ─── Step 3: Server verifies the signature ────────────────────────────────────
+// POST /api/auth/verify  { message, signature }
+const session = await auth.verify({
+  message,
+  signature,
+  nonce: req.session.nonce,   // must match what was generated in step 1
+})
+// → session.address is the cryptographically verified wallet address
+// Store it in a cookie or JWT and you have a full auth session`} />
+
+        <Callout icon="🔐" variant="tip">
+          SIWE is phishing-resistant. The message binds the domain, nonce, and expiry — so a
+          signature obtained on one site cannot be replayed on another.
+        </Callout>
+
+        {/* useSiwe React hook */}
+        <h3 id="use-siwe" className="font-display font-semibold text-white text-base mt-8 mb-2 scroll-mt-20">
+          useSiwe — React hook
+        </h3>
+        <Sub>
+          Drop-in SIWE flow for React / Next.js. Handles nonce fetching, wallet signing, and server
+          verification in one <code className="font-mono text-[12px]">signIn()</code> call.
+          Import from <code className="font-mono text-[12px]">@awarizon/react</code>.
+        </Sub>
+
+        <div className="border border-[#1A1A1A] my-4">
+          <div className="px-4 py-2 border-b border-[#1A1A1A]">
+            <span className="font-mono text-[10px] tracking-widest text-accent/60">OPTIONS</span>
+          </div>
+          <PropRow name="domain"     type="string"             req desc="Your app's hostname, e.g. &quot;myapp.com&quot;. Embedded in every SIWE message." />
+          <PropRow name="uri"        type="string"             req desc="Full URI of the resource, e.g. &quot;https://myapp.com&quot;." />
+          <PropRow name="statement"  type="string"                 desc="Human-readable prompt shown to the user inside their wallet." />
+          <PropRow name="expiresIn"  type="number"                 desc="Session validity in seconds. Default: 3600 (1 hour). Pass 0 to omit expiry." />
+          <PropRow name="getNonce"   type="() => Promise<string>"  desc="Fetch a nonce from your server before signing. Recommended in production to prevent replay attacks." />
+          <PropRow name="onVerify"   type="({ message, signature }) => Promise<void>" desc="Called after the wallet signs. POST message + signature to your server here." />
+          <PropRow name="onSignOut"  type="() => Promise<void>"    desc="Called when signOut() is invoked. Use to clear the server-side session." />
+        </div>
+
+        <div className="border border-[#1A1A1A] my-4">
+          <div className="px-4 py-2 border-b border-[#1A1A1A]">
+            <span className="font-mono text-[10px] tracking-widest text-accent/60">RETURNS</span>
+          </div>
+          <PropRow name="isAuthenticated" type="boolean"          desc="True after a successful signIn()." />
+          <PropRow name="address"         type="string | null"    desc="Verified Ethereum address, or null if not signed in." />
+          <PropRow name="session"         type="SiweSession | null" desc="Full session object: address, chainId, issuedAt, expiresAt, message, signature." />
+          <PropRow name="isLoading"       type="boolean"          desc="True during signIn / signOut async operations." />
+          <PropRow name="error"           type="Error | null"     desc="Last error. Cleared on the next signIn attempt." />
+          <PropRow name="signIn"          type="() => Promise<void>" desc="Trigger the full SIWE flow: get nonce → sign → verify." />
+          <PropRow name="signOut"         type="() => Promise<void>" desc="Clear the session and call onSignOut()." />
+        </div>
+
+        <CodeEditor lang="tsx" code={`// ── Basic (client-only verification) ─────────────────────────────────────────
+import { useSiwe } from "@awarizon/react"
+
+function AuthButton() {
+  const { isAuthenticated, address, signIn, signOut, isLoading, error } = useSiwe({
+    domain: "myapp.com",
+    uri:    "https://myapp.com",
+  })
+
+  if (isAuthenticated) {
+    return (
+      <button onClick={signOut} disabled={isLoading}>
+        Sign out ({address?.slice(0, 6)}...{address?.slice(-4)})
+      </button>
+    )
+  }
+
+  return (
+    <>
+      <button onClick={signIn} disabled={isLoading}>
+        {isLoading ? "Signing…" : "Sign in with Ethereum"}
+      </button>
+      {error && <p style={{ color: "red" }}>{error.message}</p>}
+    </>
+  )
+}
+
+// ── Production (server-side session) ─────────────────────────────────────────
+const { signIn } = useSiwe({
+  domain:    "myapp.com",
+  uri:       "https://myapp.com",
+  statement: "Sign in to access your account.",
+  // Generate nonce server-side to prevent replay attacks
+  getNonce:  () => fetch("/api/auth/nonce").then(r => r.text()),
+  // POST to your server for verification and session creation
+  onVerify: async ({ message, signature }) => {
+    const res = await fetch("/api/auth/verify", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ message, signature }),
+    })
+    if (!res.ok) throw new Error("Verification failed")
+  },
+  onSignOut: () => fetch("/api/auth/signout", { method: "POST" }),
+})`} />
+
+        {/* Server Verification */}
+        <h3 id="auth-server" className="font-display font-semibold text-white text-base mt-8 mb-2 scroll-mt-20">
+          Server-side Verification
+        </h3>
+        <Sub>
+          Use <code className="font-mono text-[12px]">verifySiweSignature()</code> on your server
+          to confirm the wallet signed the message. Works in Node.js, Next.js API routes, Express,
+          Edge runtime, and Deno.
+        </Sub>
+
+        <CodeEditor lang="ts" code={`// ── Next.js App Router (route.ts) ────────────────────────────────────────────
+import { verifySiweSignature } from "@awarizon/auth"
+import { cookies }             from "next/headers"
+
+export async function POST(req: Request) {
+  const { message, signature } = await req.json()
+
+  // Retrieve the nonce you stored when the user called GET /api/auth/nonce
+  const nonce = cookies().get("siwe_nonce")?.value
+  if (!nonce) return Response.json({ error: "Missing nonce" }, { status: 400 })
+
+  const result = await verifySiweSignature({
+    message,
+    signature,
+    options: {
+      domain: "myapp.com",   // must match message domain
+      nonce,                  // prevents replay attacks
+    },
+  })
+  // result.address is the cryptographically verified wallet address
+  // result.chainId, result.issuedAt, result.expiresAt are also available
+
+  // Set a session cookie, JWT, or database record here
+  cookies().set("user_address", result.address, { httpOnly: true, secure: true })
+  cookies().delete("siwe_nonce")
+
+  return Response.json({ address: result.address })
+}
+
+// ── Express ───────────────────────────────────────────────────────────────────
+app.post("/api/auth/verify", async (req, res) => {
+  const { message, signature } = req.body
+  const result = await verifySiweSignature({
+    message,
+    signature,
+    options: { domain: "myapp.com", nonce: req.session.nonce },
+  })
+  req.session.address = result.address
+  req.session.nonce   = undefined  // invalidate nonce after one use
+  res.json({ address: result.address })
+})`} />
+
+        <Callout icon="⚠️" variant="warn">
+          Always invalidate the nonce after a successful verification. Leaving it reusable allows
+          the same signed message to authenticate multiple times (replay attack).
+        </Callout>
+
+        {/* AwarizonAuth class */}
+        <h3 id="auth-class" className="font-display font-semibold text-white text-base mt-8 mb-2 scroll-mt-20">
+          AwarizonAuth class
+        </h3>
+        <Sub>
+          High-level class that wraps the full SIWE flow. Pass your <code className="font-mono text-[12px]">awarizon</code>{' '}
+          instance and config once — then call <code className="font-mono text-[12px]">signIn()</code> and{' '}
+          <code className="font-mono text-[12px]">verify()</code>. Useful outside of React (Node scripts, CLI tools, Electron).
+        </Sub>
+
+        <CodeEditor lang="ts" code={`import { AwarizonAuth } from "@awarizon/auth"
+
+const auth = new AwarizonAuth(awarizon, {
+  domain:    "myapp.com",          // required
+  uri:       "https://myapp.com",  // required
+  statement: "Sign in to MyApp.",  // optional — shown in wallet
+  expiresIn: 3600,                 // optional — seconds, default 3600
+})
+
+// ── Client: sign in ───────────────────────────────────────────────────────────
+const nonce = await fetch("/api/auth/nonce").then(r => r.text())
+const { message, signature } = await auth.signIn({ nonce })
+// Send message + signature to your server ↑
+
+// ── Server: verify ────────────────────────────────────────────────────────────
+const session = await auth.verify({ message, signature, nonce })
+// session: { address, chainId, issuedAt, expiresAt, message, signature }
+
+// ── Session checks ────────────────────────────────────────────────────────────
+auth.isValid(session)    // → true if not expired
+auth.isExpired(session)  // → true if past expiresAt
+
+// ── Low-level building blocks (use directly for custom flows) ─────────────────
+import { SiweMessage, parseSiweMessage, verifySiweSignature, generateNonce } from "@awarizon/auth"
+
+const nonce = generateNonce()  // random 32-char hex
+
+const msg = new SiweMessage({
+  domain: "myapp.com", address: "0x...", uri: "https://myapp.com",
+  chainId: 8453, nonce, version: "1",
+  statement: "Custom statement here.",
+})
+const text = msg.prepare()         // EIP-4361 formatted string
+const sig  = await awarizon.signMessage(text)
+
+// Parse a raw SIWE string back to fields (server-side)
+const fields = parseSiweMessage(text)
+// → { domain, address, uri, chainId, nonce, issuedAt, ... }
+
+// Verify any message+signature pair (client or server)
+const result = await verifySiweSignature({ message: text, signature: sig })`} />
+      </section>
+
       {/* ── TypeScript Types ─────────────────────────────────── */}
       <section id="types">
         <SectionTitle id="types">TypeScript Types</SectionTitle>
@@ -1466,6 +1711,50 @@ interface SecureStorageAdapter {
   getItem(key: string): Promise<string | null>
   setItem(key: string, value: string): Promise<void>
   deleteItem(key: string): Promise<void>
+}
+
+// ── @awarizon/auth ────────────────────────────────────────────────────────────
+import type {
+  SiweParams, SiweVerifyResult, SiweSession, SignInResult, AwarizonAuthConfig,
+  UseSiweOptions, UseSiweReturn,
+} from "@awarizon/auth"
+
+interface SiweParams {
+  domain:         string         // app hostname, e.g. "myapp.com"
+  address:        string         // 0x-prefixed Ethereum address
+  uri:            string         // full URI, e.g. "https://myapp.com"
+  chainId:        number         // EIP-155 chain ID
+  nonce:          string         // random replay-prevention token
+  statement?:     string         // human-readable prompt in wallet
+  version?:       string         // always "1"
+  issuedAt?:      string         // ISO 8601 — defaults to now
+  expirationTime?: string        // ISO 8601 — session expiry
+  notBefore?:     string         // ISO 8601 — earliest valid time
+  requestId?:     string         // optional request identifier
+  resources?:     string[]       // optional list of resource URIs
+}
+
+interface SiweVerifyResult {
+  address:   string              // cryptographically verified signer
+  chainId:   number
+  issuedAt:  string
+  expiresAt?: string
+  data:      SiweParams          // all parsed fields
+}
+
+interface SiweSession {
+  address:   string;  chainId:  number
+  issuedAt:  string;  expiresAt?: string
+  message:   string              // raw EIP-4361 message (for re-verification)
+  signature: string              // hex signature
+}
+
+interface UseSiweReturn {
+  isAuthenticated: boolean;  address: string | null
+  session: SiweSession | null
+  isLoading: boolean;  error: Error | null
+  signIn(): Promise<void>    // runs full SIWE flow
+  signOut(): Promise<void>   // clears session + calls onSignOut
 }`}
         />
       </section>

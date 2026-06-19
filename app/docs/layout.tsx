@@ -58,6 +58,15 @@ const NAV = [
       { id: 'use-rn-wallet', label: 'useRNWallet'    },
     ],
   },
+  {
+    id: 'auth-sdk', label: '@awarizon/auth',
+    children: [
+      { id: 'auth-flow',   label: 'How SIWE Works'   },
+      { id: 'use-siwe',    label: 'useSiwe'           },
+      { id: 'auth-server', label: 'Server Verify'     },
+      { id: 'auth-class',  label: 'AwarizonAuth'      },
+    ],
+  },
   { id: 'chains',       label: 'Supported Chains'  },
   { id: 'errors',       label: 'Error Handling'    },
   { id: 'types',        label: 'TypeScript Types'  },
