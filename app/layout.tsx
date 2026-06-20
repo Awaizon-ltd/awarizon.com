@@ -56,7 +56,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: "Awarizon — Technology Development & Distribution",
-        type: "image/jpg",
+        type: "image/jpeg",
       },
     ],
   },
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       "Building the bridge between businesses, technology, and everyday users across Nigeria and West Africa.",
     site: "@awarizon",
     creator: "@awarizon",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
 
   icons: {
