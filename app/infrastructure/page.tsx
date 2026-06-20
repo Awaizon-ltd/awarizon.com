@@ -1,11 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import PageTransition from '@/components/motion/PageTransition'
 import ScrollProvider from '@/components/motion/ScrollProvider'
+import Reveal, { RevealGroup, RevealItem } from '@/components/motion/Reveal'
 import Button from '@/components/ui/Button'
+import ChainBadge from '@/components/ui/ChainBadge'
 import ChainsMarquee from '@/components/ui/ChainsMarquee'
 import { INFRASTRUCTURE_NODES } from '@/lib/constants'
+
+const ease = [0.16, 1, 0.3, 1] as const
 
 const CONNECTIONS = [
   ['wallet','payments'], ['payments','identity'], ['identity','apis'],
@@ -35,17 +40,42 @@ export default function InfrastructurePage() {
               <span className="font-mono text-[10px] tracking-[0.3em] text-accent">LAYER_02 // INFRA_NODE</span>
             </div>
 
-            <div className="mb-12 reveal">
+            <motion.div
+              className="mb-12"
+              initial="hidden"
+              animate="show"
+              variants={{ show: { transition: { staggerChildren: 0.09, delayChildren: 0.3 } } }}
+            >
               <h1 className="font-display font-extrabold leading-[0.92] mb-6" style={{ fontSize: 'clamp(2.8rem, 7.5vw, 9rem)' }}>
-                <span className="block text-white">We build</span>
-                <span className="block text-white">the protocols</span>
-                <span className="block gradient-text">that make on-chain</span>
-                <span className="block text-white">operations possible.</span>
+                {[
+                  { text: 'We build',             cls: 'text-white'    },
+                  { text: 'the protocols',         cls: 'text-white'    },
+                  { text: 'that make on-chain',    cls: 'gradient-text' },
+                  { text: 'operations possible.',  cls: 'text-white'    },
+                ].map(({ text, cls }) => (
+                  <div key={text} className="overflow-hidden">
+                    <motion.span
+                      className={`block ${cls}`}
+                      variants={{
+                        hidden: { y: '110%', opacity: 0 },
+                        show:   { y: '0%',   opacity: 1, transition: { duration: 0.85, ease } },
+                      }}
+                    >
+                      {text}
+                    </motion.span>
+                  </div>
+                ))}
               </h1>
-              <p className="font-body text-xl text-muted max-w-xl leading-relaxed">
+              <motion.p
+                className="font-body text-xl text-muted max-w-xl leading-relaxed"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+                }}
+              >
                 Modular blockchain infrastructure — wallets, payments, identity, and APIs — designed for how developers and businesses actually build.
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
 
             {/* Node graph */}
             <div className="flex-1 flex items-center justify-center mt-4">
@@ -65,6 +95,44 @@ export default function InfrastructurePage() {
                       </g>
                     )
                   })}
+                  {/* Animated data packets traveling along connections */}
+                  {CONNECTIONS.map(([from, to], idx) => {
+                    const p1 = getPos(from)
+                    const p2 = getPos(to)
+                    const pathId = `pkt-path-${from}-${to}`
+                    const dur = 1.8 + idx * 0.22
+                    const delay = idx * 0.35
+                    return (
+                      <g key={pathId}>
+                        <path
+                          id={pathId}
+                          d={`M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`}
+                          fill="none"
+                          stroke="none"
+                        />
+                        <circle r="1.1" fill="#FFE500" fillOpacity="0.95">
+                          <animateMotion
+                            dur={`${dur}s`}
+                            repeatCount="indefinite"
+                            begin={`${delay}s`}
+                          >
+                            <mpath href={`#${pathId}`} />
+                          </animateMotion>
+                        </circle>
+                        {/* Trailing glow particle */}
+                        <circle r="0.6" fill="#FFE500" fillOpacity="0.35">
+                          <animateMotion
+                            dur={`${dur}s`}
+                            repeatCount="indefinite"
+                            begin={`${delay + 0.12}s`}
+                          >
+                            <mpath href={`#${pathId}`} />
+                          </animateMotion>
+                        </circle>
+                      </g>
+                    )
+                  })}
+
                   {INFRASTRUCTURE_NODES.map(node => {
                     const hi = activeNode === node.id
                     return (
@@ -74,6 +142,12 @@ export default function InfrastructurePage() {
                           style={{ transition:'all .3s' }} />
                         {hi && <circle cx={`${node.x}%`} cy={`${node.y}%`} r="5.5"
                           fill="none" stroke="#FFE500" strokeOpacity="0.08" strokeWidth="0.25" />}
+                        {/* Pulse ring — always running */}
+                        <circle cx={`${node.x}%`} cy={`${node.y}%`} r="3"
+                          fill="none" stroke="#FFE500" strokeWidth="0.3" strokeOpacity="0">
+                          <animate attributeName="r" from="3" to="8" dur="2.4s" repeatCount="indefinite" begin={`${INFRASTRUCTURE_NODES.indexOf(node) * 0.5}s`} />
+                          <animate attributeName="stroke-opacity" from="0.4" to="0" dur="2.4s" repeatCount="indefinite" begin={`${INFRASTRUCTURE_NODES.indexOf(node) * 0.5}s`} />
+                        </circle>
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r={hi ? '2.2' : '1.6'}
                           fill={hi ? '#FFE500' : '#0D0D0D'} stroke="#FFE500"
                           strokeOpacity={hi ? '1' : '0.45'} strokeWidth="0.3"
@@ -115,12 +189,11 @@ export default function InfrastructurePage() {
               <span className="sys-label opacity-40 block mb-3">SYSTEM MANIFEST // COMPONENTS</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent" />
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#111]/70">
-              {INFRASTRUCTURE_NODES.map((node, i) => (
-                <div key={node.id}
-                  className="bg-black/85 backdrop-blur-sm p-7 border-l-2 border-transparent hover:border-l-accent hover:bg-black/95 transition-all duration-300 group cursor-pointer reveal"
-                  style={{ transitionDelay: `${i * 90}ms` }}
-                  onClick={() => setModalNode(node.id)}>
+            <RevealGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#111]/70" stagger={0.08}>
+              {INFRASTRUCTURE_NODES.map((node) => (
+                <RevealItem key={node.id}>
+                  <div className="bg-black/85 backdrop-blur-sm p-7 border-l-2 border-transparent hover:border-l-accent hover:bg-black/95 transition-all duration-300 group cursor-pointer h-full"
+                    onClick={() => setModalNode(node.id)}>
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-mono text-[10px] tracking-widest text-accent/60 group-hover:text-accent transition-colors">{node.code}</span>
                     <div className="flex items-center gap-1.5">
@@ -137,35 +210,69 @@ export default function InfrastructurePage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                  </div>
+                </RevealItem>
               ))}
-              <div className="bg-black/50 p-7 flex items-center justify-center min-h-[180px] border border-[#111]">
+              <RevealItem className="bg-black/50 p-7 flex items-center justify-center min-h-[180px] border border-[#111]">
                 <div className="text-center">
                   <div className="font-mono text-[10px] text-dim mb-2 tracking-widest">EXPANDING</div>
                   <div className="font-display text-4xl text-[#181818] font-extrabold">+</div>
                 </div>
-              </div>
-            </div>
+              </RevealItem>
+            </RevealGroup>
           </div>
         </section>
 
         {/* ── CHAINS MARQUEE ─────────────────────────────── */}
         <ChainsMarquee />
 
-        {/* ── WHY ────────────────────────────────────────── */}
-        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
-          <div className="max-w-4xl mx-auto reveal">
-            <span className="sys-label opacity-40 block mb-6">STRATEGIC CONTEXT</span>
-            <h2 className="font-display font-bold text-3xl md:text-5xl text-white mb-8 leading-tight">
-              The next generation of global businesses will not be defined by who{' '}
-              <em className="not-italic text-muted">uses</em> blockchain.
-            </h2>
-            <p className="font-body text-xl text-muted leading-relaxed mb-10 max-w-2xl">
-              They will be defined by who integrates on-chain infrastructure deeply enough to become faster, more programmable, and more resilient than any legacy competitor.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button href="/adoption" variant="primary">Adoption Layer →</Button>
-              <Button href="/access" variant="ghost">Integrate Infrastructure</Button>
+        {/* ── WHY — white section ────────────────────────── */}
+        <section className="bg-white py-24 px-6 md:px-12 lg:px-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+              {/* Left — copy */}
+              <div>
+                <span className="font-mono text-[10px] tracking-[0.3em] text-black/40 block mb-5 uppercase">
+                  Strategic Context // Why Infrastructure Matters
+                </span>
+                <h2 className="font-display font-bold text-black leading-tight mb-6" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)' }}>
+                  The next generation of global businesses will not be defined by who{' '}
+                  <em className="not-italic underline decoration-dotted">uses</em> blockchain.
+                </h2>
+                <p className="font-body text-lg text-black/85 leading-relaxed mb-10 max-w-lg">
+                  They will be defined by who integrates on-chain infrastructure deeply enough to become faster, more programmable, and more resilient than any legacy competitor.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <a href="/adoption" className="font-mono text-[10px] tracking-widest px-5 py-3 bg-black text-white hover:bg-black/80 transition-colors">
+                    ADOPTION LAYER →
+                  </a>
+                  <a href="/access" className="font-mono text-[10px] tracking-widest px-5 py-3 border border-black/20 text-black/60 hover:text-black hover:border-black transition-colors">
+                    INTEGRATE INFRASTRUCTURE
+                  </a>
+                </div>
+              </div>
+
+              {/* Right — infrastructure stack diagram */}
+              <div className="space-y-1">
+                {[
+                  { label: 'Your Business / Application', tag: 'TOP_LAYER',    bg: 'bg-black',     text: 'text-white',     tagColor: 'text-gray-400'  },
+                  { label: 'Awarizon SDK (@awarizon/web3)', tag: 'CORE_SDK',  bg: 'bg-[#FFE500]', text: 'text-black',     tagColor: 'text-black/50'  },
+                  { label: 'Wallets  ·  Payments  ·  Identity', tag: 'INFRA', bg: 'bg-[#111]',    text: 'text-gray-300',  tagColor: 'text-gray-600'  },
+                  { label: 'APIs  ·  Smart Contracts',  tag: 'PROTOCOL',      bg: 'bg-[#1a1a1a]', text: 'text-gray-400',  tagColor: 'text-gray-700'  },
+                  { label: 'EVM Chains  (15+ Networks)', tag: 'FOUNDATION',   bg: 'bg-[#222]',    text: 'text-gray-500',  tagColor: 'text-gray-700', chains: ['ethereum','arbitrum','base','polygon','optimism','bnb'] },
+                ].map((row) => (
+                  <div key={row.tag} className={`${row.bg} px-6 py-4 flex items-center justify-between gap-3`}>
+                    <span className={`font-mono text-sm ${row.text} font-medium`}>{row.label}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {'chains' in row && (row as any).chains?.map((c: string) => (
+                        <ChainBadge key={c} name={c} size="xs" showLabel={false} />
+                      ))}
+                      <span className={`font-mono text-[9px] tracking-widest ${row.tagColor} ml-1`}>{row.tag}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>

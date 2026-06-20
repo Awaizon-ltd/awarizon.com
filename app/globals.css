@@ -172,6 +172,35 @@ html, body {
 .animate-flicker    { animation: flicker 0.15s infinite; }
 .animate-pulse-slow { animation: pulse 4s cubic-bezier(0.4,0,0.6,1) infinite; }
 .flow-line          { stroke-dasharray: 8 4; animation: dashFlow 1.5s linear infinite; }
+.animate-flow-down  { animation: flowDown 1.3s linear infinite; position: absolute; left: 0; right: 0; }
+.animate-marquee     { animation: marquee 28s linear infinite; }
+.animate-marquee-rev { animation: marqueeRev 32s linear infinite; }
+
+@keyframes flowDown {
+  0%   { top: -20px; }
+  100% { top: calc(100% + 20px); }
+}
+@keyframes marquee    { 0% { transform: translateX(0) } 100% { transform: translateX(-50%) } }
+@keyframes marqueeRev { 0% { transform: translateX(-50%) } 100% { transform: translateX(0) } }
+@keyframes float      { 0%,100% { transform: translateY(0px) rotate(0deg) } 50% { transform: translateY(-24px) rotate(2deg) } }
+@keyframes glowBreath { 0%,100% { opacity: 0.35; transform: scale(1) } 50% { opacity: 0.75; transform: scale(1.08) } }
+@keyframes shimmer    { 0% { background-position: -400% center } 100% { background-position: 400% center } }
+@keyframes spinOrbit  { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+@keyframes drawIn     { 0% { stroke-dashoffset: 1 } 100% { stroke-dashoffset: 0 } }
+@keyframes nodeAppear { 0% { opacity:0; transform: scale(0.5) } 100% { opacity:1; transform: scale(1) } }
+
+.animate-float       { animation: float       8s ease-in-out infinite; }
+.animate-glow-breath { animation: glowBreath  3.5s ease-in-out infinite; }
+.animate-spin-orbit  { animation: spinOrbit  22s linear infinite; }
+.animate-shimmer     { animation: shimmer     3s linear infinite; background-size: 400% auto; }
+.shimmer-text {
+  background: linear-gradient(90deg, #FFE500 0%, #FFF1A0 40%, #FFE500 60%, #B3A000 100%);
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
 
 /* ── Form inputs ── */
 input, textarea, select {

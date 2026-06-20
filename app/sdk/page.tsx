@@ -2,10 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import PageTransition from '@/components/motion/PageTransition'
 import ScrollProvider from '@/components/motion/ScrollProvider'
+import Reveal, { RevealGroup, RevealItem } from '@/components/motion/Reveal'
+import ChainBadge from '@/components/ui/ChainBadge'
 import { CodeEditor, ShellBlock } from '@/components/docs/CodeEditor'
 import ChainsMarquee from '@/components/ui/ChainsMarquee'
+
+const ease = [0.16, 1, 0.3, 1] as const
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -305,16 +310,33 @@ export default function SDKPage() {
             {/* Two-col hero */}
             <div className="grid lg:grid-cols-2 gap-16 items-start flex-1">
 
-              {/* Left — headline + copy */}
-              <div className="reveal">
-                <h1
+              {/* Left — staggered headline */}
+              <div>
+                <motion.h1
                   className="font-display font-extrabold text-white leading-[0.9] mb-8"
                   style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)' }}
+                  initial="hidden"
+                  animate="show"
+                  variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } } }}
                 >
-                  One SDK.<br />
-                  Any chain.<br />
-                  <span className="gradient-text">Any contract.</span>
-                </h1>
+                  {[
+                    { text: 'One SDK.',       cls: 'text-white'    },
+                    { text: 'Any chain.',     cls: 'text-white'    },
+                    { text: 'Any contract.',  cls: 'gradient-text' },
+                  ].map(({ text, cls }) => (
+                    <div key={text} className="overflow-hidden">
+                      <motion.span
+                        className={`block ${cls}`}
+                        variants={{
+                          hidden: { y: '110%', opacity: 0 },
+                          show:   { y: '0%',   opacity: 1, transition: { duration: 0.85, ease } },
+                        }}
+                      >
+                        {text}
+                      </motion.span>
+                    </div>
+                  ))}
+                </motion.h1>
 
                 <p className="font-body text-xl text-muted leading-relaxed mb-6 max-w-md">
                   EVM infrastructure for developers who need to ship — reads, writes, events,
@@ -368,7 +390,7 @@ export default function SDKPage() {
               </div>
 
               {/* Right — install + quick code */}
-              <div className="reveal lg:pt-4">
+              <Reveal delay={0.2} className="lg:pt-4">
                 <ShellBlock command="npm install @awarizon/web3 @awarizon/react" label="INSTALL" />
                 <CodeEditor
                   filename="quickstart.ts"
@@ -389,7 +411,7 @@ const tx = await usdc.transfer("0xRecipient", 500_000n)
 const receipt = await tx.wait()
 console.log("confirmed:", receipt.blockNumber)`}
                 />
-              </div>
+              </Reveal>
             </div>
           </div>
         </section>
@@ -402,29 +424,27 @@ console.log("confirmed:", receipt.blockNumber)`}
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent" />
             </div>
 
-            <div className="grid md:grid-cols-3 gap-px bg-[#111]">
-              {PACKAGES.map((pkg, i) => (
-                <div
-                  key={pkg.name}
-                  className="bg-black p-8 group hover:bg-[#030303] transition-colors reveal"
-                  style={{ transitionDelay: `${i * 80}ms` }}
-                >
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-[9px] tracking-widest px-2 py-1 border border-accent/20 text-accent/70">{pkg.badge}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent/60 animate-pulse" />
+            <RevealGroup className="grid md:grid-cols-3 gap-px bg-[#111]" stagger={0.1}>
+              {PACKAGES.map((pkg) => (
+                <RevealItem key={pkg.name}>
+                  <div className="bg-black p-8 group hover:bg-[#030303] transition-colors h-full">
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-[9px] tracking-widest px-2 py-1 border border-accent/20 text-accent/70">{pkg.badge}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent/60 animate-pulse" />
+                    </div>
+                    <code className="font-mono text-[15px] text-white block mb-3">{pkg.name}</code>
+                    <p className="font-body text-sm text-muted leading-relaxed mb-5">{pkg.desc}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {pkg.tags.map(t => (
+                        <span key={t} className="font-mono text-[9px] px-2 py-1 bg-[#0A0A0A] text-dim border border-[#1A1A1A] group-hover:border-accent/15 group-hover:text-dim/80 transition-colors">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <code className="font-mono text-[15px] text-white block mb-3">{pkg.name}</code>
-                  <p className="font-body text-sm text-muted leading-relaxed mb-5">{pkg.desc}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {pkg.tags.map(t => (
-                      <span key={t} className="font-mono text-[9px] px-2 py-1 bg-[#0A0A0A] text-dim border border-[#1A1A1A] group-hover:border-accent/15 group-hover:text-dim/80 transition-colors">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
 
             {/* Install for all */}
             <div className="mt-6">
@@ -549,19 +569,17 @@ console.log("confirmed:", receipt.blockNumber)`}
               </h2>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#111]">
-              {FEATURES.map((f, i) => (
-                <div
-                  key={f.title}
-                  className="bg-black p-6 hover:bg-[#030303] transition-colors group reveal"
-                  style={{ transitionDelay: `${i * 60}ms` }}
-                >
-                  <span className="font-mono text-xl text-accent/40 group-hover:text-accent/70 transition-colors block mb-4">{f.icon}</span>
-                  <h3 className="font-display font-semibold text-white text-sm mb-2">{f.title}</h3>
-                  <p className="font-body text-[13px] text-dim leading-relaxed">{f.body}</p>
-                </div>
+            <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#111]" stagger={0.06}>
+              {FEATURES.map((f) => (
+                <RevealItem key={f.title} y={20}>
+                  <div className="bg-black p-6 hover:bg-[#030303] transition-colors group h-full">
+                    <span className="font-mono text-xl text-accent/40 group-hover:text-accent/70 transition-colors block mb-4">{f.icon}</span>
+                    <h3 className="font-display font-semibold text-white text-sm mb-2">{f.title}</h3>
+                    <p className="font-body text-[13px] text-dim leading-relaxed">{f.body}</p>
+                  </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
           </div>
         </section>
 
@@ -576,21 +594,20 @@ console.log("confirmed:", receipt.blockNumber)`}
               </h2>
             </div>
 
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-px bg-[#111] mb-4">
-              {CHAINS.map((c, i) => (
-                <div
-                  key={c.id}
-                  className="bg-[#030303] px-4 py-4 hover:bg-[#060606] transition-colors group reveal"
-                  style={{ transitionDelay: `${i * 40}ms` }}
-                >
-                  <code className="font-mono text-[11px] text-white group-hover:text-accent transition-colors block mb-0.5">
-                    {`"${c.id}"`}
-                  </code>
-                  <span className="font-body text-[11px] text-dim block">{c.label}</span>
-                  <span className="font-mono text-[9px] text-dim/50 block">{c.tag}</span>
-                </div>
+            <RevealGroup className="grid grid-cols-3 sm:grid-cols-5 gap-px bg-[#111] mb-4" stagger={0.04}>
+              {CHAINS.map((c) => (
+                <RevealItem key={c.id} y={12}>
+                  <div className="bg-[#030303] px-4 py-4 hover:bg-[#060606] transition-colors group">
+                    <ChainBadge name={c.id} size="sm" showLabel={false} className="mb-2" />
+                    <code className="font-mono text-[11px] text-white group-hover:text-accent transition-colors block mb-0.5">
+                      {`"${c.id}"`}
+                    </code>
+                    <span className="font-body text-[11px] text-dim block">{c.label}</span>
+                    <span className="font-mono text-[9px] text-dim/50 block">{c.tag}</span>
+                  </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
 
             <p className="font-mono text-[10px] text-dim tracking-widest">
               + TESTNETS: sepolia, base-sepolia, polygon-amoy, arbitrum-sepolia, optimism-sepolia

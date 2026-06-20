@@ -104,7 +104,8 @@ export default function DocsPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               { pkg: '@awarizon/web3',         desc: 'Core SDK. Node.js, browser, Edge runtimes.' },
-              { pkg: '@awarizon/react',         desc: 'React 18+ hooks for reads, writes, events.' },
+              { pkg: '@awarizon/react',         desc: 'React 18+ hooks, ConnectButton, and wallet UI.' },
+              { pkg: '@awarizon/auth',          desc: 'Sign-In with Ethereum (EIP-4361). Works standalone or with React.' },
               { pkg: '@awarizon/react-native',  desc: 'Mobile SDK. Expo and bare React Native.' },
               { pkg: '@awarizon/cli',           desc: 'Codegen CLI. TypeScript or JavaScript output.' },
             ].map(({ pkg, desc }) => (
@@ -724,6 +725,114 @@ const awarizon = new AwarizonWeb3({
 })`}
         />
 
+        {/* EIP-1193 */}
+        <h3 id="eip1193" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          EIP-1193 Provider — Browser Wallet Direct Connect
+        </h3>
+        <Sub>
+          Connect any injected browser wallet (MetaMask, Rabby, Brave, Coinbase Wallet, Phantom) directly via{' '}
+          <code className="font-mono text-accent text-[13px]">connectEIP1193Provider()</code> —
+          no wagmi, no RainbowKit, no extra dependencies. The SDK calls <code className="font-mono text-accent text-[13px]">eth_requestAccounts</code> internally
+          and automatically subscribes to account and chain change events.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`// One call — requests accounts + subscribes to events
+await awarizon.connectEIP1193Provider(window.ethereum, {
+  name: "MetaMask", // optional display name
+})
+
+// All subsequent writes use this wallet
+const { hash } = await token.transfer("0x...", 100n)
+
+// Detect which wallet is injected
+function detectWalletName(provider: unknown): string {
+  const p = provider as Record<string, unknown>
+  if (p.isMetaMask && !p.isRabby) return "MetaMask"
+  if (p.isRabby)                  return "Rabby"
+  if (p.isBraveWallet)            return "Brave Wallet"
+  if (p.isCoinbaseWallet)         return "Coinbase Wallet"
+  if (p.isPhantom)                return "Phantom"
+  return "Browser Wallet"
+}
+
+await awarizon.connectEIP1193Provider(window.ethereum, {
+  name: detectWalletName(window.ethereum),
+})`}
+        />
+        <Callout icon="💡" variant="tip">
+          If you use <code className="font-mono text-[12px]">&lt;ConnectButton /&gt;</code> from <code className="font-mono text-[12px]">@awarizon/react</code>, this is handled for you automatically — including wallet detection, WalletConnect QR, and the account popup.
+        </Callout>
+
+        {/* WalletConnect */}
+        <h3 id="walletconnect" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          WalletConnect v2 — Built-in
+        </h3>
+        <Sub>
+          WalletConnect v2 is built into the SDK. Pass <code className="font-mono text-accent text-[13px]">walletConnectProjectId</code> at init and call{' '}
+          <code className="font-mono text-accent text-[13px]">connectWalletConnect()</code>. No separate package install required — <code className="font-mono text-accent text-[13px]">@walletconnect/ethereum-provider</code> is bundled.
+          Get a free project ID at{' '}
+          <a href="https://cloud.walletconnect.com" target="_blank" rel="noreferrer" className="text-accent hover:underline">cloud.walletconnect.com</a>.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`const awarizon = new AwarizonWeb3({
+  chain: "base",
+  walletConnectProjectId: "YOUR_WC_PROJECT_ID",
+})
+
+// Option A — bring your own QR renderer (recommended)
+await awarizon.connectWalletConnect({
+  onDisplayUri: (uri) => {
+    // uri is the wc:// deep-link string
+    // pass it to react-qr-code, a modal, or a mobile deeplink
+    showQrCode(uri)
+  },
+})
+
+// Option B — no callback (WC default modal disabled, waits silently)
+await awarizon.connectWalletConnect()`}
+        />
+        <Callout icon="💡" variant="tip">
+          <code className="font-mono text-[12px]">&lt;ConnectButton /&gt;</code> handles the full WalletConnect flow — QR modal, loading state, and account popup — automatically when <code className="font-mono text-[12px]">walletConnectProjectId</code> is set on <code className="font-mono text-[12px]">&lt;AwarizonProvider&gt;</code>.
+        </Callout>
+
+        {/* Live tracking */}
+        <h3 id="live-tracking" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          Live Wallet & Chain Tracking
+        </h3>
+        <Sub>
+          When connected via <code className="font-mono text-accent text-[13px]">connectEIP1193Provider()</code> or{' '}
+          <code className="font-mono text-accent text-[13px]">connectWalletConnect()</code>, the SDK subscribes to provider events automatically.
+          No polling, no manual refresh — the SDK state stays in sync with whatever the user does in their wallet app.
+        </Sub>
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-3 mt-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">AUTO-HANDLED PROVIDER EVENTS</div>
+          <PropRow name="accountsChanged" type="string[]"  desc="New account selected → rebuilds WalletClient, fires onWalletChange." />
+          <PropRow name="accountsChanged" type="[]"        desc="Wallet locked / disconnected → calls disconnectExternal(), fires onWalletChange." />
+          <PropRow name="chainChanged"    type="string"    desc="User switched networks → fires onChainChange." />
+          <PropRow name="disconnect"      type="—"         desc="Provider disconnected → calls disconnectExternal(), fires onWalletChange." />
+        </div>
+        <Sub>Subscribe manually if you need to react outside React:</Sub>
+        <CodeEditor
+          lang="ts"
+          code={`// Fires whenever address changes (connect, disconnect, account switch)
+const unsub = awarizon.wallet.onWalletChange(({ address, type }) => {
+  console.log("wallet:", address, type) // "external" | "internal" | "none"
+})
+
+// Fires whenever the external wallet switches chains
+const unsub2 = awarizon.wallet.onChainChange(({ chainId }) => {
+  console.log("chain:", chainId)
+})
+
+unsub()   // stop listening
+unsub2()`}
+        />
+        <Callout icon="💡" variant="tip">
+          In React, <code className="font-mono text-[12px]">useWallet()</code> subscribes to both events automatically — <code className="font-mono text-[12px]">address</code>, <code className="font-mono text-[12px]">chainId</code>, and <code className="font-mono text-[12px]">isChainMismatch</code> update in real time without any setup.
+        </Callout>
+
         {/* Multicall */}
         <h3 id="multicall" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
           Multicall — batch reads
@@ -766,32 +875,184 @@ const [ethBal, usdcBal, daiSupply, nftOwner] = await awarizon.multicall([
         </h3>
         <Sub>
           Wraps your component tree and makes the SDK available to every hook inside it.
-          Accepts a single <code className="font-mono text-accent text-[13px]">awarizon</code> prop — a configured{' '}
-          <code className="font-mono text-accent text-[13px]">AwarizonWeb3</code> instance created outside the component tree.
+          Use the shorthand props form for most apps, or pass a pre-configured{' '}
+          <code className="font-mono text-accent text-[13px]">AwarizonWeb3</code> instance for advanced setups.
         </Sub>
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-4 mb-1">Shorthand — recommended for most apps</p>
+        <CodeEditor
+          filename="app/layout.tsx"
+          code={`"use client"
+import { AwarizonProvider } from "@awarizon/react"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html>
+      <body>
+        <AwarizonProvider
+          chain="base"
+          apiKey={process.env.NEXT_PUBLIC_AWARIZON_API_KEY!}
+          walletConnectProjectId={process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID}
+        >
+          {children}
+        </AwarizonProvider>
+      </body>
+    </html>
+  )
+}`}
+        />
+
+        <p className="font-mono text-[10px] tracking-widest text-dim mt-4 mb-1">Advanced — pass a pre-configured SDK instance</p>
         <CodeEditor
           filename="components/Providers.tsx"
           code={`"use client"
 import { AwarizonProvider } from "@awarizon/react"
 import { AwarizonWeb3 } from "@awarizon/web3"
 
-// Create the instance OUTSIDE any component — never re-created on re-renders
+// Create OUTSIDE any component — never re-created on re-renders
 const awarizon = new AwarizonWeb3({
-  chain:  "base",
-  apiKey: process.env.NEXT_PUBLIC_AWARIZON_API_KEY!,
+  chain:                  "base",
+  apiKey:                 process.env.NEXT_PUBLIC_AWARIZON_API_KEY!,
+  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  rpcUrl:                 process.env.NEXT_PUBLIC_RPC_URL, // optional custom RPC
 })
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <AwarizonProvider awarizon={awarizon}>
-      {children}
-    </AwarizonProvider>
-  )
+  return <AwarizonProvider awarizon={awarizon}>{children}</AwarizonProvider>
 }`}
         />
         <div className="border border-[#1E1E1E] bg-[#0A0A0A] mb-4">
-          <PropRow name="awarizon" type="AwarizonWeb3" req desc="A configured SDK instance. Create it once outside the component tree and pass it here." />
-          <PropRow name="children" type="ReactNode"    req desc="The component subtree that can access SDK hooks." />
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">PROPS</div>
+          <PropRow name="chain"                   type="string | Chain" desc="EVM chain alias ('base', 'ethereum', 'polygon'…) or a viem Chain object." />
+          <PropRow name="apiKey"                  type="string"         desc="Your Awarizon API key from the dashboard." />
+          <PropRow name="walletConnectProjectId"  type="string"         desc="Optional WalletConnect v2 project ID. Enables ConnectButton's QR modal and connectWalletConnect(). Free at cloud.walletconnect.com." />
+          <PropRow name="rpcUrl"                  type="string"         desc="Optional custom RPC endpoint. Defaults to the public chain RPC." />
+          <PropRow name="awarizon"                type="AwarizonWeb3"   desc="Pass a pre-configured SDK instance instead of individual props (advanced)." />
+          <PropRow name="children"                type="ReactNode" req  desc="The component subtree that can access SDK hooks." />
+        </div>
+
+        {/* ConnectButton */}
+        <h3 id="connect-button" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          ConnectButton
+        </h3>
+        <Sub>
+          A fully self-contained wallet connect / account button. No setup beyond{' '}
+          <code className="font-mono text-accent text-[13px]">&lt;AwarizonProvider&gt;</code> required.
+          Disconnected → shows label → opens <code className="font-mono text-accent text-[13px]">ConnectModal</code>.
+          Connected → shows short address → opens mini account popup with chain logo, balance, and disconnect.
+          Auto-detects MetaMask, Rabby, Brave, Coinbase Wallet, and Phantom.
+          Shows WalletConnect QR option when <code className="font-mono text-accent text-[13px]">walletConnectProjectId</code> is set.
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { ConnectButton } from "@awarizon/react"
+
+// Zero-config — default purple styling
+<ConnectButton />
+
+// Custom label
+<ConnectButton label="Sign In" />
+
+// Tailwind class (removes all default styles)
+<ConnectButton className="rounded-full bg-indigo-600 px-5 py-2 text-white text-sm font-medium" />
+
+// Inline style override
+<ConnectButton style={{ borderRadius: 8, background: "#7c3aed", color: "#fff" }} />
+
+// Full render prop — you control the entire UI
+<ConnectButton>
+  {({ isConnected, address, connect, disconnect, isConnecting }) =>
+    isConnected ? (
+      <button onClick={disconnect}>
+        {address?.slice(0, 6)}…{address?.slice(-4)}
+      </button>
+    ) : (
+      <button onClick={connect} disabled={isConnecting}>
+        {isConnecting ? "Connecting…" : "Connect Wallet"}
+      </button>
+    )
+  }
+</ConnectButton>`}
+        />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">PROPS</div>
+          <PropRow name="label"    type="string"          desc="Button text when disconnected. Default: 'Connect Wallet'." />
+          <PropRow name="className" type="string"         desc="CSS class applied to the button. When set, all default styles are removed." />
+          <PropRow name="style"    type="CSSProperties"   desc="Inline style override." />
+          <PropRow name="children" type="fn(props)"       desc="Render prop — receive { isConnected, isConnecting, address, connectorName, connect, disconnect } and return your own JSX." />
+        </div>
+
+        {/* ConnectModal */}
+        <h3 id="connect-modal" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          ConnectModal
+        </h3>
+        <Sub>
+          The wallet selection modal rendered by <code className="font-mono text-accent text-[13px]">ConnectButton</code>.
+          Use it standalone if you want to trigger the connect flow from your own button or UI event.
+          Shows the detected browser wallet and a WalletConnect QR option (if project ID is configured).
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { ConnectModal } from "@awarizon/react"
+import { useState } from "react"
+
+function Header() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Connect</button>
+      {open && <ConnectModal onClose={() => setOpen(false)} />}
+    </>
+  )
+}`}
+        />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <PropRow name="onClose" type="() => void" req desc="Called when the user closes the modal (backdrop click or X button)." />
+        </div>
+
+        {/* AccountModal */}
+        <h3 id="account-modal" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          AccountModal
+        </h3>
+        <Sub>
+          The mini account popup rendered by <code className="font-mono text-accent text-[13px]">ConnectButton</code> when the user is connected.
+          Displays active chain logo and name, wallet address with one-click copy, live native token balance (polls every 15 s), and a disconnect button.
+          Position it relative to your own trigger element using <code className="font-mono text-accent text-[13px]">position: relative</code> on the parent.
+        </Sub>
+        <CodeEditor
+          lang="tsx"
+          code={`import { AccountModal } from "@awarizon/react"
+import { useWallet } from "@awarizon/react"
+
+function AccountButton() {
+  const { address, chainId, isConnected, disconnect } = useWallet()
+  const [open, setOpen] = useState(false)
+
+  if (!isConnected) return null
+
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <button onClick={() => setOpen(v => !v)}>
+        {address?.slice(0, 6)}…{address?.slice(-4)}
+      </button>
+      {open && (
+        <AccountModal
+          address={address!}
+          chainId={chainId}
+          onClose={() => setOpen(false)}
+          onDisconnect={() => { disconnect(); setOpen(false) }}
+        />
+      )}
+    </div>
+  )
+}`}
+        />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
+          <PropRow name="address"      type="Address"     req  desc="The connected wallet address to display." />
+          <PropRow name="chainId"      type="number|null"      desc="The active chain ID — used to display the chain logo and name." />
+          <PropRow name="onClose"      type="() => void"  req  desc="Called when the user clicks outside the popup." />
+          <PropRow name="onDisconnect" type="() => void"  req  desc="Called when the user clicks the Disconnect button." />
         </div>
 
         {/* useWallet */}
@@ -799,8 +1060,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
           useWallet
         </h3>
         <Sub>
-          Manage wallet state reactively. Supports creating a fresh wallet, importing from mnemonic or private key,
-          and injecting an external WalletClient — all with loading and error state built in.
+          Manage wallet state reactively. Reacts to connect, disconnect, account switches, and chain changes automatically —
+          including when the user acts in their wallet app without interacting with your UI.
         </Sub>
         <CodeEditor
           lang="tsx"
@@ -808,34 +1069,32 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 function WalletPanel() {
   const {
-    address,          // string | null — active wallet address
+    address,          // Address | null — active wallet address
     isConnected,      // boolean
     isLoading,        // true during async wallet operations
     error,            // Error | null
-    create,           // () => Promise<void>
+    chainId,          // number | null — chain the external wallet is currently on
+    isChainMismatch,  // true when the wallet is on a different chain than the SDK
+    connectorInfo,    // { type, name?, icon? } — how the wallet is connected
+    create,           // () => Promise<CreatedWallet>
     importMnemonic,   // (phrase: string, accountIndex?: number) => Promise<void>
     importPrivateKey, // (key: \`0x\${string}\`) => Promise<void>
-    connect,          // (walletClient: WalletClient) => void — external wallets
+    connect,          // (walletClient: WalletClient, info?) => void
     disconnect,       // () => void
+    signMessage,      // (msg: string | { raw: Hex }) => Promise<Hex>
   } = useWallet()
 
-  if (isLoading) return <p>Loading…</p>
+  if (isChainMismatch) return <p>Wrong network — please switch in your wallet</p>
+  if (isLoading)       return <p>Loading…</p>
 
   if (!isConnected) {
-    return (
-      <div>
-        <button onClick={create}>Create new wallet</button>
-        <button onClick={() => importMnemonic("word1 word2 ... word12")}>
-          Import from phrase
-        </button>
-      </div>
-    )
+    return <button onClick={create}>Create Wallet</button>
   }
 
   return (
     <div>
-      <p>Connected: {address}</p>
-      {error && <p style={{ color: "red" }}>{error.message}</p>}
+      <p>Connected via {connectorInfo.name ?? connectorInfo.type}</p>
+      <p>{address}</p>
       <button onClick={disconnect}>Disconnect</button>
     </div>
   )
@@ -843,15 +1102,19 @@ function WalletPanel() {
         />
         <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-3">
           <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">RETURN VALUES</div>
-          <PropRow name="address"          type="string | null"  desc="Active wallet address, or null when no wallet is connected." />
-          <PropRow name="isConnected"      type="boolean"        desc="True when any wallet (internal or external) is active." />
-          <PropRow name="isLoading"        type="boolean"        desc="True during create, import, or connect operations." />
-          <PropRow name="error"            type="Error | null"   desc="Last wallet operation error. Cleared on the next successful operation." />
-          <PropRow name="create"           type="() => Promise"  desc="Generate a fresh wallet keypair and activate it." />
-          <PropRow name="importMnemonic"   type="fn"             desc="(phrase, index?) → restore from a BIP-39 mnemonic and activate." />
-          <PropRow name="importPrivateKey" type="fn"             desc="(key) → load from a hex private key and activate." />
-          <PropRow name="connect"          type="fn"             desc="(walletClient) → inject an external WalletClient (wagmi, RainbowKit)." />
-          <PropRow name="disconnect"       type="() => void"     desc="Clear all wallet state and set address to null." />
+          <PropRow name="address"          type="Address | null"  desc="Active wallet address, or null when no wallet is connected." />
+          <PropRow name="isConnected"      type="boolean"         desc="True when any wallet (internal or external) is active." />
+          <PropRow name="isLoading"        type="boolean"         desc="True during create, import, or connect operations." />
+          <PropRow name="error"            type="Error | null"    desc="Last wallet operation error. Cleared on the next success." />
+          <PropRow name="chainId"          type="number | null"   desc="Chain ID the external wallet is currently on. Null for internal wallets (they always follow the SDK chain)." />
+          <PropRow name="isChainMismatch"  type="boolean"         desc="True when the external wallet is on a different chain than the SDK config. Use this to show a 'wrong network' banner." />
+          <PropRow name="connectorInfo"    type="ConnectorInfo"   desc="{ type: 'external'|'internal'|'none', name?, icon? } — metadata about how the wallet is connected." />
+          <PropRow name="create"           type="() => Promise"   desc="Generate a fresh wallet keypair and activate it." />
+          <PropRow name="importMnemonic"   type="fn"              desc="(phrase, index?) → restore from a BIP-39 mnemonic and activate." />
+          <PropRow name="importPrivateKey" type="fn"              desc="(key) → load from a hex private key and activate." />
+          <PropRow name="connect"          type="fn"              desc="(walletClient, info?) → inject an external WalletClient (wagmi, RainbowKit)." />
+          <PropRow name="disconnect"       type="() => void"      desc="Clear external wallet state. Falls back to internal wallet if one is loaded." />
+          <PropRow name="signMessage"      type="fn"              desc="(message | { raw }) → sign a plain text or raw-bytes message. Returns Hex." />
         </div>
 
         {/* useReadContract */}
@@ -1031,6 +1294,66 @@ function WalletBalance({ address }: { address: \`0x\${string}\` }) {
   )
 }`}
         />
+
+        {/* Chain icons */}
+        <h3 id="chain-icons" className="font-display font-semibold text-white text-base mt-8 mb-1 scroll-mt-20">
+          Chain Icons & Metadata
+        </h3>
+        <Sub>
+          Helper functions that map chain IDs to icons, human-readable names, and native currency symbols.
+          Icons are hosted at <code className="font-mono text-accent text-[13px]">awarizon.com</code> — no bundling required.
+          Used internally by <code className="font-mono text-accent text-[13px]">AccountModal</code> and <code className="font-mono text-accent text-[13px]">ConnectButton</code>.
+        </Sub>
+        <CodeEditor
+          lang="ts"
+          code={`import {
+  getChainIcon,
+  getChainName,
+  getChainNativeSymbol,
+  CHAIN_ICONS,
+  CHAIN_NAMES,
+  CHAIN_NATIVE_SYMBOLS,
+} from "@awarizon/react"
+
+getChainIcon(1)          // "https://awarizon.com/eth.png"
+getChainIcon(8453)       // "https://awarizon.com/base.png"
+getChainIcon(137)        // "https://awarizon.com/polygon-pol-logo.png"
+getChainIcon(99999)      // undefined — unknown chain
+
+getChainName(1)          // "Ethereum"
+getChainName(8453)       // "Base"
+getChainName(42161)      // "Arbitrum One"
+getChainName(99999)      // "Chain 99999"  — fallback
+
+getChainNativeSymbol(1)     // "ETH"
+getChainNativeSymbol(56)    // "BNB"
+getChainNativeSymbol(137)   // "POL"
+getChainNativeSymbol(43114) // "AVAX"`}
+        />
+        <div className="border border-[#1E1E1E] bg-[#0A0A0A] mt-3 mb-1">
+          <div className="font-mono text-[9px] text-dim tracking-widest px-4 py-2 border-b border-[#1E1E1E]">SUPPORTED CHAIN IDS</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-px bg-[#1E1E1E]">
+            {[
+              ['1',        'Ethereum'],
+              ['56',       'BNB Chain'],
+              ['137',      'Polygon'],
+              ['42161',    'Arbitrum One'],
+              ['10',       'Optimism'],
+              ['43114',    'Avalanche'],
+              ['8453',     'Base'],
+              ['2020',     'Ronin'],
+              ['146',      'Sonic'],
+              ['7000',     'ZetaChain'],
+              ['80094',    'Berachain'],
+              ['33139',    'ApeChain'],
+            ].map(([id, name]) => (
+              <div key={id} className="bg-[#0A0A0A] px-4 py-2.5 flex items-center gap-3">
+                <code className="font-mono text-[11px]" style={{ color: '#9CDCFE' }}>{id}</code>
+                <span className="font-body text-[12px] text-dim">{name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── CLI ─────────────────────────────────────────────── */}

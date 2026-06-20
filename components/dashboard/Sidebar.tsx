@@ -25,7 +25,6 @@ const NAV_ITEMS = [
 const SITE_LINKS = [
   { href: '/infrastructure', label: 'Infrastructure' },
   { href: '/learn',          label: 'Web3 Academy'   },
-  { href: '/consumer',       label: 'Consumer Layer' },
 ]
 
 function Initials({ user }: { user: User }) {

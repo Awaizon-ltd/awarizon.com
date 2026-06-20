@@ -28,13 +28,6 @@ export const NAV_LAYERS = [
     num: '04',
   },
   {
-    href: '/consumer',
-    label: 'Consumer Systems',
-    code: 'CONSUMER_LAYER',
-    sublabel: 'Products & Interfaces',
-    num: '05',
-  },
-  {
     href: '/ecosystem',
     label: 'Ecosystem Logic',
     code: 'ECO_GRAPH',
