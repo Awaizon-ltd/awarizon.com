@@ -1,10 +1,14 @@
 'use client'
 
 import { useEffect, useState, type ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { DOCS } from '@/lib/docs'
 
 // ─── Nav tree ─────────────────────────────────────────────────────────────────
+// Top-level items → pages (/docs/{id})
+// Children → anchor links (#id) within that page
 
 const NAV = [
   { id: 'overview',     label: 'Overview'     },
@@ -52,8 +56,6 @@ const NAV = [
       { id: 'contract-binding',   label: 'contract()'        },
       { id: 'use-read',           label: 'useRead()'         },
       { id: 'use-write',          label: 'useWrite()'        },
-      { id: 'use-read-contract',  label: 'useReadContract'   },
-      { id: 'use-write-contract', label: 'useWriteContract'  },
       { id: 'use-contract',       label: 'useContract'       },
       { id: 'use-token',          label: 'useToken'          },
       { id: 'use-nft',            label: 'useNFT'            },
@@ -85,81 +87,109 @@ const NAV = [
   { id: 'types',  label: 'TypeScript Types' },
 ]
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 type NavItem = typeof NAV[number]
-
-function getParentSection(activeId: string): NavItem | null {
-  for (const s of NAV) {
-    if (s.id === activeId) return s
-    if ('children' in s && s.children?.some(c => c.id === activeId)) return s
-  }
-  return null
-}
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
 export default function DocsLayout({ children }: { children: ReactNode }) {
-  const [active,        setActive]        = useState('overview')
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const pathname      = usePathname()
+  const currentSlug   = pathname?.split('/docs/')[1]?.split('#')[0] ?? 'overview'
+  const [activeId,    setActiveId]        = useState('')
+  const [mobileOpen,  setMobileOpen]      = useState(false)
 
+  // Derive the right TOC from the current section's h3/step items
+  const currentSection = DOCS.find(s => s.id === currentSlug)
+  const tocItems = (currentSection?.items ?? [])
+    .filter(item => item.type === 'h3' || item.type === 'step')
+    .map(item => {
+      const it = item as { type: string; id: string; title: string }
+      return { id: it.id, label: it.title }
+    })
+
+  // IntersectionObserver tracks which h3/step is visible → highlights right TOC
   useEffect(() => {
-    const ids = NAV.flatMap(s => 'children' in s && s.children ? [s.id, ...s.children.map(c => c.id)] : [s.id])
-    const els = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+    setActiveId('')
+    const ids  = tocItems.map(t => t.id)
+    const els  = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+    if (els.length === 0) return
 
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id)
+          if (entry.isIntersecting) { setActiveId(entry.target.id); break }
         }
       },
-      { rootMargin: '-15% 0px -75% 0px' },
+      { rootMargin: '-10% 0px -70% 0px' },
     )
     els.forEach(el => observer.observe(el))
     return () => observer.disconnect()
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSlug])
 
-  const parentSection = getParentSection(active)
-  const tocItems = 'children' in (parentSection ?? {}) ? (parentSection as NavItem & { children: { id: string; label: string }[] }).children ?? [] : []
+  // ─── Sidebar nav ────────────────────────────────────────────────────────────
 
-  const sidebarContent = (
-    <nav className="space-y-0.5">
-      {NAV.map(section => (
-        <div key={section.id}>
-          <a
-            href={`#${section.id}`}
-            onClick={() => setMobileNavOpen(false)}
-            className={[
-              'block font-mono text-[11px] tracking-widest px-3 py-2 transition-colors',
-              active === section.id
-                ? 'text-accent border-l-2 border-accent bg-accent/5'
-                : 'text-muted hover:text-white border-l-2 border-transparent hover:bg-[#0A0A0A]',
-            ].join(' ')}
-          >
-            {section.label}
-          </a>
-          {'children' in section && section.children?.map(child => (
-            <a
-              key={child.id}
-              href={`#${child.id}`}
-              onClick={() => setMobileNavOpen(false)}
+  const SidebarNav = ({ onNavigate }: { onNavigate?: () => void }) => (
+    <nav className="py-6 px-3 space-y-0.5">
+      {NAV.map(section => {
+        const isActive   = currentSlug === section.id
+        const hasChildren = 'children' in section && (section as NavItem & { children?: unknown[] }).children
+
+        return (
+          <div key={section.id}>
+            {/* Top-level link → navigates to the page */}
+            <Link
+              href={`/docs/${section.id}`}
+              onClick={onNavigate}
               className={[
-                'block font-mono text-[10px] tracking-wider pl-6 pr-3 py-1.5 transition-colors',
-                active === child.id ? 'text-accent' : 'text-dim hover:text-muted',
+                'flex items-center justify-between font-mono text-[11px] tracking-widest px-3 py-2 transition-colors rounded-sm',
+                isActive
+                  ? 'text-accent border-l-2 border-accent bg-accent/5'
+                  : 'text-muted hover:text-white border-l-2 border-transparent hover:bg-white/[0.03]',
               ].join(' ')}
             >
-              {child.label}
-            </a>
-          ))}
-        </div>
-      ))}
+              <span>{section.label}</span>
+              {hasChildren && (
+                <span
+                  className={[
+                    'font-mono text-[8px] transition-transform duration-200 opacity-40',
+                    isActive ? 'rotate-90' : '',
+                  ].join(' ')}
+                >
+                  ▶
+                </span>
+              )}
+            </Link>
+
+            {/* Sub-items — only when this page is active */}
+            {hasChildren && isActive && (
+              <div className="mt-0.5 mb-1">
+                {(section as NavItem & { children: { id: string; label: string }[] }).children.map(child => (
+                  <a
+                    key={child.id}
+                    href={`#${child.id}`}
+                    onClick={onNavigate}
+                    className={[
+                      'flex items-center gap-2 font-mono text-[10px] tracking-wide pl-5 pr-3 py-1.5 transition-colors border-l-2',
+                      activeId === child.id
+                        ? 'text-accent border-accent bg-accent/[0.04]'
+                        : 'text-dim hover:text-muted border-transparent hover:border-white/10',
+                    ].join(' ')}
+                  >
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
     </nav>
   )
 
   return (
     <div className="min-h-screen bg-black flex flex-col">
 
-      {/* Top bar */}
+      {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-30 bg-black/95 backdrop-blur border-b border-[#1E1E1E] flex items-center gap-4 px-5 h-14 flex-shrink-0">
         <Link href="/" className="flex items-center gap-3 mr-4">
           <Image src="/logo.png" alt="Awarizon" width={100} height={24} className="h-6 w-auto brightness-0 invert" />
@@ -185,9 +215,9 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           </Link>
           {/* Mobile hamburger */}
           <button
-            onClick={() => setMobileNavOpen(v => !v)}
+            onClick={() => setMobileOpen(v => !v)}
             className="lg:hidden text-muted p-1.5"
-            aria-label="Toggle nav"
+            aria-label="Toggle navigation"
           >
             <span className="block w-5 h-px bg-current mb-1.5" />
             <span className="block w-3.5 h-px bg-current mb-1.5" />
@@ -196,56 +226,54 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      {/* Body — desktop: 3-col with only center scrolling */}
-      <div className="flex flex-1 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden">
+      {/* ── Body ────────────────────────────────────────────────────────────── */}
+      <div className="flex flex-1">
 
-        {/* Left sidebar — desktop */}
-        <aside className="hidden lg:flex flex-col w-56 xl:w-64 flex-shrink-0 border-r border-[#1E1E1E] overflow-y-auto py-6 px-3">
-          {sidebarContent}
+        {/* Left sidebar — desktop: sticky, never scrolls with page */}
+        <aside className="hidden lg:block flex-shrink-0 w-56 xl:w-64 border-r border-[#1E1E1E] sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto">
+          <SidebarNav />
         </aside>
 
         {/* Mobile drawer */}
-        {mobileNavOpen && (
+        {mobileOpen && (
           <>
             <div
               className="lg:hidden fixed inset-0 bg-black/80 z-40"
-              onClick={() => setMobileNavOpen(false)}
+              onClick={() => setMobileOpen(false)}
             />
-            <aside className="lg:hidden fixed left-0 top-14 bottom-0 w-64 bg-black border-r border-[#1E1E1E] z-50 overflow-y-auto py-6 px-3">
-              {sidebarContent}
+            <aside className="lg:hidden fixed left-0 top-14 bottom-0 w-64 bg-[#050505] border-r border-[#1E1E1E] z-50 overflow-y-auto">
+              <SidebarNav onNavigate={() => setMobileOpen(false)} />
             </aside>
           </>
         )}
 
-        {/* Center — only this scrolls on desktop */}
-        <main className="flex-1 min-w-0 overflow-y-auto px-6 md:px-10 lg:px-14 py-12">
+        {/* Center content */}
+        <main className="flex-1 min-w-0 px-6 md:px-10 lg:px-14 xl:px-16 py-12">
           {children}
         </main>
 
-        {/* Right TOC sidebar — xl+ only */}
-        <aside className="hidden xl:flex flex-col w-48 2xl:w-52 flex-shrink-0 border-l border-[#1E1E1E] overflow-y-auto py-8 px-4">
-          {tocItems.length > 0 ? (
-            <>
-              <p className="font-mono text-[9px] tracking-[0.2em] text-dim/60 mb-4 uppercase">On this page</p>
-              <nav className="space-y-0.5">
-                {tocItems.map(item => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    className={[
-                      'block font-mono text-[10px] tracking-wide py-1.5 px-2 transition-colors',
-                      active === item.id
-                        ? 'text-accent border-l border-accent pl-2'
-                        : 'text-dim hover:text-muted border-l border-transparent',
-                    ].join(' ')}
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
-            </>
-          ) : null}
-        </aside>
+        {/* Right TOC — xl+ only, sticky */}
+        {tocItems.length > 0 && (
+          <aside className="hidden xl:block flex-shrink-0 w-52 2xl:w-56 border-l border-[#1E1E1E] sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto py-8 px-4">
+            <p className="font-mono text-[9px] tracking-[0.2em] text-dim/50 mb-4 uppercase">On this page</p>
+            <nav className="space-y-0.5">
+              {tocItems.map(item => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className={[
+                    'block font-mono text-[10px] tracking-wide py-1.5 px-2 transition-colors border-l',
+                    activeId === item.id
+                      ? 'text-accent border-accent'
+                      : 'text-dim hover:text-muted border-transparent',
+                  ].join(' ')}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        )}
 
       </div>
     </div>

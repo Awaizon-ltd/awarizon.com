@@ -461,16 +461,16 @@ const tx = await usdc.transfer(recipient, 1_000_000n)`,
       },
       { type: 'callout', icon: '⚠️', variant: 'warn', md: 'Never store private keys or mnemonic phrases in plaintext, localStorage, or client-side variables. On mobile use `expo-secure-store` via `@awarizon/react-native`. On server, load from environment variables only.' },
 
-      { type: 'h3', id: 'wallet-external', title: 'External Wallets — wagmi · RainbowKit · WalletConnect' },
-      { type: 'text', md: 'Inject any viem-compatible WalletClient from wagmi, RainbowKit, or a custom EIP-1193 provider. External signers always take priority over internal wallets.' },
+      { type: 'h3', id: 'wallet-external', title: 'External Wallets — wagmi & RainbowKit' },
+      { type: 'text', md: 'Inject any viem-compatible `WalletClient` from wagmi or RainbowKit. A one-line sync component keeps the Awarizon SDK in lockstep with whatever wallet the user selects in wagmi — account switches and chain changes included.' },
       { type: 'label', text: 'wagmi — useWalletClient()' },
       {
-        type: 'code', lang: 'tsx', code: `import { useWalletClient } from "wagmi"
-import { useEffect } from "react"
+        type: 'code', lang: 'tsx', code: `import { useEffect } from "react"
+import { useWalletClient } from "wagmi"
 import { useSDK } from "@awarizon/react"
 
-// Place this inside both <WagmiProvider> and <AwarizonProvider>
-function WagmiConnector() {
+// Drop this inside any component that lives under both <WagmiProvider> and <AwarizonProvider>
+function WalletSync() {
   const awarizon = useSDK()
   const { data: walletClient } = useWalletClient()
 
@@ -479,26 +479,36 @@ function WagmiConnector() {
     else              awarizon.disconnectWallet()
   }, [walletClient, awarizon])
 
-  return null
+  return null  // renders nothing — purely a sync effect
 }`,
       },
-      { type: 'label', text: 'RainbowKit — same wagmi pattern + connect button' },
+      { type: 'label', text: 'RainbowKit — WalletSync + ConnectButton' },
       {
-        type: 'code', lang: 'tsx', code: `import { ConnectButton } from "@rainbow-me/rainbowkit"
+        type: 'code', lang: 'tsx', code: `import { useEffect } from "react"
 import { useWalletClient } from "wagmi"
-import { useEffect } from "react"
+import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useSDK } from "@awarizon/react"
 
-function RainbowConnector() {
+// Syncs the active wagmi wallet into Awarizon whenever it changes
+function WalletSync() {
   const awarizon = useSDK()
   const { data: walletClient } = useWalletClient()
-
   useEffect(() => {
     if (walletClient) awarizon.connectWallet(walletClient)
     else              awarizon.disconnectWallet()
   }, [walletClient, awarizon])
-
   return null
+}
+
+// In your layout — WalletSync is invisible, ConnectButton handles the UI
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <WalletSync />          {/* keeps Awarizon in sync with RainbowKit */}
+      <ConnectButton />       {/* RainbowKit's button — shows connected address */}
+      {children}
+    </>
+  )
 }`,
       },
 
@@ -525,21 +535,100 @@ function detectWalletName(p: Record<string, unknown>): string {
       },
       { type: 'callout', icon: '💡', variant: 'tip', md: 'If you use `<ConnectButton />` from `@awarizon/react`, this is handled for you automatically — including wallet detection, WalletConnect QR, and the account popup.' },
 
-      { type: 'h3', id: 'walletconnect', title: 'WalletConnect v2 — Built-in' },
-      { type: 'text', md: 'WalletConnect v2 is built into the SDK. Pass `walletConnectProjectId` at init and call `connectWalletConnect()`. Get a free project ID at [cloud.walletconnect.com](https://cloud.walletconnect.com).' },
+      { type: 'h3', id: 'walletconnect', title: 'WalletConnect — MetaMask · Trust · Rainbow · Coinbase' },
+      { type: 'text', md: 'WalletConnect v2 is built into the SDK — **no RainbowKit or wagmi required**. Pass `walletConnectProjectId` at init to unlock direct connections to MetaMask Mobile, Trust Wallet, Rainbow, Coinbase Wallet, Uniswap, and any other WalletConnect-compatible app. Get a free project ID at [cloud.walletconnect.com](https://cloud.walletconnect.com).' },
       {
         type: 'code', code: `const awarizon = new AwarizonWeb3({
   chain:                  "base",
   apiKey:                 "awz_live_...",
-  walletConnectProjectId: "YOUR_WC_PROJECT_ID",
-})
-
-await awarizon.connectWalletConnect({
-  onDisplayUri: (uri) => {
-    // uri is the wc:// deep-link string — pass to a QR renderer or mobile deeplink
-    showQrCode(uri)
-  },
+  walletConnectProjectId: "YOUR_WC_PROJECT_ID",  // from cloud.walletconnect.com
 })`,
+      },
+      { type: 'text', md: 'Calling `connectWalletConnect()` fires `onDisplayUri` with a `wc://` URI string. On **desktop**, render it as a QR code. On **mobile**, turn it into a deep link that opens the user\'s wallet app directly.' },
+      { type: 'label', text: 'Desktop — QR code (user scans from mobile wallet app)' },
+      {
+        type: 'code', lang: 'tsx', code: `import QRCode from "react-qr-code"  // or any QR library
+import { useState } from "react"
+import { useSDK } from "@awarizon/react"
+
+function ConnectDesktop() {
+  const awarizon  = useSDK()
+  const [uri, setUri] = useState<string | null>(null)
+
+  async function connect() {
+    await awarizon.connectWalletConnect({
+      onDisplayUri: (wcUri) => setUri(wcUri),
+    })
+    setUri(null)  // clear QR once connected
+  }
+
+  if (uri) return (
+    <div>
+      <p>Scan with MetaMask, Trust, Rainbow, Coinbase, or any wallet app</p>
+      <QRCode value={uri} size={240} />
+    </div>
+  )
+
+  return <button onClick={connect}>Connect Wallet</button>
+}`,
+      },
+      { type: 'label', text: 'Mobile — deep link buttons (opens the wallet app directly)' },
+      {
+        type: 'code', lang: 'tsx', code: `import { useState } from "react"
+import { useSDK } from "@awarizon/react"
+
+// WalletConnect v2 deep-link prefixes — each wallet registers its own URI scheme
+const WALLETS = [
+  { name: 'MetaMask',        scheme: 'metamask://wc?uri=',   icon: '🦊' },
+  { name: 'Trust Wallet',    scheme: 'trust://wc?uri=',      icon: '🛡️' },
+  { name: 'Rainbow',         scheme: 'rainbow://wc?uri=',    icon: '🌈' },
+  { name: 'Coinbase Wallet', scheme: 'cbwallet://wc?uri=',   icon: '🔵' },
+  { name: 'Uniswap Wallet',  scheme: 'uniswap://wc?uri=',   icon: '🦄' },
+]
+
+function ConnectMobile() {
+  const awarizon   = useSDK()
+  const [uri, setUri] = useState<string | null>(null)
+
+  async function startConnect() {
+    await awarizon.connectWalletConnect({
+      onDisplayUri: (wcUri) => setUri(wcUri),
+    })
+    setUri(null)  // clear once approved
+  }
+
+  if (uri) {
+    return (
+      <div>
+        <p>Choose your wallet:</p>
+        {WALLETS.map(w => (
+          <a
+            key={w.name}
+            href={\`\${w.scheme}\${encodeURIComponent(uri)}\`}
+            style={{ display: "block", margin: "8px 0" }}
+          >
+            {w.icon} Open in {w.name}
+          </a>
+        ))}
+      </div>
+    )
+  }
+
+  return <button onClick={startConnect}>Connect Mobile Wallet</button>
+}`,
+      },
+      { type: 'callout', icon: '💡', variant: 'tip', md: 'Detect `navigator.userAgent` at runtime to show QR (desktop) or deep-link buttons (mobile) automatically. `<ConnectButton />` from `@awarizon/react` does this for you — it renders the correct UI for each platform without any extra setup.' },
+      {
+        type: 'grid',
+        cols: 2,
+        items: [
+          { label: 'MetaMask Mobile',  sub: 'metamask://wc?uri=...',   tag: 'iOS · Android' },
+          { label: 'Trust Wallet',     sub: 'trust://wc?uri=...',      tag: 'iOS · Android' },
+          { label: 'Rainbow',          sub: 'rainbow://wc?uri=...',    tag: 'iOS · Android' },
+          { label: 'Coinbase Wallet',  sub: 'cbwallet://wc?uri=...',   tag: 'iOS · Android' },
+          { label: 'Uniswap Wallet',   sub: 'uniswap://wc?uri=...',   tag: 'iOS · Android' },
+          { label: 'Any WC v2 wallet', sub: 'Universal QR code fallback', tag: 'All platforms' },
+        ],
       },
 
       { type: 'h3', id: 'live-tracking', title: 'Live Wallet & Chain Tracking' },
@@ -899,47 +988,6 @@ function Actions({ user }: { user: \`0x\${string}\` }) {
         ],
       },
 
-      { type: 'h3', id: 'use-read-contract', title: 'useReadContract — low-level' },
-      { type: 'text', md: 'Direct version of `useRead()` — pass address/abi/method explicitly. Use `useRead()` + `contract()` instead for less boilerplate.' },
-      {
-        type: 'code', lang: 'tsx', code: `import { useReadContract } from "@awarizon/react"
-
-function TokenBalance({ owner }: { owner: \`0x\${string}\` }) {
-  const { data, isLoading, error, refetch } = useReadContract({
-    address: "0xToken",
-    abi:     ERC20_ABI,
-    method:  "balanceOf",
-    args:    [owner],       // re-fetches when owner changes
-    pollingInterval: 12_000,
-  })
-  if (isLoading) return <span>Loading…</span>
-  return <span>{data?.toString()}</span>
-}`,
-      },
-
-      { type: 'h3', id: 'use-write-contract', title: 'useWriteContract — low-level' },
-      { type: 'text', md: 'Direct version of `useWrite()`. Pass address/abi/method explicitly. Prefer `useWrite()` + `contract()` for cleaner code.' },
-      {
-        type: 'code', lang: 'tsx', code: `import { useWriteContract } from "@awarizon/react"
-
-function TransferButton() {
-  const { write, isLoading, result, error, reset } = useWriteContract({
-    address: "0xToken",
-    abi:     ERC20_ABI,
-    method:  "transfer",
-  })
-  return (
-    <div>
-      <button onClick={() => write(to, amount)} disabled={isLoading}>
-        {isLoading ? "Sending…" : "Transfer"}
-      </button>
-      {result && <p>Hash: {result.hash}</p>}
-      {error  && <p>{error.message}</p>}
-    </div>
-  )
-}`,
-      },
-
       { type: 'h3', id: 'use-contract', title: 'useContract' },
       { type: 'text', md: 'Returns the raw `ContractInstance` for event subscriptions or advanced imperative use.' },
       {
@@ -1118,18 +1166,19 @@ export class MyTokenClient {
 }`,
       },
       {
-        type: 'code', filename: 'useMyToken.ts  (React hooks — auto-generated)', code: `import { useReadContract, useWriteContract, useContract } from "@awarizon/react"
+        type: 'code', filename: 'useMyToken.ts  (React hooks — auto-generated)', code: `import { contract, useRead, useWrite } from "@awarizon/react"
 
 const CONTRACT_ADDRESS = "0xYourDeployedAddress"
+const TOKEN = contract(CONTRACT_ADDRESS, MYTOKEN_ABI)
 
 export function useReadBalanceOf(owner: \`0x\${string}\`) {
-  return useReadContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI, method: "balanceOf", args: [owner] })
+  return useRead(TOKEN.balanceOf(owner))
 }
 export function useReadSymbol() {
-  return useReadContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI, method: "symbol" })
+  return useRead(TOKEN.symbol())
 }
 export function useWriteTransfer() {
-  return useWriteContract({ address: CONTRACT_ADDRESS, abi: MYTOKEN_ABI, method: "transfer" })
+  return useWrite(TOKEN.transfer)
 }
 
 // Usage:
