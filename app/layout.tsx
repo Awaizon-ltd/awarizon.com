@@ -15,27 +15,41 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default: `${siteName} — Technology Development & Distribution`,
+    default: `${siteName} — Build Production Web3 Apps on Any EVM Chain`,
     template: `%s | ${siteName}`,
   },
 
   description:
-    "Awarizon helps businesses adopt modern digital systems and builds consumer products that make technology useful in everyday life across Nigeria and West Africa.",
+    "Ship faster with a typed EVM SDK that just works. React hooks, built-in wallet, SIWE auth, and React Native support — one API key, zero blockchain boilerplate.",
 
   keywords: [
+    "web3 sdk",
+    "evm sdk",
+    "ethereum sdk typescript",
+    "react web3 hooks",
+    "blockchain developer tools",
+    "smart contract hooks react",
+    "useReadContract useWriteContract",
+    "wagmi alternative",
+    "viem wrapper",
+    "sign in with ethereum",
+    "siwe sdk",
+    "erc20 hooks",
+    "nft hooks react",
+    "defi sdk javascript",
+    "react native web3",
+    "expo blockchain sdk",
+    "base chain sdk",
+    "polygon sdk",
+    "arbitrum sdk",
+    "web3 boilerplate",
+    "create web3 app",
+    "blockchain api key",
+    "typed web3 typescript",
+    "multicall react",
+    "wallet connect sdk",
     "Awarizon",
-    "technology development Nigeria",
-    "digital infrastructure Africa",
-    "fintech Nigeria",
-    "West Africa technology",
-    "business automation Nigeria",
-    "digital payments Africa",
-    "wallet infrastructure",
-    "technology distribution",
-    "Zela app",
-    "emerging markets technology",
-    "digital transformation Nigeria",
-    "technology adoption",
+    "awarizon sdk",
   ],
 
   authors: [{ name: "Awarizon", url: siteUrl }],
@@ -43,9 +57,9 @@ export const metadata: Metadata = {
   publisher: "Awarizon",
 
   openGraph: {
-    title: `${siteName} — Technology Development & Distribution`,
+    title: `${siteName} — Build Production Web3 Apps on Any EVM Chain`,
     description:
-      "Building the bridge between businesses, technology, and everyday users across Nigeria and West Africa.",
+      "Typed SDK, React hooks, built-in wallet, SIWE auth, React Native support. From contract call to production dApp in minutes — not months.",
     url: siteUrl,
     siteName: siteName,
     type: "website",
@@ -55,7 +69,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Awarizon — Technology Development & Distribution",
+        alt: "Awarizon — EVM SDK for Web3 Developers",
         type: "image/jpeg",
       },
     ],
@@ -63,9 +77,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: `${siteName} — Technology Development & Distribution`,
+    title: `${siteName} — Build Production Web3 Apps on Any EVM Chain`,
     description:
-      "Building the bridge between businesses, technology, and everyday users across Nigeria and West Africa.",
+      "Typed SDK, React hooks, built-in wallet, SIWE auth, React Native support. From contract call to production dApp in minutes — not months.",
     site: "@awarizon",
     creator: "@awarizon",
     images: ["/og-image.jpg"],
@@ -101,17 +115,18 @@ const organizationSchema = {
   url: siteUrl,
   logo: `${siteUrl}/logo.png`,
   description:
-    "Awarizon helps businesses adopt modern digital systems and builds consumer products that make technology useful in everyday life.",
+    "Awarizon builds production-grade EVM tooling for Web3 developers. One SDK, any chain — ship smart contract apps faster with typed React hooks, built-in wallet management, and mobile support.",
   email: "hello@awarizon.com",
-  areaServed: ["Nigeria", "West Africa", "Emerging Markets"],
+  areaServed: "Worldwide",
   sameAs: [
     "https://twitter.com/awarizon",
     "https://linkedin.com/company/awarizon",
+    "https://www.npmjs.com/org/awarizon",
   ],
   contactPoint: {
     "@type": "ContactPoint",
     email: "hello@awarizon.com",
-    contactType: "customer service",
+    contactType: "developer support",
   },
 };
 
@@ -120,6 +135,27 @@ const websiteSchema = {
   "@type": "WebSite",
   name: "Awarizon",
   url: siteUrl,
+};
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Awarizon SDK",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Node.js, Browser, iOS, Android",
+  url: `${siteUrl}/sdk`,
+  description:
+    "Production-grade EVM SDK for Web3 developers. Typed React hooks for reads, writes, wallet management, SIWE auth, and multicall — across Base, Ethereum, Polygon, Arbitrum, and more.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  author: {
+    "@type": "Organization",
+    name: "Awarizon",
+    url: siteUrl,
+  },
 };
 
 export default function RootLayout({
@@ -137,6 +173,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
         />
 
         {/* Ambient overlays */}
