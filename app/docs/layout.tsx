@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, useRef, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -94,8 +94,10 @@ type NavItem = typeof NAV[number]
 export default function DocsLayout({ children }: { children: ReactNode }) {
   const pathname      = usePathname()
   const currentSlug   = pathname?.split('/docs/')[1]?.split('#')[0] ?? 'overview'
-  const [activeId,    setActiveId]        = useState('')
-  const [mobileOpen,  setMobileOpen]      = useState(false)
+  const [activeId,      setActiveId]      = useState('')
+  const [mobileOpen,    setMobileOpen]    = useState(false)
+  const [mobileNavVisible, setMobileNavVisible] = useState(true)
+  const lastScrollY = useRef(0)
 
   // Derive the right TOC from the current section's h3/step items
   const currentSection = DOCS.find(s => s.id === currentSlug)
@@ -125,6 +127,23 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
     return () => observer.disconnect()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSlug])
+
+  // Mobile-only: show the nav strip when scrolling up or at the top, hide on scroll down
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY
+      if (y < 10) {
+        setMobileNavVisible(true)
+      } else if (y < lastScrollY.current) {
+        setMobileNavVisible(true)   // scrolling up
+      } else if (y > lastScrollY.current + 4) {
+        setMobileNavVisible(false)  // scrolling down (4px threshold avoids jitter)
+      }
+      lastScrollY.current = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // ─── Sidebar nav ────────────────────────────────────────────────────────────
 
@@ -226,11 +245,68 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      {/* ── Body ────────────────────────────────────────────────────────────── */}
-      <div className="flex flex-1">
+      {/* ── Mobile section nav strip ──────────────────────────────────────── */}
+      {/* Fixed below the header on mobile. Slides out when scrolling down, back in on scroll up. */}
+      <div
+        className={[
+          'lg:hidden fixed top-14 left-0 right-0 z-20',
+          'bg-black/95 backdrop-blur border-b border-[#1E1E1E]',
+          'transition-transform duration-200',
+          mobileNavVisible ? 'translate-y-0' : '-translate-y-full',
+        ].join(' ')}
+      >
+        <div className="flex items-center gap-3 px-4 h-10">
+          {/* Hamburger — opens the full nav drawer */}
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="flex-shrink-0 flex flex-col gap-[4px] py-1 text-dim hover:text-white transition-colors"
+            aria-label="Open navigation"
+          >
+            <span className="block w-[18px] h-px bg-current" />
+            <span className="block w-[12px] h-px bg-current" />
+            <span className="block w-[18px] h-px bg-current" />
+          </button>
 
-        {/* Left sidebar — desktop: sticky, never scrolls with page */}
-        <aside className="hidden lg:block flex-shrink-0 w-56 xl:w-64 border-r border-[#1E1E1E] sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto">
+          {/* Divider */}
+          <span className="w-px h-3.5 bg-[#2a2a2a] flex-shrink-0" />
+
+          {/* Breadcrumb: Docs / Current section */}
+          <div className="flex items-center gap-1.5 min-w-0 font-mono text-[10px] tracking-widest overflow-hidden">
+            <span className="text-dim/50 flex-shrink-0">DOCS</span>
+            <span className="text-dim/30 flex-shrink-0">/</span>
+            <span className="text-accent/80 truncate">
+              {currentSection?.title ?? 'Overview'}
+            </span>
+          </div>
+
+          {/* Prev / Next quick arrows */}
+          <div className="ml-auto flex items-center gap-3 flex-shrink-0">
+            {(() => {
+              const idx  = DOCS.findIndex(s => s.id === currentSlug)
+              const prev = idx > 0 ? DOCS[idx - 1] : null
+              const next = idx < DOCS.length - 1 ? DOCS[idx + 1] : null
+              return (
+                <>
+                  {prev ? (
+                    <Link href={`/docs/${prev.id}`} className="font-mono text-[11px] text-dim hover:text-white transition-colors" aria-label={`Previous: ${prev.title}`}>←</Link>
+                  ) : <span className="w-4" />}
+                  {next ? (
+                    <Link href={`/docs/${next.id}`} className="font-mono text-[11px] text-dim hover:text-white transition-colors" aria-label={`Next: ${next.title}`}>→</Link>
+                  ) : <span className="w-4" />}
+                </>
+              )
+            })()}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Body ────────────────────────────────────────────────────────────── */}
+      {/* Desktop: fixed to remaining viewport height — sidebars and content each scroll independently.
+          Mobile: unconstrained height — normal page scroll. */}
+      <div className="flex flex-1 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden">
+
+        {/* Left sidebar — desktop: fills body column, scrolls its own nav */}
+        <aside className="hidden lg:block flex-shrink-0 w-56 xl:w-64 border-r border-[#1E1E1E] overflow-y-auto">
           <SidebarNav />
         </aside>
 
@@ -247,14 +323,15 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           </>
         )}
 
-        {/* Center content */}
-        <main className="flex-1 min-w-0 px-6 md:px-10 lg:px-14 xl:px-16 py-12">
+        {/* Center content — desktop: scrolls independently within the fixed body row */}
+        {/* pt-10 on mobile offsets the fixed nav strip (h-10); lg:pt-12 restores normal padding */}
+        <main className="flex-1 min-w-0 px-6 md:px-10 lg:px-14 xl:px-16 pt-14 lg:pt-12 pb-12 lg:overflow-y-auto">
           {children}
         </main>
 
-        {/* Right TOC — xl+ only, sticky */}
+        {/* Right TOC — xl+ only, scrolls its own column */}
         {tocItems.length > 0 && (
-          <aside className="hidden xl:block flex-shrink-0 w-52 2xl:w-56 border-l border-[#1E1E1E] sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto py-8 px-4">
+          <aside className="hidden xl:block flex-shrink-0 w-52 2xl:w-56 border-l border-[#1E1E1E] overflow-y-auto py-8 px-4">
             <p className="font-mono text-[9px] tracking-[0.2em] text-dim/50 mb-4 uppercase">On this page</p>
             <nav className="space-y-0.5">
               {tocItems.map(item => (
