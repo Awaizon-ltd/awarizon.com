@@ -156,15 +156,96 @@ interface CodeTabsProps {
 }
 
 function toJsFilename(filename: string): string {
-  // Replace .ts / .tsx extension, respecting "  ·  ..." suffixes
   return filename.replace(/\.(tsx?)(\b|(?=\s))/, (_, ext) => ext === 'tsx' ? '.jsx' : '.js')
 }
 
 export function CodeTabs({ ts, js, filename }: CodeTabsProps) {
-  const { lang } = useLang()
-  const code = lang === 'js' ? js : ts
-  const file = filename ? (lang === 'js' ? toJsFilename(filename) : filename) : undefined
-  return <CodeEditor code={code} filename={file} />
+  const { lang, setLang } = useLang()
+  const [copied, setCopied] = useState(false)
+
+  const code   = lang === 'js' ? js : ts
+  const file   = filename ? (lang === 'js' ? toJsFilename(filename) : filename) : undefined
+  const tokens = tokenize(code)
+
+  function copy() {
+    navigator.clipboard.writeText(code)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="my-5 overflow-hidden" style={{ border: '1px solid #2D2D2D' }}>
+      {/* Title bar */}
+      <div
+        className="flex items-center justify-between px-4 py-2.5"
+        style={{ background: '#252526', borderBottom: '1px solid #2D2D2D' }}
+      >
+        <div className="flex items-center gap-3">
+          {/* Traffic lights */}
+          <div className="flex gap-1.5 flex-shrink-0">
+            <span className="w-3 h-3 rounded-full inline-block" style={{ background: '#FF5F57' }} />
+            <span className="w-3 h-3 rounded-full inline-block" style={{ background: '#FFBD2E' }} />
+            <span className="w-3 h-3 rounded-full inline-block" style={{ background: '#28CA41' }} />
+          </div>
+
+          {/* TS / JS tab buttons */}
+          <div className="flex items-center overflow-hidden" style={{ border: '1px solid #3D3D3D' }}>
+            <button
+              onClick={() => setLang('ts')}
+              className="font-mono text-[10px] tracking-widest px-2.5 py-1 transition-colors"
+              style={{
+                background: lang === 'ts' ? '#007ACC' : 'transparent',
+                color:      lang === 'ts' ? '#ffffff' : '#6A6A6A',
+              }}
+            >
+              TS
+            </button>
+            <span style={{ width: 1, background: '#3D3D3D', alignSelf: 'stretch' }} />
+            <button
+              onClick={() => setLang('js')}
+              className="font-mono text-[10px] tracking-widest px-2.5 py-1 transition-colors"
+              style={{
+                background: lang === 'js' ? '#F0DB4F' : 'transparent',
+                color:      lang === 'js' ? '#222222' : '#6A6A6A',
+              }}
+            >
+              JS
+            </button>
+          </div>
+
+          {/* Filename */}
+          {file && (
+            <span className="font-mono text-[11px] tracking-wide truncate" style={{ color: '#9D9D9D' }}>
+              {file}
+            </span>
+          )}
+        </div>
+
+        <button
+          onClick={copy}
+          className="font-mono text-[10px] tracking-widest px-3 py-1 transition-colors flex-shrink-0"
+          style={{
+            border:     `1px solid ${copied ? '#28CA41' : '#3D3D3D'}`,
+            color:       copied ? '#28CA41' : '#9D9D9D',
+            background: 'transparent',
+          }}
+        >
+          {copied ? '✓ COPIED' : 'COPY'}
+        </button>
+      </div>
+
+      {/* Code body */}
+      <div className="overflow-x-auto" style={{ background: '#1E1E1E' }}>
+        <pre className="font-mono text-[13px] leading-[1.75] p-5 whitespace-pre">
+          {tokens.map((tok, idx) => (
+            <span key={idx} style={{ color: C[tok.t] ?? C.text }}>
+              {tok.v}
+            </span>
+          ))}
+        </pre>
+      </div>
+    </div>
+  )
 }
 
 // ─── ShellBlock ───────────────────────────────────────────────────────────────
