@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLang } from './LangContext'
 
 // VS Code Dark+ colour palette
 const C = {
@@ -144,6 +145,26 @@ export function CodeEditor({ code, lang = 'ts', filename }: CodeEditorProps) {
       </div>
     </div>
   )
+}
+
+// ─── CodeTabs ─────────────────────────────────────────────────────────────────
+
+interface CodeTabsProps {
+  ts:        string
+  js:        string
+  filename?: string
+}
+
+function toJsFilename(filename: string): string {
+  // Replace .ts / .tsx extension, respecting "  ·  ..." suffixes
+  return filename.replace(/\.(tsx?)(\b|(?=\s))/, (_, ext) => ext === 'tsx' ? '.jsx' : '.js')
+}
+
+export function CodeTabs({ ts, js, filename }: CodeTabsProps) {
+  const { lang } = useLang()
+  const code = lang === 'js' ? js : ts
+  const file = filename ? (lang === 'js' ? toJsFilename(filename) : filename) : undefined
+  return <CodeEditor code={code} filename={file} />
 }
 
 // ─── ShellBlock ───────────────────────────────────────────────────────────────

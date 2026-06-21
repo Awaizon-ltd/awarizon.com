@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { DOCS } from '@/lib/docs'
+import { LangProvider, useLang } from '@/components/docs/LangContext'
 
 // ─── Nav tree ─────────────────────────────────────────────────────────────────
 // Top-level items → pages (/docs/{id})
@@ -89,9 +90,38 @@ const NAV = [
 
 type NavItem = typeof NAV[number]
 
+// ─── Lang toggle ──────────────────────────────────────────────────────────────
+
+function LangToggle() {
+  const { lang, setLang } = useLang()
+  return (
+    <div className="hidden sm:flex items-center overflow-hidden border border-[#2a2a2a]">
+      <button
+        onClick={() => setLang('ts')}
+        className={[
+          'font-mono text-[10px] tracking-widest px-2.5 py-1.5 transition-colors',
+          lang === 'ts' ? 'bg-accent text-black' : 'text-dim hover:text-white',
+        ].join(' ')}
+      >
+        .TS
+      </button>
+      <span className="w-px h-3.5 bg-[#2a2a2a] flex-shrink-0" />
+      <button
+        onClick={() => setLang('js')}
+        className={[
+          'font-mono text-[10px] tracking-widest px-2.5 py-1.5 transition-colors',
+          lang === 'js' ? 'bg-accent text-black' : 'text-dim hover:text-white',
+        ].join(' ')}
+      >
+        .JS
+      </button>
+    </div>
+  )
+}
+
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
-export default function DocsLayout({ children }: { children: ReactNode }) {
+function DocsLayoutInner({ children }: { children: ReactNode }) {
   const pathname      = usePathname()
   const currentSlug   = pathname?.split('/docs/')[1]?.split('#')[0] ?? 'overview'
   const [activeId,      setActiveId]      = useState('')
@@ -218,6 +248,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           <span className="font-mono text-[9px] text-accent/50 tracking-widest hidden sm:block">/ v1</span>
         </div>
         <div className="ml-auto flex items-center gap-3">
+          <LangToggle />
           <a
             href="https://www.npmjs.com/org/awarizon"
             target="_blank"
@@ -354,5 +385,13 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
 
       </div>
     </div>
+  )
+}
+
+export default function DocsLayout({ children }: { children: ReactNode }) {
+  return (
+    <LangProvider>
+      <DocsLayoutInner>{children}</DocsLayoutInner>
+    </LangProvider>
   )
 }

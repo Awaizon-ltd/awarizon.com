@@ -12,7 +12,8 @@ export type DocItem =
   | { type: 'h3';      id: string; title: string }
   | { type: 'step';    id: string; n: string; title: string }
   | { type: 'label';   text: string }
-  | { type: 'code';    code: string; lang?: string; filename?: string }
+  | { type: 'code';      code: string; lang?: string; filename?: string }
+  | { type: 'code-tabs'; ts: string; js: string; filename?: string }
   | { type: 'shell';   cmd: string; label?: string }
   | { type: 'callout'; icon: string; variant: 'tip' | 'warn' | 'info'; md: string }
   | { type: 'props';   header?: string; rows: PropDef[] }
@@ -118,11 +119,18 @@ NEXT_PUBLIC_AWARIZON_API_KEY=awz_live_...` },
       { type: 'step', id: 'setup-vanilla', n: 'STEP 4A', title: 'Initialize — Node.js / Scripts / Backend' },
       { type: 'text', md: 'Create the SDK instance once in a shared file and export it. Every other file imports from there — the connection pool is reused automatically.' },
       {
-        type: 'code', filename: 'lib/awarizon.ts', code: `import { AwarizonWeb3 } from "@awarizon/web3"
+        type: 'code-tabs', filename: 'lib/awarizon.ts',
+        ts: `import { AwarizonWeb3 } from "@awarizon/web3"
 
 export const awarizon = new AwarizonWeb3({
   chain:  "base",                          // the EVM chain to connect to
   apiKey: process.env.AWARIZON_API_KEY!,   // loaded from .env
+})`,
+        js: `import { AwarizonWeb3 } from "@awarizon/web3"
+
+export const awarizon = new AwarizonWeb3({
+  chain:  "base",                          // the EVM chain to connect to
+  apiKey: process.env.AWARIZON_API_KEY,    // loaded from .env
 })`,
       },
       { type: 'callout', icon: '💡', variant: 'tip', md: 'Not sure which chain to pick? Start with `"base-sepolia"` — it is a free test network where transactions cost no real money. Switch to `"base"` when you are ready for production.' },
@@ -145,17 +153,26 @@ export const awarizon = new AwarizonWeb3({
       { type: 'text', md: 'React uses a **Provider** pattern. You create the SDK instance once and wrap your app with `AwarizonProvider` — every hook in every component automatically gets access to it.' },
       { type: 'label', text: '1 of 3 — Create the SDK instance' },
       {
-        type: 'code', filename: 'lib/awarizon.ts', code: `import { AwarizonWeb3 } from "@awarizon/web3"
+        type: 'code-tabs', filename: 'lib/awarizon.ts',
+        ts: `import { AwarizonWeb3 } from "@awarizon/web3"
 
 // Create OUTSIDE of any component — never recreated on re-renders
 export const awarizon = new AwarizonWeb3({
   chain:  "base",
   apiKey: process.env.NEXT_PUBLIC_AWARIZON_API_KEY!,
 })`,
+        js: `import { AwarizonWeb3 } from "@awarizon/web3"
+
+// Create OUTSIDE of any component — never recreated on re-renders
+export const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.NEXT_PUBLIC_AWARIZON_API_KEY,
+})`,
       },
       { type: 'label', text: '2 of 3 — Create a Providers wrapper (Next.js App Router needs "use client")' },
       {
-        type: 'code', filename: 'components/Providers.tsx', code: `"use client"
+        type: 'code-tabs', filename: 'components/Providers.tsx',
+        ts: `"use client"
 import { AwarizonProvider } from "@awarizon/react"
 import { awarizon } from "@/lib/awarizon"
 
@@ -166,12 +183,35 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </AwarizonProvider>
   )
 }`,
+        js: `"use client"
+import { AwarizonProvider } from "@awarizon/react"
+import { awarizon } from "@/lib/awarizon"
+
+export function Providers({ children }) {
+  return (
+    <AwarizonProvider awarizon={awarizon}>
+      {children}
+    </AwarizonProvider>
+  )
+}`,
       },
       { type: 'label', text: '3 of 3 — Add the Provider to your root layout' },
       {
-        type: 'code', filename: 'app/layout.tsx', code: `import { Providers } from "@/components/Providers"
+        type: 'code-tabs', filename: 'app/layout.tsx',
+        ts: `import { Providers } from "@/components/Providers"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
+}`,
+        js: `import { Providers } from "@/components/Providers"
+
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
@@ -186,7 +226,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       { type: 'text', md: 'Reading blockchain data requires **no wallet and no gas**. You can query any contract on any chain right now, instantly.' },
       { type: 'label', text: 'Node.js / Script' },
       {
-        type: 'code', filename: 'scripts/check-balance.ts', code: `import { awarizon } from "./lib/awarizon"
+        type: 'code-tabs', filename: 'scripts/check-balance.ts',
+        ts: `import { awarizon } from "./lib/awarizon"
+
+// USDC on Base mainnet — no ABI file needed
+const usdc = await awarizon.erc20("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+
+const symbol   = await usdc.symbol()   // "USDC"
+const decimals = await usdc.decimals() // 6
+const raw       = await usdc.balanceOf("0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045")
+const formatted = Number(raw) / 10 ** decimals
+
+console.log(\`Balance: \${formatted} \${symbol}\`)  // "Balance: 1234.56 USDC"`,
+        js: `import { awarizon } from "./lib/awarizon"
 
 // USDC on Base mainnet — no ABI file needed
 const usdc = await awarizon.erc20("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
@@ -200,7 +252,8 @@ console.log(\`Balance: \${formatted} \${symbol}\`)  // "Balance: 1234.56 USDC"`,
       },
       { type: 'label', text: 'React component' },
       {
-        type: 'code', filename: 'components/USDCBalance.tsx', code: `import { useToken } from "@awarizon/react"
+        type: 'code-tabs', filename: 'components/USDCBalance.tsx',
+        ts: `import { useToken } from "@awarizon/react"
 import { useState, useEffect } from "react"
 
 const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
@@ -208,6 +261,23 @@ const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 export function USDCBalance({ wallet }: { wallet: \`0x\${string}\` }) {
   const { symbol, decimals, balanceOf, isLoading } = useToken(USDC_BASE)
   const [balance, setBalance] = useState<string>("…")
+
+  useEffect(() => {
+    if (decimals === null) return
+    balanceOf(wallet).then(raw => setBalance((Number(raw) / 10 ** decimals).toFixed(2)))
+  }, [wallet, balanceOf, decimals])
+
+  if (isLoading) return <p>Loading token…</p>
+  return <p>Balance: {balance} {symbol}</p>
+}`,
+        js: `import { useToken } from "@awarizon/react"
+import { useState, useEffect } from "react"
+
+const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+
+export function USDCBalance({ wallet }) {
+  const { symbol, decimals, balanceOf, isLoading } = useToken(USDC_BASE)
+  const [balance, setBalance] = useState("…")
 
   useEffect(() => {
     if (decimals === null) return
@@ -230,7 +300,31 @@ export function USDCBalance({ wallet }: { wallet: \`0x\${string}\` }) {
     items: [
       { type: 'text', md: 'Initialise the SDK, interact with an ERC-20 token with zero ABI boilerplate, and send a transaction.' },
       {
-        type: 'code', filename: 'quickstart.ts', code: `import { AwarizonWeb3 } from "@awarizon/web3"
+        type: 'code-tabs', filename: 'quickstart.ts',
+        ts: `import { AwarizonWeb3 } from "@awarizon/web3"
+
+// 1. Initialise
+const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.AWARIZON_API_KEY, // awz_live_...
+})
+
+// 2. ERC-20 — no ABI import needed
+const usdc = await awarizon.erc20("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
+
+// 3. Read on-chain state (no gas, no wallet)
+console.log(await usdc.balanceOf("0xYourAddress")) // 1000000n
+console.log(await usdc.symbol())                   // "USDC"
+console.log(await usdc.decimals())                 // 6
+
+// 4. Send a transaction
+const tx = await usdc.transfer("0xRecipient", 500_000n)
+console.log("hash:", tx.hash)  // 0x...
+
+// 5. Load any custom contract with your own ABI
+const staking = await awarizon.contract({ address: "0x...", abi: STAKING_ABI })
+await staking.stake(100n)`,
+        js: `import { AwarizonWeb3 } from "@awarizon/web3"
 
 // 1. Initialise
 const awarizon = new AwarizonWeb3({
@@ -515,7 +609,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       { type: 'h3', id: 'eip1193', title: 'EIP-1193 — Browser Wallet Direct Connect' },
       { type: 'text', md: 'Connect any injected browser wallet (MetaMask, Rabby, Brave, Coinbase, Phantom) directly via `connectEIP1193Provider()` — no wagmi, no extra dependencies.' },
       {
-        type: 'code', code: `// One call — requests accounts + subscribes to account/chain events
+        type: 'code-tabs',
+        ts: `// One call — requests accounts + subscribes to account/chain events
 await awarizon.connectEIP1193Provider(window.ethereum, {
   name: "MetaMask", // optional display name
 })
@@ -525,6 +620,23 @@ const { hash } = await token.transfer("0x...", 100n)
 
 // Detect the injected wallet
 function detectWalletName(p: Record<string, unknown>): string {
+  if (p.isMetaMask && !p.isRabby) return "MetaMask"
+  if (p.isRabby)                  return "Rabby"
+  if (p.isBraveWallet)            return "Brave Wallet"
+  if (p.isCoinbaseWallet)         return "Coinbase Wallet"
+  if (p.isPhantom)                return "Phantom"
+  return "Browser Wallet"
+}`,
+        js: `// One call — requests accounts + subscribes to account/chain events
+await awarizon.connectEIP1193Provider(window.ethereum, {
+  name: "MetaMask", // optional display name
+})
+
+// All subsequent writes use this wallet
+const { hash } = await token.transfer("0x...", 100n)
+
+// Detect the injected wallet
+function detectWalletName(p) {
   if (p.isMetaMask && !p.isRabby) return "MetaMask"
   if (p.isRabby)                  return "Rabby"
   if (p.isBraveWallet)            return "Brave Wallet"
@@ -547,7 +659,8 @@ function detectWalletName(p: Record<string, unknown>): string {
       { type: 'text', md: 'Calling `connectWalletConnect()` fires `onDisplayUri` with a `wc://` URI string. On **desktop**, render it as a QR code. On **mobile**, turn it into a deep link that opens the user\'s wallet app directly.' },
       { type: 'label', text: 'Desktop — QR code (user scans from mobile wallet app)' },
       {
-        type: 'code', lang: 'tsx', code: `import QRCode from "react-qr-code"  // or any QR library
+        type: 'code-tabs',
+        ts: `import QRCode from "react-qr-code"  // or any QR library
 import { useState } from "react"
 import { useSDK } from "@awarizon/react"
 
@@ -571,10 +684,35 @@ function ConnectDesktop() {
 
   return <button onClick={connect}>Connect Wallet</button>
 }`,
+        js: `import QRCode from "react-qr-code"  // or any QR library
+import { useState } from "react"
+import { useSDK } from "@awarizon/react"
+
+function ConnectDesktop() {
+  const awarizon  = useSDK()
+  const [uri, setUri] = useState(null)
+
+  async function connect() {
+    await awarizon.connectWalletConnect({
+      onDisplayUri: (wcUri) => setUri(wcUri),
+    })
+    setUri(null)  // clear QR once connected
+  }
+
+  if (uri) return (
+    <div>
+      <p>Scan with MetaMask, Trust, Rainbow, Coinbase, or any wallet app</p>
+      <QRCode value={uri} size={240} />
+    </div>
+  )
+
+  return <button onClick={connect}>Connect Wallet</button>
+}`,
       },
       { type: 'label', text: 'Mobile — deep link buttons (opens the wallet app directly)' },
       {
-        type: 'code', lang: 'tsx', code: `import { useState } from "react"
+        type: 'code-tabs',
+        ts: `import { useState } from "react"
 import { useSDK } from "@awarizon/react"
 
 // WalletConnect v2 deep-link prefixes — each wallet registers its own URI scheme
@@ -589,6 +727,48 @@ const WALLETS = [
 function ConnectMobile() {
   const awarizon   = useSDK()
   const [uri, setUri] = useState<string | null>(null)
+
+  async function startConnect() {
+    await awarizon.connectWalletConnect({
+      onDisplayUri: (wcUri) => setUri(wcUri),
+    })
+    setUri(null)  // clear once approved
+  }
+
+  if (uri) {
+    return (
+      <div>
+        <p>Choose your wallet:</p>
+        {WALLETS.map(w => (
+          <a
+            key={w.name}
+            href={\`\${w.scheme}\${encodeURIComponent(uri)}\`}
+            style={{ display: "block", margin: "8px 0" }}
+          >
+            {w.icon} Open in {w.name}
+          </a>
+        ))}
+      </div>
+    )
+  }
+
+  return <button onClick={startConnect}>Connect Mobile Wallet</button>
+}`,
+        js: `import { useState } from "react"
+import { useSDK } from "@awarizon/react"
+
+// WalletConnect v2 deep-link prefixes — each wallet registers its own URI scheme
+const WALLETS = [
+  { name: 'MetaMask',        scheme: 'metamask://wc?uri=',   icon: '🦊' },
+  { name: 'Trust Wallet',    scheme: 'trust://wc?uri=',      icon: '🛡️' },
+  { name: 'Rainbow',         scheme: 'rainbow://wc?uri=',    icon: '🌈' },
+  { name: 'Coinbase Wallet', scheme: 'cbwallet://wc?uri=',   icon: '🔵' },
+  { name: 'Uniswap Wallet',  scheme: 'uniswap://wc?uri=',   icon: '🦄' },
+]
+
+function ConnectMobile() {
+  const awarizon   = useSDK()
+  const [uri, setUri] = useState(null)
 
   async function startConnect() {
     await awarizon.connectWalletConnect({
@@ -686,7 +866,8 @@ const [ethBal, usdcBal, daiSupply, nftOwner] = await awarizon.multicall([
       { type: 'h3', id: 'provider', title: 'AwarizonProvider' },
       { type: 'text', md: 'Wraps your component tree and makes the SDK available to every hook inside it.' },
       {
-        type: 'code', filename: 'components/Providers.tsx', code: `"use client"
+        type: 'code-tabs', filename: 'components/Providers.tsx',
+        ts: `"use client"
 import { AwarizonProvider } from "@awarizon/react"
 import { AwarizonWeb3 } from "@awarizon/web3"
 
@@ -697,6 +878,19 @@ const awarizon = new AwarizonWeb3({
 })
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  return <AwarizonProvider awarizon={awarizon}>{children}</AwarizonProvider>
+}`,
+        js: `"use client"
+import { AwarizonProvider } from "@awarizon/react"
+import { AwarizonWeb3 } from "@awarizon/web3"
+
+const awarizon = new AwarizonWeb3({
+  chain:                  "base",
+  apiKey:                 process.env.NEXT_PUBLIC_AWARIZON_API_KEY,
+  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+})
+
+export function Providers({ children }) {
   return <AwarizonProvider awarizon={awarizon}>{children}</AwarizonProvider>
 }`,
       },
@@ -769,7 +963,8 @@ function Header() {
       { type: 'h3', id: 'account-modal', title: 'AccountModal' },
       { type: 'text', md: 'The mini account popup shown when connected. Displays chain logo, wallet address with one-click copy, live native token balance (polls every 15 s), and a disconnect button.' },
       {
-        type: 'code', lang: 'tsx', code: `import { AccountModal, useWallet } from "@awarizon/react"
+        type: 'code-tabs',
+        ts: `import { AccountModal, useWallet } from "@awarizon/react"
 import { useState } from "react"
 
 function AccountButton() {
@@ -785,6 +980,30 @@ function AccountButton() {
       {open && (
         <AccountModal
           address={address!}
+          chainId={chainId}
+          onClose={() => setOpen(false)}
+          onDisconnect={() => { disconnect(); setOpen(false) }}
+        />
+      )}
+    </div>
+  )
+}`,
+        js: `import { AccountModal, useWallet } from "@awarizon/react"
+import { useState } from "react"
+
+function AccountButton() {
+  const { address, chainId, isConnected, disconnect } = useWallet()
+  const [open, setOpen] = useState(false)
+
+  if (!isConnected) return null
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <button onClick={() => setOpen(v => !v)}>
+        {address?.slice(0, 6)}…{address?.slice(-4)}
+      </button>
+      {open && (
+        <AccountModal
+          address={address}
           chainId={chainId}
           onClose={() => setOpen(false)}
           onDisconnect={() => { disconnect(); setOpen(false) }}
@@ -888,7 +1107,8 @@ const NFT = contract("0x...", NFT_ABI)`,
       { type: 'h3', id: 'use-read', title: 'useRead()' },
       { type: 'text', md: 'Reactive read hook. Pair with `contract()` — pass a bound method call to avoid repeating address/abi/method on every hook.' },
       {
-        type: 'code', lang: 'tsx', code: `import { contract, useRead } from "@awarizon/react"
+        type: 'code-tabs',
+        ts: `import { contract, useRead } from "@awarizon/react"
 import { ERC20_ABI, DAO_ABI, STAKING_ABI, NFT_ABI } from "@awarizon/web3"
 
 const USDC    = contract("0x833589...", ERC20_ABI)
@@ -897,6 +1117,35 @@ const STAKING = contract("0x...",       STAKING_ABI)
 const NFT     = contract("0x...",       NFT_ABI)
 
 function Dashboard({ user }: { user: \`0x\${string}\` }) {
+  // ERC-20
+  const { data: name }    = useRead(USDC.name())
+  const { data: symbol }  = useRead(USDC.symbol())
+  const { data: balance, isLoading } = useRead(USDC.balanceOf(user), { pollingInterval: 10_000 })
+
+  // DAO
+  const { data: proposalCount } = useRead(DAO.proposalCount())
+  const { data: quorum }        = useRead(DAO.quorumVotes())
+
+  // Staking
+  const { data: staked }  = useRead(STAKING.balanceOf(user))
+  const { data: earned }  = useRead(STAKING.earned(user), { pollingInterval: 12_000 })
+
+  // NFT
+  const { data: supply }  = useRead(NFT.totalSupply())
+  const { data: price }   = useRead(NFT.mintPrice())
+
+  if (isLoading) return <p>Loading…</p>
+  return <p>{name} ({symbol}): {balance?.toString()}</p>
+}`,
+        js: `import { contract, useRead } from "@awarizon/react"
+import { ERC20_ABI, DAO_ABI, STAKING_ABI, NFT_ABI } from "@awarizon/web3"
+
+const USDC    = contract("0x833589...", ERC20_ABI)
+const DAO     = contract("0x...",       DAO_ABI)
+const STAKING = contract("0x...",       STAKING_ABI)
+const NFT     = contract("0x...",       NFT_ABI)
+
+function Dashboard({ user }) {
   // ERC-20
   const { data: name }    = useRead(USDC.name())
   const { data: symbol }  = useRead(USDC.symbol())
@@ -941,7 +1190,8 @@ function Dashboard({ user }: { user: \`0x\${string}\` }) {
       { type: 'h3', id: 'use-write', title: 'useWrite()' },
       { type: 'text', md: 'Write hook. Pass a bound method (un-called) — args are supplied when you actually call `write()`. Works for any write function: ERC-20 transfers, DAO votes, NFT minting, staking deposits, etc.' },
       {
-        type: 'code', lang: 'tsx', code: `import { contract, useRead, useWrite } from "@awarizon/react"
+        type: 'code-tabs',
+        ts: `import { contract, useRead, useWrite } from "@awarizon/react"
 
 const USDC    = contract("0x833589...", ERC20_ABI)
 const DAO     = contract("0x...",       DAO_ABI)
@@ -949,6 +1199,39 @@ const STAKING = contract("0x...",       STAKING_ABI)
 const NFT     = contract("0x...",       NFT_ABI)
 
 function Actions({ user }: { user: \`0x\${string}\` }) {
+  // Token
+  const { write: transfer, isLoading: sending }   = useWrite(USDC.transfer)
+
+  // DAO
+  const { write: vote,     isLoading: voting }     = useWrite(DAO.castVote)
+  const { write: propose,  isLoading: proposing }  = useWrite(DAO.propose)
+
+  // Staking
+  const { write: stake,    isLoading: staking }    = useWrite(STAKING.stake)
+  const { write: claim,    isLoading: claiming }   = useWrite(STAKING.getReward)
+
+  // NFT mint (payable — pass value in last arg)
+  const { data: price }                            = useRead(NFT.mintPrice())
+  const { write: mint,     isLoading: minting }    = useWrite(NFT.mint)
+
+  return (
+    <div>
+      <button onClick={() => transfer(recipient, 100n)}       disabled={sending}>  Send USDC     </button>
+      <button onClick={() => vote(proposalId, 1)}             disabled={voting}>   Vote For      </button>
+      <button onClick={() => stake(parseUnits("100", 18))}    disabled={staking}>  Stake         </button>
+      <button onClick={() => claim()}                         disabled={claiming}> Claim Rewards </button>
+      <button onClick={() => mint(1n, { value: price ?? 0n })} disabled={minting}> Mint NFT      </button>
+    </div>
+  )
+}`,
+        js: `import { contract, useRead, useWrite } from "@awarizon/react"
+
+const USDC    = contract("0x833589...", ERC20_ABI)
+const DAO     = contract("0x...",       DAO_ABI)
+const STAKING = contract("0x...",       STAKING_ABI)
+const NFT     = contract("0x...",       NFT_ABI)
+
+function Actions({ user }) {
   // Token
   const { write: transfer, isLoading: sending }   = useWrite(USDC.transfer)
 
@@ -1012,7 +1295,8 @@ function TransferFeed() {
       { type: 'h3', id: 'use-token', title: 'useToken' },
       { type: 'text', md: 'Zero-ABI hook for ERC-20 tokens. Fetches name, symbol, decimals, and total supply on mount.' },
       {
-        type: 'code', lang: 'tsx', code: `import { useToken } from "@awarizon/react"
+        type: 'code-tabs',
+        ts: `import { useToken } from "@awarizon/react"
 
 function TokenCard({ address }: { address: \`0x\${string}\` }) {
   const {
@@ -1038,12 +1322,39 @@ function TokenCard({ address }: { address: \`0x\${string}\` }) {
     </div>
   )
 }`,
+        js: `import { useToken } from "@awarizon/react"
+
+function TokenCard({ address }) {
+  const {
+    name, symbol, decimals, totalSupply,
+    isLoading, error,
+    balanceOf, transfer, approve,
+  } = useToken(address)
+
+  const [balance, setBalance] = useState(null)
+
+  useEffect(() => {
+    balanceOf(userAddress).then(setBalance)
+  }, [balanceOf])
+
+  if (isLoading) return <span>Loading…</span>
+  return (
+    <div>
+      <p>{name} ({symbol}) — {decimals} decimals</p>
+      <p>Balance: {balance?.toString()}</p>
+      <button onClick={() => transfer(recipient, 1_000_000n)}>
+        Send 1 {symbol}
+      </button>
+    </div>
+  )
+}`,
       },
 
       { type: 'h3', id: 'use-nft', title: 'useNFT' },
       { type: 'text', md: 'Zero-ABI hook for ERC-721 collections. Loads collection name and symbol on mount. Exposes all standard ownership and transfer helpers.' },
       {
-        type: 'code', lang: 'tsx', code: `import { useNFT } from "@awarizon/react"
+        type: 'code-tabs',
+        ts: `import { useNFT } from "@awarizon/react"
 
 function NFTCard({ address, tokenId }: { address: \`0x\${string}\`; tokenId: bigint }) {
   const { name, symbol, ownerOf, tokenURI, safeTransferFrom, isLoading } = useNFT(address)
@@ -1065,14 +1376,52 @@ function NFTCard({ address, tokenId }: { address: \`0x\${string}\`; tokenId: big
     </div>
   )
 }`,
+        js: `import { useNFT } from "@awarizon/react"
+
+function NFTCard({ address, tokenId }) {
+  const { name, symbol, ownerOf, tokenURI, safeTransferFrom, isLoading } = useNFT(address)
+
+  const [owner, setOwner] = useState(null)
+  const [uri,   setUri]   = useState(null)
+
+  useEffect(() => {
+    Promise.all([ownerOf(tokenId), tokenURI(tokenId)])
+      .then(([o, u]) => { setOwner(o); setUri(u) })
+  }, [tokenId, ownerOf, tokenURI])
+
+  if (isLoading) return <span>Loading collection…</span>
+  return (
+    <div>
+      <p>{name} #{tokenId.toString()} ({symbol})</p>
+      <img src={uri ?? ''} alt="NFT" />
+      <button onClick={() => safeTransferFrom(owner, recipient, tokenId)}>Transfer</button>
+    </div>
+  )
+}`,
       },
 
       { type: 'h3', id: 'use-native', title: 'useNativeBalance' },
       { type: 'text', md: 'Fetch the native currency balance (ETH, MATIC, BNB…) for any address. Pass a `pollingInterval` in ms to keep it live.' },
       {
-        type: 'code', lang: 'tsx', code: `import { useNativeBalance } from "@awarizon/react"
+        type: 'code-tabs',
+        ts: `import { useNativeBalance } from "@awarizon/react"
 
 function WalletBalance({ address }: { address: \`0x\${string}\` }) {
+  // Polls every 12 s — matches Ethereum's ~12 s block time
+  const { formatted, balance, isLoading, refetch } = useNativeBalance(address, 12_000)
+
+  if (isLoading) return <span>Loading…</span>
+  return (
+    <div>
+      <p>{formatted} ETH</p>            {/* "1.2345" — human-readable */}
+      <p>{balance?.toString()} wei</p>  {/* raw bigint */}
+      <button onClick={refetch}>Refresh</button>
+    </div>
+  )
+}`,
+        js: `import { useNativeBalance } from "@awarizon/react"
+
+function WalletBalance({ address }) {
   // Polls every 12 s — matches Ethereum's ~12 s block time
   const { formatted, balance, isLoading, refetch } = useNativeBalance(address, 12_000)
 
@@ -1141,7 +1490,8 @@ getChainNativeSymbol(43114) // "AVAX"`,
       },
       { type: 'text', md: 'Two files are generated:' },
       {
-        type: 'code', filename: 'MyTokenClient.ts  (auto-generated)', code: `import { AwarizonWeb3 } from "@awarizon/web3"
+        type: 'code-tabs', filename: 'MyTokenClient.ts  (auto-generated)',
+        ts: `import { AwarizonWeb3 } from "@awarizon/web3"
 
 const CONTRACT_ADDRESS = "0xYourDeployedAddress"
 
@@ -1164,14 +1514,54 @@ export class MyTokenClient {
     return this._contract.transfer(to, amount)
   }
 }`,
+        js: `import { AwarizonWeb3 } from "@awarizon/web3"
+
+const CONTRACT_ADDRESS = "0xYourDeployedAddress"
+
+export class MyTokenClient {
+  static async create(awz) {
+    const client = new MyTokenClient()
+    client._contract = await awz.contract({ address: CONTRACT_ADDRESS, abi: ABI })
+    return client
+  }
+
+  // Read methods
+  async balanceOf(owner) { return this._contract.balanceOf(owner) }
+  async symbol()         { return this._contract.symbol() }
+  async decimals()       { return this._contract.decimals() }
+
+  // Write methods
+  async transfer(to, amount) {
+    return this._contract.transfer(to, amount)
+  }
+}`,
       },
       {
-        type: 'code', filename: 'useMyToken.ts  (React hooks — auto-generated)', code: `import { contract, useRead, useWrite } from "@awarizon/react"
+        type: 'code-tabs', filename: 'useMyToken.ts  (React hooks — auto-generated)',
+        ts: `import { contract, useRead, useWrite } from "@awarizon/react"
 
 const CONTRACT_ADDRESS = "0xYourDeployedAddress"
 const TOKEN = contract(CONTRACT_ADDRESS, MYTOKEN_ABI)
 
 export function useReadBalanceOf(owner: \`0x\${string}\`) {
+  return useRead(TOKEN.balanceOf(owner))
+}
+export function useReadSymbol() {
+  return useRead(TOKEN.symbol())
+}
+export function useWriteTransfer() {
+  return useWrite(TOKEN.transfer)
+}
+
+// Usage:
+// const { data: balance }   = useReadBalanceOf(userAddress)
+// const { write: transfer } = useWriteTransfer()`,
+        js: `import { contract, useRead, useWrite } from "@awarizon/react"
+
+const CONTRACT_ADDRESS = "0xYourDeployedAddress"
+const TOKEN = contract(CONTRACT_ADDRESS, MYTOKEN_ABI)
+
+export function useReadBalanceOf(owner) {
   return useRead(TOKEN.balanceOf(owner))
 }
 export function useReadSymbol() {
@@ -1201,7 +1591,8 @@ export function useWriteTransfer() {
       { type: 'h3', id: 'rn-provider', title: 'AwarizonProvider (React Native)' },
       { type: 'text', md: 'Same Provider pattern as `@awarizon/react`. Wrap your root layout to give all hooks access to the SDK.' },
       {
-        type: 'code', filename: 'app/_layout.tsx', lang: 'tsx', code: `import { AwarizonProvider } from "@awarizon/react-native"
+        type: 'code-tabs', filename: 'app/_layout.tsx',
+        ts: `import { AwarizonProvider } from "@awarizon/react-native"
 import { AwarizonWeb3 } from "@awarizon/web3"
 import { Stack } from "expo-router"
 
@@ -1217,12 +1608,29 @@ export default function RootLayout() {
     </AwarizonProvider>
   )
 }`,
+        js: `import { AwarizonProvider } from "@awarizon/react-native"
+import { AwarizonWeb3 } from "@awarizon/web3"
+import { Stack } from "expo-router"
+
+const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.EXPO_PUBLIC_AWARIZON_API_KEY,
+})
+
+export default function RootLayout() {
+  return (
+    <AwarizonProvider awarizon={awarizon}>
+      <Stack />
+    </AwarizonProvider>
+  )
+}`,
       },
 
       { type: 'h3', id: 'rn-storage', title: 'Secure Storage Setup' },
       { type: 'text', md: '`createSecureStorage` wraps `expo-secure-store` behind a simple adapter interface. Private keys are encrypted by the OS — never stored in plaintext on disk.' },
       {
-        type: 'code', lang: 'tsx', code: `import * as ExpoSecureStore from "expo-secure-store"
+        type: 'code-tabs',
+        ts: `import * as ExpoSecureStore from "expo-secure-store"
 import { createSecureStorage } from "@awarizon/react-native"
 import { AwarizonWeb3 } from "@awarizon/web3"
 
@@ -1232,6 +1640,17 @@ const storage = createSecureStorage(ExpoSecureStore)
 const awarizon = new AwarizonWeb3({
   chain:  "base",
   apiKey: process.env.EXPO_PUBLIC_AWARIZON_API_KEY!,
+})`,
+        js: `import * as ExpoSecureStore from "expo-secure-store"
+import { createSecureStorage } from "@awarizon/react-native"
+import { AwarizonWeb3 } from "@awarizon/web3"
+
+// Create the adapter — wraps the ExpoSecureStore module
+const storage = createSecureStorage(ExpoSecureStore)
+
+const awarizon = new AwarizonWeb3({
+  chain:  "base",
+  apiKey: process.env.EXPO_PUBLIC_AWARIZON_API_KEY,
 })`,
       },
       { type: 'callout', icon: '💡', variant: 'tip', md: 'On iOS, keys are stored in the Keychain and survive app reinstalls. On Android, they are encrypted with the Android Keystore and tied to the app package. Neither platform writes the key to disk in plaintext.' },
@@ -1312,7 +1731,8 @@ function WalletScreen() {
       { type: 'h3', id: 'rn-contract-binding', title: 'contract() · useRead() · useWrite() — Mobile' },
       { type: 'text', md: 'The same contract binding API from `@awarizon/react` is available in `@awarizon/react-native`. Works identically for any contract type.' },
       {
-        type: 'code', lang: 'tsx', code: `import { contract, useRead, useWrite } from "@awarizon/react-native"
+        type: 'code-tabs',
+        ts: `import { contract, useRead, useWrite } from "@awarizon/react-native"
 import { ERC20_ABI, STAKING_ABI } from "@awarizon/web3"
 
 // Define once, outside any component
@@ -1320,6 +1740,36 @@ const USDC    = contract("0x833589...", ERC20_ABI)
 const STAKING = contract("0x...",       STAKING_ABI)
 
 function MobilePortfolio({ user }: { user: \`0x\${string}\` }) {
+  const { data: balance }     = useRead(USDC.balanceOf(user), { pollingInterval: 15_000 })
+  const { data: staked }      = useRead(STAKING.balanceOf(user))
+  const { data: earned }      = useRead(STAKING.earned(user),  { pollingInterval: 15_000 })
+
+  const { write: transfer, isLoading: sending }  = useWrite(USDC.transfer)
+  const { write: stake,    isLoading: staking }  = useWrite(STAKING.stake)
+  const { write: claim,    isLoading: claiming } = useWrite(STAKING.getReward)
+
+  return (
+    <View>
+      <Text>Balance: {balance?.toString()} USDC</Text>
+      <Text>Staked:  {staked?.toString()}</Text>
+      <Text>Earned:  {earned?.toString()}</Text>
+      <Pressable onPress={() => transfer(recipient, 100n)} disabled={sending}>
+        <Text>Send</Text>
+      </Pressable>
+      <Pressable onPress={() => claim()} disabled={claiming}>
+        <Text>Claim Rewards</Text>
+      </Pressable>
+    </View>
+  )
+}`,
+        js: `import { contract, useRead, useWrite } from "@awarizon/react-native"
+import { ERC20_ABI, STAKING_ABI } from "@awarizon/web3"
+
+// Define once, outside any component
+const USDC    = contract("0x833589...", ERC20_ABI)
+const STAKING = contract("0x...",       STAKING_ABI)
+
+function MobilePortfolio({ user }) {
   const { data: balance }     = useRead(USDC.balanceOf(user), { pollingInterval: 15_000 })
   const { data: staked }      = useRead(STAKING.balanceOf(user))
   const { data: earned }      = useRead(STAKING.earned(user),  { pollingInterval: 15_000 })
@@ -1452,11 +1902,40 @@ function AuthButton() {
       { type: 'h3', id: 'auth-server', title: 'Server-side Verification' },
       { type: 'text', md: 'Use `verifySiweSignature()` on your server to confirm the wallet signed the message. Works in Node.js, Next.js, Express, Edge runtime, and Deno.' },
       {
-        type: 'code', code: `// ── Next.js App Router (route.ts) ────────────────────────────────────────────
+        type: 'code-tabs',
+        ts: `// ── Next.js App Router (route.ts) ────────────────────────────────────────────
 import { verifySiweSignature } from "@awarizon/auth"
 import { cookies } from "next/headers"
 
 export async function POST(req: Request) {
+  const { message, signature } = await req.json()
+  const nonce = cookies().get("siwe_nonce")?.value
+  if (!nonce) return Response.json({ error: "Missing nonce" }, { status: 400 })
+
+  const result = await verifySiweSignature({ message, signature, options: { domain: "myapp.com", nonce } })
+  // result.address is the cryptographically verified wallet address
+
+  cookies().set("user_address", result.address, { httpOnly: true, secure: true })
+  cookies().delete("siwe_nonce")  // invalidate — one-time use only
+  return Response.json({ address: result.address })
+}
+
+// ── Express ───────────────────────────────────────────────────────────────────
+app.post("/api/auth/verify", async (req, res) => {
+  const { message, signature } = req.body
+  const result = await verifySiweSignature({
+    message, signature,
+    options: { domain: "myapp.com", nonce: req.session.nonce },
+  })
+  req.session.address = result.address
+  req.session.nonce   = undefined  // invalidate after use
+  res.json({ address: result.address })
+})`,
+        js: `// ── Next.js App Router (route.js) ────────────────────────────────────────────
+import { verifySiweSignature } from "@awarizon/auth"
+import { cookies } from "next/headers"
+
+export async function POST(req) {
   const { message, signature } = await req.json()
   const nonce = cookies().get("siwe_nonce")?.value
   if (!nonce) return Response.json({ error: "Missing nonce" }, { status: 400 })

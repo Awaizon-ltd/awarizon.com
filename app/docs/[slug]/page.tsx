@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { DOCS, type DocItem } from '@/lib/docs'
-import { CodeEditor, ShellBlock } from '@/components/docs/CodeEditor'
+import { CodeEditor, CodeTabs, ShellBlock } from '@/components/docs/CodeEditor'
 
 // ─── Primitives ───────────────────────────────────────────────────────────────
 
@@ -119,6 +119,9 @@ function renderItem(item: DocItem, idx: number) {
 
     case 'code':
       return <CodeEditor key={idx} code={item.code} lang={item.lang} filename={item.filename} />
+
+    case 'code-tabs':
+      return <CodeTabs key={idx} ts={item.ts} js={item.js} filename={item.filename} />
 
     case 'shell':
       return <ShellBlock key={idx} command={item.cmd} label={item.label} />
