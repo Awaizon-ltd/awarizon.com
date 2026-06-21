@@ -14,7 +14,8 @@ import { LangProvider, useLang } from '@/components/docs/LangContext'
 const NAV = [
   { id: 'overview',     label: 'Overview'     },
   { id: 'packages',     label: 'Packages'     },
-  { id: 'installation', label: 'Installation' },
+  { id: 'installation',  label: 'Installation'        },
+  { id: 'create-app',   label: 'create-awarizon-app' },
   {
     id: 'setup', label: 'Setup Guide',
     children: [

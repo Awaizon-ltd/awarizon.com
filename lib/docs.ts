@@ -72,6 +72,66 @@ export const DOCS: DocSection[] = [
     ],
   },
 
+  // ── create-awarizon-app ─────────────────────────────────────────────────────
+  {
+    id: 'create-app',
+    title: 'create-awarizon-app',
+    items: [
+      { type: 'text', md: 'The fastest way to start a new Awarizon project. One command scaffolds a complete app — package.json, config files, SDK wired up, and your API key pre-filled in `.env`. No manual setup required.' },
+      { type: 'shell', cmd: 'npx create-awarizon-app', label: 'SCAFFOLD A NEW PROJECT' },
+      { type: 'text', md: 'You will be prompted for a project name, template, language, and your API key. Hit enter to accept defaults.' },
+      {
+        type: 'grid', cols: 3,
+        items: [
+          { label: 'Next.js 14',          sub: 'App Router + @awarizon/react',    tag: 'Recommended' },
+          { label: 'React + Vite',        sub: 'SPA + @awarizon/react',           tag: 'Lightweight' },
+          { label: 'Expo (React Native)', sub: '@awarizon/react-native + Keychain', tag: 'Mobile' },
+        ],
+      },
+
+      { type: 'h3', id: 'create-app-flags', title: 'Flags — skip the prompts' },
+      { type: 'text', md: 'Pass any combination of flags to run non-interactively. Useful for CI scripts, dotfiles, or when you already know what you want.' },
+      { type: 'shell', cmd: 'npx create-awarizon-app my-app --template nextjs --lang ts --api-key awz_live_...', label: 'FULL NON-INTERACTIVE EXAMPLE' },
+      {
+        type: 'props',
+        header: 'FLAGS',
+        rows: [
+          { name: '[project-name]', type: 'string',              desc: 'Directory to create. Prompted interactively when omitted.' },
+          { name: '--template / -t', type: 'nextjs | react | expo', desc: 'App template. Prompted interactively when omitted.' },
+          { name: '--lang / -l',    type: 'ts | js',             desc: 'Output language. Default: ts. (Expo is always TypeScript.)' },
+          { name: '--api-key / -k', type: 'string',              desc: 'Awarizon API key — baked into .env automatically. Can be added later.' },
+          { name: '--pm',           type: 'npm | pnpm | yarn | bun', desc: 'Package manager for installing dependencies. Auto-detected from env when omitted.' },
+          { name: '--skip-install', type: 'flag',                desc: 'Copy files only — skip running the install command.' },
+        ],
+      },
+
+      { type: 'h3', id: 'create-app-examples', title: 'Common examples' },
+      { type: 'label', text: 'Next.js — TypeScript (default)' },
+      { type: 'shell', cmd: 'npx create-awarizon-app my-dapp --template nextjs', label: '' },
+      { type: 'label', text: 'React + Vite — JavaScript' },
+      { type: 'shell', cmd: 'npx create-awarizon-app my-dapp --template react --lang js', label: '' },
+      { type: 'label', text: 'Expo — mobile wallet app' },
+      { type: 'shell', cmd: 'npx create-awarizon-app my-wallet --template expo', label: '' },
+      { type: 'label', text: 'pnpm + skip install (faster in CI)' },
+      { type: 'shell', cmd: 'npx create-awarizon-app my-dapp --template nextjs --pm pnpm --skip-install', label: '' },
+
+      { type: 'h3', id: 'create-app-output', title: 'What gets scaffolded' },
+      { type: 'text', md: 'Every template ships with the SDK already configured — no copy-pasting boilerplate.' },
+      {
+        type: 'grid', cols: 2,
+        items: [
+          { label: 'SDK instance',   sub: 'lib/awarizon.ts — created once, exported everywhere' },
+          { label: 'Provider wired', sub: 'AwarizonProvider wrapping the root layout' },
+          { label: 'ConnectButton',  sub: 'Drop-in wallet UI component in the home page' },
+          { label: '.env pre-filled', sub: 'API key baked in if you passed --api-key' },
+          { label: 'TypeScript / JSDoc', sub: 'Full types on TS templates, JSDoc hints on JS' },
+          { label: 'Deps installed', sub: 'npm install runs automatically (unless --skip-install)' },
+        ],
+      },
+      { type: 'callout', icon: '💡', variant: 'tip', md: 'After scaffolding, open `.env.local` (Next.js) or `.env` (React / Expo) and paste your API key if you skipped the `--api-key` flag. Keys are free at [awarizon.com/dashboard/api-keys](/dashboard/api-keys).' },
+    ],
+  },
+
   // ── Setup Guide ─────────────────────────────────────────────────────────────
   {
     id: 'setup',

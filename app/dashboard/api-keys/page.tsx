@@ -59,6 +59,8 @@ export default function ApiKeysPage() {
   const [createError, setCreateError] = useState('')
   const [freshKey,    setFreshKey]    = useState<NewKey | null>(null)
   const [revoking,    setRevoking]    = useState<string | null>(null)
+  const [revealing,   setRevealing]   = useState<string | null>(null)
+  const [revealedKeys, setRevealedKeys] = useState<Record<string, string>>({})
   const [testState,   setTestState]   = useState<TestState>('idle')
   const [testResult,  setTestResult]  = useState('')
   const [testKey,     setTestKey]     = useState('')
@@ -106,6 +108,25 @@ export default function ApiKeysPage() {
     }
   }
 
+  async function handleReveal(keyId: string) {
+    if (!user) return
+    if (revealedKeys[keyId]) {
+      setRevealedKeys(prev => { const n = { ...prev }; delete n[keyId]; return n })
+      return
+    }
+    setRevealing(keyId)
+    try {
+      const token = await getToken(user)
+      const res   = await fetch(`/api/keys/${keyId}`, { headers: { 'x-id-token': token } })
+      const data  = await res.json() as { key?: string }
+      if (res.ok && data.key) {
+        setRevealedKeys(prev => ({ ...prev, [keyId]: data.key! }))
+      }
+    } finally {
+      setRevealing(null)
+    }
+  }
+
   async function handleRevoke(keyId: string) {
     if (!user) return
     setRevoking(keyId)
@@ -116,6 +137,7 @@ export default function ApiKeysPage() {
         headers: { 'Content-Type': 'application/json', 'x-id-token': token },
         body:    JSON.stringify({ keyId }),
       })
+      setRevealedKeys(prev => { const n = { ...prev }; delete n[keyId]; return n })
       await fetchKeys(user)
     } finally {
       setRevoking(null)
@@ -252,36 +274,62 @@ export default function ApiKeysPage() {
           </div>
         ) : (
           <div className="divide-y divide-[#0A0A0A]">
-            {activeKeys.map(k => (
-              <div key={k.id} className="px-6 py-4 flex items-center gap-4 flex-wrap">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="font-display font-semibold text-white text-sm">{k.name}</span>
-                    <span className="font-mono text-[8px] px-2 py-0.5 bg-accent/10 text-accent border border-accent/20 tracking-widest">
-                      ACTIVE
-                    </span>
+            {activeKeys.map(k => {
+              const isRevealed = !!revealedKeys[k.id]
+              return (
+                <div key={k.id} className="px-6 py-4 flex items-start gap-4 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="font-display font-semibold text-white text-sm">{k.name}</span>
+                      <span className="font-mono text-[8px] px-2 py-0.5 bg-accent/10 text-accent border border-accent/20 tracking-widest">
+                        ACTIVE
+                      </span>
+                    </div>
+                    {isRevealed ? (
+                      <div className="flex items-center gap-2 bg-black border border-[#1A1A1A] px-3 py-2 mt-1.5 mb-1">
+                        <code className="font-mono text-xs text-accent flex-1 break-all select-all">
+                          {revealedKeys[k.id]}
+                        </code>
+                        <CopyButton text={revealedKeys[k.id]} />
+                      </div>
+                    ) : (
+                      <code className="font-mono text-xs text-muted">
+                        {maskKey(k.prefix)}
+                      </code>
+                    )}
+                    <div className="font-mono text-[9px] text-dim mt-1">
+                      Created {fmtDate(k.createdAt)}
+                    </div>
                   </div>
-                  <code className="font-mono text-xs text-muted">
-                    {maskKey(k.prefix)}
-                  </code>
-                  <div className="font-mono text-[9px] text-dim mt-1">
-                    Created {fmtDate(k.createdAt)}
+                  <div className="flex items-center gap-2 flex-shrink-0 pt-0.5">
+                    <button
+                      onClick={() => handleReveal(k.id)}
+                      disabled={revealing === k.id}
+                      className="font-mono text-[9px] tracking-widest px-4 py-2 border border-[#1A1A1A] text-dim hover:border-accent/40 hover:text-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {revealing === k.id ? (
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 border border-accent/30 border-t-accent rounded-full animate-spin" />
+                          LOADING
+                        </span>
+                      ) : isRevealed ? 'HIDE' : 'REVEAL'}
+                    </button>
+                    <button
+                      onClick={() => handleRevoke(k.id)}
+                      disabled={revoking === k.id}
+                      className="font-mono text-[9px] tracking-widest px-4 py-2 border border-red-500/20 text-red-400/70 hover:border-red-500/50 hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {revoking === k.id ? (
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 border border-red-400/30 border-t-red-400 rounded-full animate-spin" />
+                          REVOKING
+                        </span>
+                      ) : 'REVOKE'}
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleRevoke(k.id)}
-                  disabled={revoking === k.id}
-                  className="flex-shrink-0 font-mono text-[9px] tracking-widest px-4 py-2 border border-red-500/20 text-red-400/70 hover:border-red-500/50 hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {revoking === k.id ? (
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 border border-red-400/30 border-t-red-400 rounded-full animate-spin" />
-                      REVOKING
-                    </span>
-                  ) : 'REVOKE'}
-                </button>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
