@@ -206,7 +206,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
   )
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-black flex flex-col">
 
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-30 bg-black/95 backdrop-blur border-b border-[#1E1E1E] flex items-center gap-4 px-5 h-14 flex-shrink-0">
@@ -303,7 +303,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       {/* ── Body ────────────────────────────────────────────────────────────── */}
       {/* Desktop: fixed to remaining viewport height — sidebars and content each scroll independently.
           Mobile: unconstrained height — normal page scroll. */}
-      <div className="flex flex-1 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden">
+      <div className="flex flex-1 lg:min-h-0 lg:overflow-hidden">
 
         {/* Left sidebar — desktop: fills body column, scrolls its own nav */}
         <aside className="hidden lg:block flex-shrink-0 w-56 xl:w-64 border-r border-[#1E1E1E] overflow-y-auto">
