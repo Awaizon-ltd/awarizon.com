@@ -17,12 +17,12 @@ const NAV_ITEMS = [
   { href: '/dashboard/api-keys',  label: 'API Keys',  code: '02', icon: '◇' },
   { href: '/dashboard/usage',     label: 'Usage',     code: '03', icon: '◈' },
   { href: '/dashboard/codegen',   label: 'Code Gen',  code: '04', icon: '◌' },
-  { href: '/dashboard/docs',      label: 'SDK Docs',  code: '05', icon: '◫' },
-  { href: '/dashboard/profile',   label: 'Profile',   code: '06', icon: '◈' },
-  { href: '/dashboard/settings',  label: 'Settings',  code: '07', icon: '⬡' },
+  { href: '/dashboard/profile',   label: 'Profile',   code: '05', icon: '◈' },
+  { href: '/dashboard/settings',  label: 'Settings',  code: '06', icon: '⬡' },
 ]
 
 const SITE_LINKS = [
+  { href: '/docs',          label: 'SDK Docs'      },
   { href: '/infrastructure', label: 'Infrastructure' },
   { href: '/learn',          label: 'Web3 Academy'   },
 ]
