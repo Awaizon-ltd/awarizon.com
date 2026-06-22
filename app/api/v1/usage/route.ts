@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { adminDb }                   from '@/lib/firebase/admin'
 import { FieldValue }                from 'firebase-admin/firestore'
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Authorization, x-api-key, Content-Type',
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS })
+}
+
 // ── In-memory rate limiter ────────────────────────────────────────────────────
 // Allows MAX_REQUESTS per key per WINDOW_MS. Resets the window on expiry.
 // Simple and zero-dependency; sufficient for a single serverless instance.
@@ -63,14 +73,14 @@ export async function POST(req: NextRequest) {
     req.headers.get('x-api-key')
 
   if (!apiKey) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS })
   }
 
   // ── Rate limit ────────────────────────────────────────────────────────────
   if (!checkRateLimit(apiKey)) {
     return NextResponse.json(
       { error: 'Rate limit exceeded. Max 60 requests/minute per key.' },
-      { status: 429 },
+      { status: 429, headers: CORS_HEADERS },
     )
   }
 
@@ -83,7 +93,7 @@ export async function POST(req: NextRequest) {
     .get()
 
   if (keySnap.empty) {
-    return NextResponse.json({ error: 'Invalid or revoked API key.' }, { status: 401 })
+    return NextResponse.json({ error: 'Invalid or revoked API key.' }, { status: 401, headers: CORS_HEADERS })
   }
 
   const keyDoc  = keySnap.docs[0]
@@ -96,7 +106,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json() as UsagePayload
     rawEvents = Array.isArray(body?.events) ? body.events.slice(0, 50) : []
   } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400, headers: CORS_HEADERS })
   }
 
   const now = Date.now()
@@ -108,7 +118,7 @@ export async function POST(req: NextRequest) {
   )
 
   if (events.length === 0) {
-    return NextResponse.json({ ok: true, processed: 0 })
+    return NextResponse.json({ ok: true, processed: 0 }, { headers: CORS_HEADERS })
   }
 
   // ── Aggregate by date ─────────────────────────────────────────────────────
@@ -207,5 +217,5 @@ export async function POST(req: NextRequest) {
 
   await batch.commit()
 
-  return NextResponse.json({ ok: true, processed: events.length })
+  return NextResponse.json({ ok: true, processed: events.length }, { headers: CORS_HEADERS })
 }
