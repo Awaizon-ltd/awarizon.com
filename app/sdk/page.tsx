@@ -138,7 +138,7 @@ function TransferButton({ to, amount }: { to: \`0x\${string}\`; amount: bigint }
   {
     tab: 'CLI',
     code: `# Generate typed client + React hooks from any ABI
-npx @awarizon/cli codegen \\
+npx @awarizon/cli generate \\
   --name    USDC \\
   --address 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 \\
   --abi     ./usdc.json \\

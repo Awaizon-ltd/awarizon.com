@@ -1535,7 +1535,7 @@ getChainNativeSymbol(43114) // "AVAX"`,
     title: '@awarizon/cli — Code Generation',
     items: [
       { type: 'text', md: 'Generate a fully-typed contract client class and React hooks from any ABI file. Run once — the generated files work without the CLI installed in production.' },
-      { type: 'shell', cmd: 'npx @awarizon/cli codegen --name MyToken --abi ./abi.json --address 0x... --out ./src/contracts', label: 'CLI — GENERATE FROM ABI' },
+      { type: 'shell', cmd: 'npx @awarizon/cli generate --name MyToken --abi ./abi.json --address 0x... --out ./src/contracts', label: 'CLI — GENERATE FROM ABI' },
       {
         type: 'props',
         header: 'FLAGS',
