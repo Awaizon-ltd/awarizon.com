@@ -3,16 +3,16 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Emerging Markets Thesis",
   description:
-    "The next major technology opportunity is not invention — it is adoption. Awarizon's thesis on how local intelligence, not foreign patterns, will transform Nigeria and West Africa's digital economy.",
+    "The next major technology opportunity is not invention — it is adoption. Awarizon's thesis on how local intelligence, not foreign patterns, will transform the global on-chain economy.",
   openGraph: {
     title: "Emerging Markets Thesis | Awarizon",
     description:
-      "The next major tech opportunity is adoption, not invention. Why Awarizon operates inside the adoption gap across Nigeria and West Africa's emerging markets.",
+      "The next major tech opportunity is adoption, not invention. Why Awarizon operates inside the adoption gap across global emerging markets.",
   },
   twitter: {
     title: "Emerging Markets Thesis | Awarizon",
     description:
-      "The next major tech opportunity is adoption, not invention. Awarizon's thesis on transforming Nigeria's digital economy.",
+      "The next major tech opportunity is adoption, not invention. Awarizon's thesis on transforming the global digital economy.",
   },
   alternates: {
     canonical: "https://awarizon.com/thesis",

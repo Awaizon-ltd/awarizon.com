@@ -11,7 +11,7 @@ export default function Image() {
     <OgCard
       tagline="Adoption Layer"
       title="Distribution as design."
-      description="Awarizon ensures technology gets adopted, not just deployed — bridging digital infrastructure with real business usage across Nigeria and West Africa."
+      description="Awarizon ensures technology gets adopted, not just deployed — bridging digital infrastructure with real business usage across global markets."
     />,
     size,
   )

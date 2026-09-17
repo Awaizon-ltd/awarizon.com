@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "The Shift",
   description:
-    "Technology exists everywhere. Adoption does not. Awarizon bridges the gap between what digital systems promise and what businesses actually experience across Nigeria and West Africa.",
+    "Technology exists everywhere. Adoption does not. Awarizon bridges the gap between what digital systems promise and what businesses actually experience — globally.",
   openGraph: {
     title: "The Shift | Awarizon",
     description:
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "The Shift | Awarizon",
     description:
-      "Technology exists everywhere. Adoption does not. Awarizon bridges the adoption gap in Nigeria and West Africa.",
+      "Technology exists everywhere. Adoption does not. Awarizon bridges the global adoption gap.",
   },
   alternates: {
     canonical: "https://awarizon.com/shift",

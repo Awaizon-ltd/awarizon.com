@@ -11,7 +11,7 @@ export default function Image() {
     <OgCard
       tagline="The Shift"
       title="Technology exists everywhere. Adoption does not."
-      description="Awarizon bridges the gap between what digital systems promise and what businesses actually experience across Nigeria and West Africa."
+      description="Awarizon bridges the gap between what digital systems promise and what businesses actually experience — globally."
     />,
     size,
   )

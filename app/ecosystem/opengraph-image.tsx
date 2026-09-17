@@ -11,7 +11,7 @@ export default function Image() {
     <OgCard
       tagline="Ecosystem Logic"
       title="Everything connected."
-      description="Infrastructure, distribution, consumer products, and feedback loops — one coherent system for technology adoption across Nigeria and emerging markets."
+      description="Infrastructure, distribution, consumer products, and feedback loops — one coherent system for global on-chain adoption."
     />,
     size,
   )

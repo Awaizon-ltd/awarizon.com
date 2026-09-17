@@ -11,7 +11,7 @@ export default function Image() {
     <OgCard
       tagline="Access Layer"
       title="Enter the Awarizon system."
-      description="Build with us, integrate digital infrastructure via API, or deploy consumer products like Zela to your market in Nigeria and West Africa."
+      description="Build with us, integrate digital infrastructure via API, or deploy on-chain products to your market — anywhere in the world."
     />,
     size,
   )

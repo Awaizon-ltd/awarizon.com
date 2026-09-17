@@ -10,8 +10,8 @@ export default function Image() {
   return new ImageResponse(
     <OgCard
       tagline="Infrastructure Layer"
-      title="Modular digital infrastructure built for West Africa."
-      description="Wallet systems, payments engines, identity layers, APIs, and business automation — designed for how businesses in Nigeria actually operate."
+      title="Modular digital infrastructure built for global builders."
+      description="Wallet systems, payments engines, identity layers, APIs, and business automation — designed for how developers and businesses actually build on-chain."
     />,
     size,
   )

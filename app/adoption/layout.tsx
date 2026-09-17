@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Adoption Layer",
   description:
-    "Awarizon's distribution-as-design approach ensures technology gets adopted, not just deployed. We bridge the gap between digital infrastructure and real business usage in Nigeria and West Africa.",
+    "Awarizon's distribution-as-design approach ensures technology gets adopted, not just deployed. We bridge the gap between digital infrastructure and real business usage across global markets.",
   openGraph: {
     title: "Adoption Layer | Awarizon",
     description:

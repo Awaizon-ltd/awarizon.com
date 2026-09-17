@@ -11,7 +11,7 @@ export default function Image() {
     <OgCard
       tagline="Our Thesis"
       title="The next major tech opportunity is adoption, not invention."
-      description="Why Awarizon operates inside the adoption gap across Nigeria and West Africa's emerging digital economy."
+      description="Why Awarizon operates inside the adoption gap across the global emerging digital economy."
     />,
     size,
   )

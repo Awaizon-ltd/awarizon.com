@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Ecosystem Logic",
   description:
-    "The Awarizon ecosystem connects infrastructure, distribution, consumer products, and feedback loops into one coherent system for technology adoption in Nigeria and emerging markets.",
+    "The Awarizon ecosystem connects infrastructure, distribution, consumer products, and feedback loops into one coherent system for global on-chain adoption.",
   openGraph: {
     title: "Ecosystem Logic | Awarizon",
     description:
