@@ -4,12 +4,49 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { NAV_LAYERS } from '@/lib/constants'
+
+// Desktop pill nav grouped into 4 dropdown menus — /shift is covered by the
+// logo, /access is the "Get started" CTA pill, so both sit outside these groups.
+const MENU_GROUPS = [
+  {
+    label: 'Platform',
+    items: [
+      { href: '/infrastructure',   label: 'Infrastructure',    sub: 'Systems we build' },
+      { href: '/sdk',               label: 'SDK',                 sub: 'Developer APIs & packages' },
+      { href: '/custom-solutions', label: 'Custom Solutions',   sub: 'Bespoke infrastructure development' },
+    ],
+  },
+  {
+    label: 'Ecosystem',
+    items: [
+      { href: '/ecosystem', label: 'Ecosystem Logic',   sub: 'Everything connected' },
+      { href: '/adoption',  label: 'Adoption Layer',     sub: 'Distribution as design' },
+      { href: '/thesis',    label: 'Global Thesis',       sub: 'Why we exist here' },
+    ],
+  },
+  {
+    label: 'Resources',
+    items: [
+      { href: '/learn', label: 'Web3 Academy', sub: 'Blockchain education hub' },
+      { href: '/docs',  label: 'Documentation', sub: 'SDK reference & guides' },
+    ],
+  },
+  {
+    label: 'Company',
+    items: [
+      { href: '/company', label: 'About Awarizon', sub: 'Our mission & team' },
+      { href: '/access',  label: 'Contact',         sub: 'Get in touch' },
+    ],
+  },
+]
 
 export default function Navigation() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [openGroup, setOpenGroup] = useState<string | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,71 +66,125 @@ export default function Navigation() {
 
   useEffect(() => {
     setMenuOpen(false)
+    setOpenGroup(null)
   }, [pathname])
-
-  const currentIndex = NAV_LAYERS.findIndex(l => pathname === l.href)
 
   return (
     <>
-      {/* Top bar */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? 'bg-black/90 backdrop-blur-sm border-b border-[#1A1A1A]' : ''
-      }`}>
-        <div className="flex items-center justify-between px-6 md:px-10 h-16">
-          {/* Logo */}
-          <Link href="/shift" className="group flex items-center gap-3">
-            <div className="relative h-8 w-auto">
-              <Image
-                src="/logo.png"
-                alt="Awarizon"
-                height={32}
-                width={120}
-                className="h-8 w-auto object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
-                priority
-              />
-            </div>
+      {/* Top bar — floating pill nav (desktop) */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 pt-4 md:pt-5">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-3">
+
+          {/* Left — logo + 4 grouped dropdown menus, merged into one pill (desktop only) */}
+          <div className={`hidden lg:flex items-center bg-[#0D0D0D]/90 backdrop-blur-xl border rounded-full p-1.5 pr-2 gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.45)] transition-colors duration-300 ${
+            scrolled ? 'border-white/15' : 'border-white/10'
+          }`}>
+            <Link href="/shift" className="relative h-9 w-9 rounded-full bg-accent flex items-center justify-center shrink-0 overflow-hidden">
+              <Image src="/slogo.png" alt="Awarizon" width={20} height={20} className="h-5 w-5 object-contain brightness-0" />
+            </Link>
+            <nav className="flex items-center gap-0.5 pl-1.5">
+              {MENU_GROUPS.map((group) => {
+                const isActiveGroup = group.items.some(i => i.href === pathname)
+                const isOpen = openGroup === group.label
+                return (
+                  <div
+                    key={group.label}
+                    className="relative"
+                    onMouseEnter={() => setOpenGroup(group.label)}
+                    onMouseLeave={() => setOpenGroup(null)}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenGroup(isOpen ? null : group.label)}
+                      className={`flex items-center gap-1 font-body text-[13px] px-3.5 py-2 rounded-full transition-colors duration-200 whitespace-nowrap ${
+                        isActiveGroup || isOpen ? 'text-black bg-white' : 'text-white/70 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {group.label}
+                      <svg
+                        width="10" height="10" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                        className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                          transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                          className="absolute top-full left-0 mt-2 w-64 bg-[#0D0D0D]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-[0_16px_40px_rgba(0,0,0,0.5)] origin-top-left"
+                        >
+                          {group.items.map((item) => {
+                            const isItemActive = pathname === item.href
+                            return (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`block px-3.5 py-2.5 rounded-xl transition-colors duration-150 ${
+                                  isItemActive ? 'bg-accent/10' : 'hover:bg-white/[0.06]'
+                                }`}
+                              >
+                                <div className={`font-body text-[13px] ${isItemActive ? 'text-accent' : 'text-white'}`}>
+                                  {item.label}
+                                </div>
+                                <div className="font-mono text-[10px] text-dim mt-0.5">{item.sub}</div>
+                              </Link>
+                            )
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )
+              })}
+            </nav>
+          </div>
+
+          {/* Logo alone — mobile/tablet (pill nav needs lg width) */}
+          <Link href="/shift" className="lg:hidden relative h-10 w-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+            <Image src="/slogo.png" alt="Awarizon" width={22} height={22} className="h-[22px] w-[22px] object-contain brightness-0" />
           </Link>
 
-          {/* Center: current layer indicator */}
-          <div className="hidden md:flex items-center gap-2">
-            {currentIndex >= 0 && (
-              <>
-                <span className="sys-label opacity-50">
-                  {String(currentIndex + 1).padStart(2, '0')} /
-                </span>
-                <span className="sys-label">
-                  {NAV_LAYERS[currentIndex].code}
-                </span>
-              </>
-            )}
-          </div>
-
-          {/* Auth buttons */}
-          <div className="flex items-center gap-2 mr-2">
+          {/* Right — sign in, get-started pill, hamburger */}
+          <div className="flex items-center gap-3">
             <Link
               href="/auth"
-              className="font-mono text-[10px] tracking-widest text-muted hover:text-white transition-colors duration-200 px-3 py-2 hidden sm:block"
+              className="hidden lg:block font-body text-[13px] text-white/70 hover:text-white transition-colors duration-200 px-2"
             >
-              SIGN IN
+              Sign in
             </Link>
+
             <Link
               href="/auth"
-              className="font-mono text-[10px] tracking-widest px-4 py-2 bg-accent text-black hover:bg-white transition-colors duration-200"
+              className={`hidden sm:flex items-center bg-[#0D0D0D]/90 backdrop-blur-xl border rounded-full p-1.5 pl-5 gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.45)] group transition-colors duration-300 ${
+                scrolled ? 'border-white/15' : 'border-white/10'
+              }`}
             >
-              GET STARTED →
+              <span className="font-body text-[13px] text-white whitespace-nowrap">Get started</span>
+              <span className="h-8 w-8 rounded-full bg-white text-black flex items-center justify-center group-hover:bg-accent transition-colors duration-200 shrink-0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17L17 7" />
+                  <path d="M8 7h9v9" />
+                </svg>
+              </span>
             </Link>
-          </div>
 
-          {/* Right: hamburger / nav toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="flex flex-col gap-1.5 p-2 group"
-            aria-label="Toggle navigation"
-          >
-            <span className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
-            <span className={`block h-px bg-accent transition-all duration-300 ${menuOpen ? 'w-6 opacity-0' : 'w-4'}`} />
-            <span className={`block w-6 h-px bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
-          </button>
+            {/* Hamburger — mobile/tablet nav toggle */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden flex flex-col gap-1.5 p-3 bg-[#0D0D0D]/90 backdrop-blur-xl border border-white/10 rounded-full group"
+              aria-label="Toggle navigation"
+            >
+              <span className={`block w-4 h-px bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
+              <span className={`block h-px bg-accent transition-all duration-300 ${menuOpen ? 'w-4 opacity-0' : 'w-3'}`} />
+              <span className={`block w-4 h-px bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -188,7 +279,7 @@ export default function Navigation() {
               </span>
               <div className={`rounded-full transition-all duration-300 ${
                 isActive
-                  ? 'w-3 h-3 bg-accent shadow-[0_0_10px_rgba(255,229,0,0.8)]'
+                  ? 'w-3 h-3 bg-accent shadow-[0_0_10px_rgba(200,241,63,0.8)]'
                   : 'w-1.5 h-1.5 bg-[#333] group-hover:bg-[#555]'
               }`} />
             </Link>
