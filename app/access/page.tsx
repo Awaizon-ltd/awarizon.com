@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PageTransition from '@/components/motion/PageTransition'
 import ScrollProvider from '@/components/motion/ScrollProvider'
 import Button from '@/components/ui/Button'
@@ -92,6 +92,16 @@ export default function AccessPage() {
     setErrorMsg('')
   }
 
+  // Pre-select an intent when arriving from a page that already knows why
+  // the visitor is here (e.g. /custom-solutions?intent=build links here).
+  useEffect(() => {
+    const intent = new URLSearchParams(window.location.search).get('intent')
+    if (intent && INTENT_OPTIONS.some(o => o.id === intent)) {
+      selectIntent(intent)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   async function handleSubmit() {
     // Basic validation
     const requiredFields = activeFields.filter(f => f.required)
@@ -153,11 +163,11 @@ export default function AccessPage() {
     <ScrollProvider>
       <PageTransition>
         {/* ─── Hero with background image ─── */}
-        <section className="relative min-h-screen flex flex-col overflow-hidden">
+        <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <div className="s-overlay bg-gradient-to-b from-black via-black/90 to-black" />
           <div className="s-overlay grid-bg-static opacity-20" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(255,229,0,0.06),transparent_60%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(200,241,63,0.06),transparent_60%)] pointer-events-none" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 flex flex-col min-h-screen">
             {/* Layer ID */}
@@ -174,9 +184,9 @@ export default function AccessPage() {
                 {/* Left */}
                 <div>
                   <div className="mb-4 reveal">
-                    <span className="sys-label opacity-40">ACCESS LAYER // NOT A CONTACT PAGE</span>
+                    <span className="sys-label opacity-65">ACCESS LAYER // NOT A CONTACT PAGE</span>
                   </div>
-                  <h1 className="font-display font-bold leading-none mb-8 reveal" style={{ fontSize: 'clamp(3rem, 7vw, 8rem)' }}>
+                  <h1 className="font-display font-bold text-hero mb-8 reveal">
                     <span className="block text-white">Enter the</span>
                     <span className="block gradient-text">system.</span>
                   </h1>
@@ -220,7 +230,7 @@ export default function AccessPage() {
                 <div className="reveal reveal-delay-2">
                   {mode === 'select' ? (
                     <div>
-                      <div className="sys-label opacity-40 mb-5">SELECT_INTENT</div>
+                      <div className="sys-label opacity-65 mb-5">SELECT_INTENT</div>
                       <div className="space-y-px">
                         {INTENT_OPTIONS.map((option) => (
                           <button
@@ -335,7 +345,7 @@ export default function AccessPage() {
                     <span className="text-4xl text-accent">✓</span>
                   </div>
                   <div className="sys-label mb-4 text-green-400">CONNECTION_ESTABLISHED</div>
-                  <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-5">You are in the system.</h2>
+                  <h2 className="font-display font-bold text-h2 text-white mb-5">You are in the system.</h2>
                   <p className="font-body text-lg text-muted mb-8 leading-relaxed">
                     We have received your request and will reach out within 48 hours. The connection is live.
                   </p>
@@ -360,8 +370,8 @@ export default function AccessPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-6xl mx-auto">
             <div className="mb-12 reveal">
-              <span className="sys-label opacity-40 block mb-4">CONTACT_CHANNELS // DIRECT ACCESS</span>
-              <h2 className="font-display font-bold text-2xl md:text-3xl text-white">Other ways to reach us.</h2>
+              <span className="sys-label opacity-65 block mb-4">CONTACT_CHANNELS // DIRECT ACCESS</span>
+              <h2 className="font-display font-bold text-h2 text-white">Other ways to reach us.</h2>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#0D0D0D]">
@@ -389,7 +399,7 @@ export default function AccessPage() {
                     </>
                   )}
                   <div className="relative p-7">
-                    <div className="sys-label opacity-40 mb-4">{ch.code}</div>
+                    <div className="sys-label opacity-65 mb-4">{ch.code}</div>
                     <div className="text-2xl mb-4 text-dim group-hover:text-accent transition-colors duration-300">{ch.icon}</div>
                     <div className="font-display font-semibold text-white text-lg mb-0.5 group-hover:text-accent transition-colors duration-300">{ch.label}</div>
                     <div className="font-mono text-[10px] text-dim mb-3 tracking-widest">{ch.sub}</div>

@@ -55,6 +55,20 @@ export const NAV_LAYERS = [
     sublabel: 'Blockchain Education Hub',
     num: '09',
   },
+  {
+    href: '/custom-solutions',
+    label: 'Custom Solutions',
+    code: 'CUSTOM_BUILD',
+    sublabel: 'Bespoke Infrastructure Development',
+    num: '10',
+  },
+  {
+    href: '/company',
+    label: 'Company',
+    code: 'COMPANY_LAYER',
+    sublabel: 'About Awarizon',
+    num: '11',
+  },
 ]
 
 export const INFRASTRUCTURE_NODES = [
@@ -65,7 +79,7 @@ export const INFRASTRUCTURE_NODES = [
     description: 'Non-custodial wallet infrastructure enabling businesses and developers to build secure digital asset management — custody, multi-sig, and programmable spending logic at protocol level.',
     x: 50,
     y: 20,
-    color: '#FFE500',
+    color: '#C8F13F',
     tags: ['Non-custodial', 'Multi-sig', 'Self-custody'],
   },
   {
@@ -75,7 +89,7 @@ export const INFRASTRUCTURE_NODES = [
     description: 'Blockchain-native payment processing with stablecoin support, cross-border settlement, and developer APIs for integrating crypto payments into any product or business operation.',
     x: 80,
     y: 45,
-    color: '#FFE500',
+    color: '#C8F13F',
     tags: ['Stablecoins', 'Cross-chain', 'Settlement'],
   },
   {
@@ -85,7 +99,7 @@ export const INFRASTRUCTURE_NODES = [
     description: 'Web3-native identity and verification infrastructure — wallet-based onboarding, on-chain KYC/AML compliance, and self-sovereign identity for any application or protocol.',
     x: 65,
     y: 75,
-    color: '#FFE500',
+    color: '#C8F13F',
     tags: ['DID', 'On-chain KYC', 'Self-sovereign'],
   },
   {
@@ -95,7 +109,7 @@ export const INFRASTRUCTURE_NODES = [
     description: 'Developer-first blockchain interface layer — EVM-compatible SDKs, REST APIs, and protocol connectors built for developers who need to ship Web3 products fast.',
     x: 20,
     y: 65,
-    color: '#FFE500',
+    color: '#C8F13F',
     tags: ['EVM', 'REST', 'SDKs'],
   },
   {
@@ -105,7 +119,7 @@ export const INFRASTRUCTURE_NODES = [
     description: 'Programmable on-chain workflows and smart contract infrastructure that replace manual processes with auditable, trust-minimized automation at scale.',
     x: 15,
     y: 35,
-    color: '#FFE500',
+    color: '#C8F13F',
     tags: ['Smart Contracts', 'On-chain', 'Auditable'],
   },
 ]
