@@ -1,3 +1,16 @@
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import ClientShell from "@/components/ClientShell";
+
+const siteName = "Awarizon";
+const siteUrl = "https://awarizon.com";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#000000",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
@@ -107,3 +120,24 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
 };
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="scroll-smooth">
+      <body className="bg-black text-white antialiased">
+        <ClientShell>{children}</ClientShell>
+
+        {/* Global progress bar — driven by Navigation.tsx's scroll handler */}
+        <div
+          id="progress-bar"
+          className="fixed top-0 left-0 right-0 h-[2px] z-[60] origin-left scale-x-0"
+          style={{ background: "var(--accent)" }}
+        />
+      </body>
+    </html>
+  );
+}
