@@ -47,9 +47,9 @@ export async function GET(req: NextRequest) {
     keyId,
     timestamp: new Date().toISOString(),
     endpoints: {
-      test:         '/api/v1/test',
-      chains:       '/api/v1/chains',
-      transactions: '/api/v1/transactions',
+      auth:  '/api/v1/auth',
+      test:  '/api/v1/test',
+      usage: '/api/v1/usage',
     },
   })
 }
