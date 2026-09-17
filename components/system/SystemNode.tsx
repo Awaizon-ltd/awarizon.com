@@ -51,7 +51,7 @@ export default function SystemNode({ node, size = 48, className = '' }: SystemNo
 
       {/* Expanded panel */}
       {expanded && (
-        <div className="absolute z-20 top-full mt-8 left-1/2 -translate-x-1/2 w-64 bg-black border border-accent/30 shadow-[0_0_40px_rgba(255,229,0,0.1)] p-4 animate-slide-up">
+        <div className="absolute z-20 top-full mt-8 left-1/2 -translate-x-1/2 w-64 bg-black border border-accent/30 shadow-[0_0_40px_rgba(200,241,63,0.1)] p-4 animate-slide-up">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <span className="sys-label">{node.code}</span>

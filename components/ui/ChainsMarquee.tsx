@@ -70,10 +70,10 @@ function NetworkIllustration() {
         return (
           <g key={i}>
             <line x1={n1.x} y1={n1.y} x2={n2.x} y2={n2.y}
-              stroke="#FFE500" strokeWidth="0.4" strokeOpacity="0.12" />
+              stroke="#C8F13F" strokeWidth="0.4" strokeOpacity="0.12" />
             {animated && (
               <line x1={n1.x} y1={n1.y} x2={n2.x} y2={n2.y}
-                stroke="#FFE500" strokeWidth="0.9" strokeOpacity="0.45"
+                stroke="#C8F13F" strokeWidth="0.9" strokeOpacity="0.45"
                 strokeDasharray="5 9" className="flow-line" />
             )}
           </g>
@@ -84,21 +84,21 @@ function NetworkIllustration() {
         <g key={i}>
           {node.primary && <>
             <circle cx={node.x} cy={node.y} r={node.r + 12}
-              fill="none" stroke="#FFE500" strokeWidth="0.25" strokeOpacity="0.08" />
+              fill="none" stroke="#C8F13F" strokeWidth="0.25" strokeOpacity="0.08" />
             <circle cx={node.x} cy={node.y} r={node.r + 6}
-              fill="none" stroke="#FFE500" strokeWidth="0.35" strokeOpacity="0.18" />
+              fill="none" stroke="#C8F13F" strokeWidth="0.35" strokeOpacity="0.18" />
           </>}
           <circle cx={node.x} cy={node.y} r={node.r + 2.5}
-            fill="none" stroke="#FFE500" strokeWidth="0.4"
+            fill="none" stroke="#C8F13F" strokeWidth="0.4"
             strokeOpacity={node.primary ? '0.45' : '0.18'} />
           <circle cx={node.x} cy={node.y} r={node.r}
             fill={node.primary ? '#0A0A0A' : '#040404'}
-            stroke="#FFE500" strokeWidth={node.primary ? '0.9' : '0.5'}
+            stroke="#C8F13F" strokeWidth={node.primary ? '0.9' : '0.5'}
             strokeOpacity={node.primary ? '0.85' : '0.35'} />
           <circle cx={node.x} cy={node.y} r={node.primary ? 3.5 : 2}
-            fill="#FFE500" fillOpacity={node.primary ? '0.55' : '0.18'} />
+            fill="#C8F13F" fillOpacity={node.primary ? '0.55' : '0.18'} />
           <text x={node.x + node.r + 5} y={node.y + 3.5}
-            fill="#FFE500" fillOpacity="0.22" fontSize="5.5"
+            fill="#C8F13F" fillOpacity="0.22" fontSize="5.5"
             fontFamily="JetBrains Mono, monospace">
             {labels[i]}
           </text>
@@ -132,14 +132,14 @@ function ChainBlocksIllustration() {
         return (
           <g key={i}>
             <line x1="95" y1={block.y + 70} x2="95" y2={blocks[i + 1].y}
-              stroke="#FFE500" strokeWidth="0.4" strokeOpacity="0.15" />
+              stroke="#C8F13F" strokeWidth="0.4" strokeOpacity="0.15" />
             <line x1="95" y1={block.y + 70} x2="95" y2={blocks[i + 1].y}
-              stroke="#FFE500" strokeWidth="0.9" strokeOpacity="0.4"
+              stroke="#C8F13F" strokeWidth="0.9" strokeOpacity="0.4"
               strokeDasharray="3 7" className="flow-line" />
             <circle cx="95" cy={mid} r="3.5"
-              fill="#050505" stroke="#FFE500" strokeWidth="0.6" strokeOpacity="0.5" />
+              fill="#050505" stroke="#C8F13F" strokeWidth="0.6" strokeOpacity="0.5" />
             <circle cx="95" cy={mid} r="1.5"
-              fill="#FFE500" fillOpacity="0.3" />
+              fill="#C8F13F" fillOpacity="0.3" />
           </g>
         )
       })}
@@ -150,22 +150,22 @@ function ChainBlocksIllustration() {
           {/* Block body */}
           <rect x="5" y={block.y} width="180" height="68"
             fill="#040404"
-            stroke="#FFE500"
+            stroke="#C8F13F"
             strokeWidth={block.latest ? '0.8' : '0.35'}
             strokeOpacity={block.latest ? '0.7' : '0.2'} />
 
           {/* Top accent bar (latest only) */}
           {block.latest && (
             <rect x="5" y={block.y} width="180" height="2"
-              fill="#FFE500" fillOpacity="0.8" />
+              fill="#C8F13F" fillOpacity="0.8" />
           )}
 
           {/* Corner marks */}
           <line x1="5" y1={block.y + 68} x2="18" y2={block.y + 68}
-            stroke="#FFE500" strokeWidth="1.2"
+            stroke="#C8F13F" strokeWidth="1.2"
             strokeOpacity={block.latest ? '0.7' : '0.22'} />
           <line x1="185" y1={block.y} x2="185" y2={block.y + 12}
-            stroke="#FFE500" strokeWidth="1.2"
+            stroke="#C8F13F" strokeWidth="1.2"
             strokeOpacity={block.latest ? '0.7' : '0.22'} />
 
           {/* Status dot */}
@@ -177,22 +177,22 @@ function ChainBlocksIllustration() {
 
           {/* Block label */}
           <text x="16" y={block.y + 17}
-            fill="#FFE500" fillOpacity={block.latest ? '0.75' : '0.28'}
+            fill="#C8F13F" fillOpacity={block.latest ? '0.75' : '0.28'}
             fontSize="6" fontFamily="JetBrains Mono, monospace">
             {block.label}
           </text>
           <text x="16" y={block.y + 33}
-            fill="#FFE500" fillOpacity={block.latest ? '0.45' : '0.16'}
+            fill="#C8F13F" fillOpacity={block.latest ? '0.45' : '0.16'}
             fontSize="5.5" fontFamily="JetBrains Mono, monospace">
             HASH: {block.hash}
           </text>
           <text x="16" y={block.y + 49}
-            fill="#FFE500" fillOpacity={block.latest ? '0.35' : '0.13'}
+            fill="#C8F13F" fillOpacity={block.latest ? '0.35' : '0.13'}
             fontSize="5.5" fontFamily="JetBrains Mono, monospace">
             {block.txs} · CONFIRMED · EVM
           </text>
           <text x="16" y={block.y + 62}
-            fill="#FFE500" fillOpacity={block.latest ? '0.22' : '0.09'}
+            fill="#C8F13F" fillOpacity={block.latest ? '0.22' : '0.09'}
             fontSize="5" fontFamily="JetBrains Mono, monospace">
             GAS_USED: 12,847,291 · SLOT: {8429100 + (3 - i)}
           </text>

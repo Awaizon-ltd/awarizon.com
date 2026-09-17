@@ -113,7 +113,7 @@ export default function ParticleNetwork({
             ctx!.beginPath()
             ctx!.moveTo(a.x, a.y)
             ctx!.lineTo(b.x, b.y)
-            ctx!.strokeStyle = `rgba(255,229,0,${alpha})`
+            ctx!.strokeStyle = `rgba(200,241,63,${alpha})`
             ctx!.stroke()
           }
         }
@@ -123,7 +123,7 @@ export default function ParticleNetwork({
       for (const p of particles) {
         ctx!.beginPath()
         ctx!.arc(p.x, p.y, p.size, 0, 6.283)
-        ctx!.fillStyle = `rgba(255,229,0,${p.alpha})`
+        ctx!.fillStyle = `rgba(200,241,63,${p.alpha})`
         ctx!.fill()
       }
 

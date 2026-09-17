@@ -87,7 +87,7 @@ export default function WorldMap({ className = '' }: { className?: string }) {
             <Line
               key={`lat-${lat}`}
               from={[-180, lat]} to={[180, lat]}
-              stroke="#FFE500" strokeWidth={0.3} strokeOpacity={0.04}
+              stroke="#C8F13F" strokeWidth={0.3} strokeOpacity={0.04}
             />
           ))}
 
@@ -121,7 +121,7 @@ export default function WorldMap({ className = '' }: { className?: string }) {
                 key={`route-${i}`}
                 from={[c1.lng, c1.lat]}
                 to={[c2.lng, c2.lat]}
-                stroke="#FFE500"
+                stroke="#C8F13F"
                 strokeWidth={isHi ? 1.2 : 0.55}
                 strokeOpacity={isHi ? 0.7 : 0.14}
                 strokeDasharray={isHi ? '6 6' : '3 9'}
@@ -146,12 +146,12 @@ export default function WorldMap({ className = '' }: { className?: string }) {
               >
                 {/* Outer hover ring */}
                 {isActive && (
-                  <circle r={r + 8} fill="none" stroke="#FFE500" strokeWidth={0.5} strokeOpacity={0.25} />
+                  <circle r={r + 8} fill="none" stroke="#C8F13F" strokeWidth={0.5} strokeOpacity={0.25} />
                 )}
 
                 {/* Pulse expand ring (on tick cycle) */}
                 {isPulsing && (
-                  <circle r={r} fill="none" stroke="#FFE500" strokeWidth={0.8}>
+                  <circle r={r} fill="none" stroke="#C8F13F" strokeWidth={0.8}>
                     <animate attributeName="r"              from={r}     to={r * 7}  dur="1.8s" fill="freeze" />
                     <animate attributeName="opacity"        from="0.7"   to="0"      dur="1.8s" fill="freeze" />
                     <animate attributeName="stroke-width"   from="0.8"   to="0.2"    dur="1.8s" fill="freeze" />
@@ -162,7 +162,7 @@ export default function WorldMap({ className = '' }: { className?: string }) {
                 <circle
                   r={r + 3}
                   fill="none"
-                  stroke="#FFE500"
+                  stroke="#C8F13F"
                   strokeWidth={0.4}
                   strokeOpacity={isActive ? 0.45 : city.primary ? 0.22 : 0.08}
                   style={{ transition: 'all 0.3s' }}
@@ -171,10 +171,10 @@ export default function WorldMap({ className = '' }: { className?: string }) {
                 {/* Main dot */}
                 <circle
                   r={isActive ? r * 1.5 : r}
-                  fill={isActive ? '#FFE500' : city.primary ? '#FFE500CC' : '#FFE50077'}
+                  fill={isActive ? '#C8F13F' : city.primary ? '#C8F13FCC' : '#C8F13F77'}
                   style={{
                     transition: 'all 0.3s',
-                    filter: isActive ? 'drop-shadow(0 0 5px #FFE500)' : 'none',
+                    filter: isActive ? 'drop-shadow(0 0 5px #C8F13F)' : 'none',
                     cursor: 'pointer',
                   }}
                 />
@@ -187,7 +187,7 @@ export default function WorldMap({ className = '' }: { className?: string }) {
                     textAnchor={city.lng > 50 ? 'end' : 'start'}
                     fontSize={11}
                     fontFamily="JetBrains Mono, monospace"
-                    fill={isActive ? '#FFE500' : '#FFE50088'}
+                    fill={isActive ? '#C8F13F' : '#C8F13F88'}
                     style={{ transition: 'all 0.3s', userSelect: 'none', pointerEvents: 'none' }}
                   >
                     {city.name}

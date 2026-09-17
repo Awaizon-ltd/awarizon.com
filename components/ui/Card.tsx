@@ -23,7 +23,7 @@ export default function Card({
   }
 
   const hoverClasses = glowOnHover
-    ? 'hover:border-accent/50 hover:shadow-[0_0_30px_rgba(255,229,0,0.08)] transition-all duration-300 cursor-pointer'
+    ? 'hover:border-accent/50 hover:shadow-[0_0_30px_rgba(200,241,63,0.08)] transition-all duration-300 cursor-pointer'
     : ''
 
   return (

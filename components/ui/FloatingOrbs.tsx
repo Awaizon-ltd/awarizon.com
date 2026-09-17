@@ -17,7 +17,7 @@ const DEFAULT_ORBS: Orb[] = [
 
 export default function FloatingOrbs({
   orbs = DEFAULT_ORBS,
-  color = '255,229,0',
+  color = '200,241,63',
   className = '',
 }: {
   orbs?: Orb[]

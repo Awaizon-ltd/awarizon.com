@@ -27,7 +27,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
           top: 0,
           width: '6px',
           height: '100%',
-          background: '#FFE500',
+          background: '#C8F13F',
           display: 'flex',
         }}
       />
@@ -40,7 +40,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
           top: '52px',
           width: '80px',
           height: '80px',
-          border: '2px solid rgba(255,229,0,0.25)',
+          border: '2px solid rgba(200,241,63,0.25)',
           transform: 'rotate(45deg)',
           display: 'flex',
         }}
@@ -52,7 +52,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
           top: '92px',
           width: '160px',
           height: '160px',
-          border: '1px solid rgba(255,229,0,0.1)',
+          border: '1px solid rgba(200,241,63,0.1)',
           transform: 'rotate(45deg)',
           display: 'flex',
         }}
@@ -64,7 +64,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
           top: '40px',
           width: '16px',
           height: '16px',
-          background: '#FFE500',
+          background: '#C8F13F',
           transform: 'rotate(45deg)',
           display: 'flex',
           opacity: 0.6,
@@ -77,7 +77,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
           style={{
             width: '26px',
             height: '26px',
-            background: '#FFE500',
+            background: '#C8F13F',
             transform: 'rotate(45deg)',
             display: 'flex',
             flexShrink: 0,
@@ -104,7 +104,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
         {tagline && (
           <span
             style={{
-              color: '#FFE500',
+              color: '#C8F13F',
               fontSize: '13px',
               fontWeight: '600',
               letterSpacing: '3px',
@@ -154,7 +154,7 @@ export function OgCard({ title, tagline, description }: OgCardProps) {
         <span style={{ color: '#555555', fontSize: '15px', display: 'flex' }}>awarizon.com</span>
         <span
           style={{
-            color: '#FFE500',
+            color: '#C8F13F',
             fontSize: '13px',
             letterSpacing: '2.5px',
             display: 'flex',

@@ -13,8 +13,8 @@ export const SITE_CONFIG = {
   buildEnv: 'PRODUCTION',
   
   // Accent colors
-  accent: '#FFE500',
-  accentDim: '#B3A000',
+  accent: '#C8F13F',
+  accentDim: '#8CA92C',
   
   // Feature flags
   features: {

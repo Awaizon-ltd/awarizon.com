@@ -37,7 +37,7 @@ export default function DataGrid({ density = 'medium', animated = true, classNam
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       // Grid lines
-      ctx.strokeStyle = 'rgba(255, 229, 0, 0.04)'
+      ctx.strokeStyle = 'rgba(200,241,63, 0.04)'
       ctx.lineWidth = 1
 
       const ox = offset % gridSize
@@ -58,7 +58,7 @@ export default function DataGrid({ density = 'medium', animated = true, classNam
       }
 
       // Random data dots
-      ctx.fillStyle = 'rgba(255, 229, 0, 0.15)'
+      ctx.fillStyle = 'rgba(200,241,63, 0.15)'
       const time = Date.now() / 1000
 
       for (let gx = 0; gx < canvas.width; gx += gridSize) {

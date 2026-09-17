@@ -26,8 +26,8 @@ export default function Accordion({ title, children, defaultOpen = false }: Acco
           style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }}
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <line x1="5" y1="0" x2="5" y2="10" stroke="#FFE500" strokeWidth="1.5" />
-            <line x1="0" y1="5" x2="10" y2="5" stroke="#FFE500" strokeWidth="1.5" />
+            <line x1="5" y1="0" x2="5" y2="10" stroke="#C8F13F" strokeWidth="1.5" />
+            <line x1="0" y1="5" x2="10" y2="5" stroke="#C8F13F" strokeWidth="1.5" />
           </svg>
         </span>
       </button>

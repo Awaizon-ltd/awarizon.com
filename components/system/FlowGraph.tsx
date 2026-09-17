@@ -43,7 +43,7 @@ export default function FlowGraph({ nodes, className = '' }: FlowGraphProps) {
                 y1="40"
                 x2={`${x2}%`}
                 y2="40"
-                stroke={isActive ? '#FFE500' : '#222'}
+                stroke={isActive ? '#C8F13F' : '#222'}
                 strokeWidth="0.5"
               />
               {/* Animated flow */}
@@ -52,7 +52,7 @@ export default function FlowGraph({ nodes, className = '' }: FlowGraphProps) {
                 y1="40"
                 x2={`${x2}%`}
                 y2="40"
-                stroke="#FFE500"
+                stroke="#C8F13F"
                 strokeWidth="0.5"
                 strokeDasharray="4 8"
                 opacity={isActive ? '0.8' : '0.3'}
@@ -61,7 +61,7 @@ export default function FlowGraph({ nodes, className = '' }: FlowGraphProps) {
               {/* Arrow */}
               <polygon
                 points={`${x2}%,38 ${x2 - 2}%,41 ${x2 + 1}%,41`}
-                fill={isActive ? '#FFE500' : '#333'}
+                fill={isActive ? '#C8F13F' : '#333'}
               />
             </g>
           )
@@ -84,7 +84,7 @@ export default function FlowGraph({ nodes, className = '' }: FlowGraphProps) {
               <div className={`
                 relative w-12 h-12 flex items-center justify-center border transition-all duration-300
                 ${isActive
-                  ? 'border-accent bg-accent/10 shadow-[0_0_20px_rgba(255,229,0,0.3)]'
+                  ? 'border-accent bg-accent/10 shadow-[0_0_20px_rgba(200,241,63,0.3)]'
                   : 'border-[#333] bg-[#0A0A0A] group-hover:border-accent/50'
                 }
               `}>
