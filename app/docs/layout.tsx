@@ -274,8 +274,8 @@ function DocsLayoutInner({ children }: { children: ReactNode }) {
 
           {/* Breadcrumb: Docs / Current section */}
           <div className="flex items-center gap-1.5 min-w-0 font-mono text-[10px] tracking-widest overflow-hidden">
-            <span className="text-dim/50 flex-shrink-0">DOCS</span>
-            <span className="text-dim/30 flex-shrink-0">/</span>
+            <span className="text-dim/70 flex-shrink-0">DOCS</span>
+            <span className="text-dim/45 flex-shrink-0">/</span>
             <span className="text-accent/80 truncate">
               {currentSection?.title ?? 'Overview'}
             </span>
@@ -334,7 +334,7 @@ function DocsLayoutInner({ children }: { children: ReactNode }) {
         {/* Right TOC — xl+ only, scrolls its own column */}
         {tocItems.length > 0 && (
           <aside className="hidden xl:block flex-shrink-0 w-52 2xl:w-56 border-l border-[#1E1E1E] overflow-y-auto py-8 px-4">
-            <p className="font-mono text-[9px] tracking-[0.2em] text-dim/50 mb-4 uppercase">On this page</p>
+            <p className="font-mono text-[9px] tracking-[0.2em] text-dim/70 mb-4 uppercase">On this page</p>
             <nav className="space-y-0.5">
               {tocItems.map(item => (
                 <a

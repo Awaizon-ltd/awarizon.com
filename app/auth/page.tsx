@@ -95,7 +95,7 @@ export default function AuthPage() {
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Grid background */}
       <div className="absolute inset-0 grid-bg-static opacity-20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(255,229,0,0.05),transparent)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(200,241,63,0.05),transparent)]" />
 
       {/* Logo / back to site */}
       <a href="/" className="relative z-10 mb-10 flex items-center gap-2 group">
@@ -257,7 +257,7 @@ export default function AuthPage() {
 
         {/* Footer notice */}
         <div className="px-8 pb-6 border-t border-[#0D0D0D] pt-4">
-          <p className="font-mono text-[8px] text-dim/50 text-center tracking-wide leading-relaxed">
+          <p className="font-mono text-[8px] text-dim/75 text-center tracking-wide leading-relaxed">
             BY CONTINUING YOU AGREE TO AWARIZON'S TERMS OF SERVICE AND PRIVACY POLICY.
             YOUR DATA IS STORED SECURELY AND NEVER SHARED.
           </p>
@@ -265,7 +265,7 @@ export default function AuthPage() {
       </div>
 
       {/* System tag */}
-      <p className="relative z-10 mt-8 font-mono text-[9px] text-dim/40 tracking-[0.3em]">
+      <p className="relative z-10 mt-8 font-mono text-[9px] text-dim/65 tracking-[0.3em]">
         AUTH_LAYER // SECURE · ON-CHAIN READY
       </p>
     </div>

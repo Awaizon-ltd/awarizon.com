@@ -96,8 +96,7 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="mb-10">
         <span className="font-mono text-[9px] tracking-[0.3em] text-dim block mb-3">DASHBOARD // SETTINGS</span>
-        <h1 className="font-display font-extrabold text-white leading-tight mb-2"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
+        <h1 className="font-display font-extrabold text-white text-page-title mb-2">
           Settings
         </h1>
         <p className="font-body text-muted text-base">

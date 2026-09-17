@@ -45,10 +45,10 @@ export default function EcosystemPage() {
       <PageTransition>
 
         {/* ── HERO ──────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+        <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
           <div className="absolute inset-0 grid-bg-static opacity-20 z-0" />
           <FloatingOrbs />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(255,229,0,0.04),transparent)] z-0" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(200,241,63,0.04),transparent)] z-0" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 flex flex-col min-h-screen">
             <motion.div
@@ -79,7 +79,7 @@ export default function EcosystemPage() {
                 ECOSYSTEM LOGIC // SYSTEM ARCHITECTURE
               </motion.span>
 
-              <h1 className="font-display font-extrabold leading-[0.92]" style={{ fontSize: 'clamp(2rem, 5.5vw, 5.5rem)' }}>
+              <h1 className="font-display font-extrabold text-hero">
                 {[
                   { text: 'Awarizon is not',             cls: 'text-white'    },
                   { text: 'a collection of products.',   cls: 'text-white'    },
@@ -106,7 +106,7 @@ export default function EcosystemPage() {
                 <svg viewBox="0 0 100 100" className="w-full" style={{ overflow: 'visible', minHeight: '400px' }}>
                   {/* Background grid lines */}
                   {[20, 35, 50, 65, 80].map(y => (
-                    <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#FFE500"
+                    <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#C8F13F"
                       strokeWidth="0.04" strokeOpacity="0.06" strokeDasharray="1 3" />
                   ))}
 
@@ -121,10 +121,10 @@ export default function EcosystemPage() {
                       <g key={`${from}-${to}`}>
                         {/* Static connection */}
                         <line x1={`${n1.x}%`} y1={`${n1.y}%`} x2={`${n2.x}%`} y2={`${n2.y}%`}
-                          stroke={hi ? '#FFE500' : '#1A1A1A'} strokeWidth={hi ? '0.5' : '0.25'}
+                          stroke={hi ? '#C8F13F' : '#1A1A1A'} strokeWidth={hi ? '0.5' : '0.25'}
                           style={{ transition: 'all .3s' }} />
                         <line x1={`${n1.x}%`} y1={`${n1.y}%`} x2={`${n2.x}%`} y2={`${n2.y}%`}
-                          stroke="#FFE500" strokeWidth="0.35" strokeDasharray="3 8"
+                          stroke="#C8F13F" strokeWidth="0.35" strokeDasharray="3 8"
                           strokeOpacity={hi ? '0.65' : '0.12'} className="flow-line" />
 
                         {/* Invisible path for animateMotion */}
@@ -133,13 +133,13 @@ export default function EcosystemPage() {
                           fill="none" stroke="none" />
 
                         {/* Traveling packet */}
-                        <circle r="1.1" fill="#FFE500" fillOpacity="0.9">
+                        <circle r="1.1" fill="#C8F13F" fillOpacity="0.9">
                           <animateMotion dur={`${dur}s`} repeatCount="indefinite" begin={`${delay}s`}>
                             <mpath href={`#${pathId}`} />
                           </animateMotion>
                         </circle>
                         {/* Trailing glow */}
-                        <circle r="0.55" fill="#FFE500" fillOpacity="0.3">
+                        <circle r="0.55" fill="#C8F13F" fillOpacity="0.3">
                           <animateMotion dur={`${dur}s`} repeatCount="indefinite" begin={`${delay + 0.14}s`}>
                             <mpath href={`#${pathId}`} />
                           </animateMotion>
@@ -157,12 +157,12 @@ export default function EcosystemPage() {
                       <g key={node.id} className="cursor-pointer" onMouseEnter={() => setActiveNode(node.id)}>
                         {/* Outer glow ring */}
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r={`${pr}`}
-                          fill="none" stroke="#FFE500" strokeOpacity={hi ? '0.2' : '0.04'}
+                          fill="none" stroke="#C8F13F" strokeOpacity={hi ? '0.2' : '0.04'}
                           strokeWidth="0.25" style={{ transition: 'all .3s' }} />
 
                         {/* Pulse expand ring — always animating */}
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r={`${r}`}
-                          fill="none" stroke="#FFE500" strokeWidth="0.3" strokeOpacity="0">
+                          fill="none" stroke="#C8F13F" strokeWidth="0.3" strokeOpacity="0">
                           <animate attributeName="r" from={`${r}`} to={`${r + 10}`}
                             dur={`${2.8 + ni * 0.6}s`} repeatCount="indefinite" begin={`${ni * 0.7}s`} />
                           <animate attributeName="stroke-opacity" from="0.45" to="0"
@@ -171,14 +171,14 @@ export default function EcosystemPage() {
 
                         {/* Main circle */}
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r={`${r}`}
-                          fill={hi ? '#FFE50012' : '#070707'} stroke="#FFE500"
+                          fill={hi ? '#C8F13F12' : '#070707'} stroke="#C8F13F"
                           strokeOpacity={hi ? '0.8' : node.primary ? '0.4' : '0.2'}
                           strokeWidth={node.primary ? '0.4' : '0.25'}
                           style={{ transition: 'all .3s' }} />
 
                         {/* Center dot */}
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r="1.2"
-                          fill="#FFE500" opacity={hi ? '1' : '0.45'} style={{ transition: 'all .3s' }}>
+                          fill="#C8F13F" opacity={hi ? '1' : '0.45'} style={{ transition: 'all .3s' }}>
                           {node.primary && (
                             <animate attributeName="opacity" values="0.45;0.9;0.45" dur="2s" repeatCount="indefinite" />
                           )}
@@ -186,13 +186,13 @@ export default function EcosystemPage() {
 
                         {/* Label below */}
                         <text x={`${node.x}%`} y={`${node.y + r + 4.5}%`} textAnchor="middle" fontSize="2.5"
-                          fill={hi ? '#FFE500' : '#555'} fontFamily="JetBrains Mono, monospace"
+                          fill={hi ? '#C8F13F' : '#555'} fontFamily="JetBrains Mono, monospace"
                           fontWeight={hi ? 'bold' : 'normal'} style={{ transition: 'all .3s', userSelect: 'none' }}>
                           {node.label}
                         </text>
                         {/* Code label above */}
                         <text x={`${node.x}%`} y={`${node.y - r - 2.5}%`} textAnchor="middle" fontSize="1.5"
-                          fill={hi ? '#FFE50055' : '#252525'} fontFamily="JetBrains Mono, monospace"
+                          fill={hi ? '#C8F13F55' : '#252525'} fontFamily="JetBrains Mono, monospace"
                           style={{ transition: 'all .3s', userSelect: 'none' }}>
                           {node.code}
                         </text>
@@ -210,7 +210,7 @@ export default function EcosystemPage() {
                 {activeNodeData ? (
                   <div className="border border-accent/30 bg-black p-6 animate-slide-up relative">
                     <div className="sys-label mb-3">{activeNodeData.code}</div>
-                    <h2 className="font-display font-bold text-xl text-white mb-4">{activeNodeData.label}</h2>
+                    <h2 className="font-display font-bold text-h3 text-white mb-4">{activeNodeData.label}</h2>
                     <p className="font-body text-base text-muted leading-relaxed mb-5">{activeNodeData.desc}</p>
                     {activeNodeData.connections.length > 0 && (
                       <div>
@@ -231,7 +231,7 @@ export default function EcosystemPage() {
                   </div>
                 ) : (
                   <div className="border border-[#1A1A1A] bg-[#040404] p-6">
-                    <div className="sys-label opacity-40 mb-4">SYSTEM_MANIFEST</div>
+                    <div className="sys-label opacity-65 mb-4">SYSTEM_MANIFEST</div>
                     <p className="font-body text-base text-muted leading-relaxed mb-5">
                       Each layer strengthens the next. Blockchain infrastructure creates capability.
                       Distribution creates global reach. Market feedback closes the loop.
@@ -253,8 +253,8 @@ export default function EcosystemPage() {
         <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-6xl mx-auto">
             <Reveal className="mb-14">
-              <span className="sys-label opacity-40 block mb-4">SYSTEM_LOOP // CONTINUOUS IMPROVEMENT</span>
-              <h2 className="font-display font-bold text-3xl md:text-4xl text-white">The technical loop.</h2>
+              <span className="sys-label opacity-65 block mb-4">SYSTEM_LOOP // CONTINUOUS IMPROVEMENT</span>
+              <h2 className="font-display font-bold text-h2 text-white">The technical loop.</h2>
             </Reveal>
 
             <div className="relative">
@@ -273,12 +273,12 @@ export default function EcosystemPage() {
                     >
                       <div className={`w-3.5 h-3.5 rounded-full border mt-1 shrink-0 transition-all duration-300 ${
                         activeLoop === i
-                          ? 'border-accent bg-accent shadow-[0_0_10px_rgba(255,229,0,0.6)]'
+                          ? 'border-accent bg-accent shadow-[0_0_10px_rgba(200,241,63,0.6)]'
                           : 'border-[#2A2A2A]'
                       }`} />
                       <div className="flex-1">
                         <div className="font-mono text-[10px] text-dim mb-2">LOOP_{String(i + 1).padStart(2, '0')}</div>
-                        <h3 className={`font-display font-bold text-xl mb-1 transition-colors duration-300 ${activeLoop === i ? 'text-accent' : 'text-white'}`}>
+                        <h3 className={`font-display font-bold text-h3 mb-1 transition-colors duration-300 ${activeLoop === i ? 'text-accent' : 'text-white'}`}>
                           {step.label}
                         </h3>
                         {activeLoop === i && (
@@ -295,7 +295,7 @@ export default function EcosystemPage() {
         </section>
 
         {/* ── POSITIONING ───────────────────────────────────── */}
-        <section className="py-24 px-6 md:px-12 lg:px-20 bg-[#030303] relative overflow-hidden">
+        <section className="py-24 px-6 md:px-12 lg:px-20 bg-accent-wash-soft relative overflow-hidden">
           <FloatingOrbs orbs={[
             { w: 460, h: 340, left: '-5%',  top: '10%', delay: '0s',  duration: '9s',  opacity: 0.055 },
             { w: 320, h: 260, left: '60%',  top: '30%', delay: '2s',  duration: '12s', opacity: 0.04  },
@@ -319,7 +319,7 @@ export default function EcosystemPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20">
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-8">
             <Reveal>
-              <span className="sys-label opacity-40 block mb-2">NEXT_LAYER</span>
+              <span className="sys-label opacity-65 block mb-2">NEXT_LAYER</span>
               <p className="font-display font-semibold text-3xl text-white">Why we exist here.</p>
             </Reveal>
             <Reveal delay={0.15}>

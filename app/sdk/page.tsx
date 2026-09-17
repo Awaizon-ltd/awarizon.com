@@ -9,6 +9,8 @@ import Reveal, { RevealGroup, RevealItem } from '@/components/motion/Reveal'
 import ChainBadge from '@/components/ui/ChainBadge'
 import { CodeEditor, ShellBlock } from '@/components/docs/CodeEditor'
 import ChainsMarquee from '@/components/ui/ChainsMarquee'
+import ParticleNetwork from '@/components/ui/ParticleNetwork'
+import FloatingOrbs from '@/components/ui/FloatingOrbs'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -158,6 +160,22 @@ const balance = await usdc.balanceOf("0xOwner") // fully typed, bigint`,
   },
 ]
 
+const REPLACES = [
+  'No RPC endpoint juggling.',
+  'No manual ABI encoding.',
+  'No wallet connection glue code.',
+  'No chain-by-chain edge cases.',
+]
+
+const COMPARISON_ROWS = [
+  { label: 'Read a token balance',              without: '~12 lines',               with: '1 line'            },
+  { label: 'Setup time',                        without: '2–3 hours',               with: '< 5 minutes'       },
+  { label: 'Chains supported out of the box',   without: '1 — manual per chain',    with: '15+'               },
+  { label: 'Type safety',                       without: 'Hand-written types',      with: 'Fully inferred'    },
+  { label: 'React hooks',                       without: 'Build your own',          with: 'Included'          },
+  { label: 'Wallet connect UI',                 without: '~80 lines of glue code',  with: '<ConnectButton />' },
+]
+
 // ─── Framework scaffold data ──────────────────────────────────────────────────
 
 const FRAMEWORKS = [
@@ -295,9 +313,9 @@ export default function SDKPage() {
       <PageTransition>
 
         {/* ── HERO ─────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+        <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
           <div className="absolute inset-0 grid-bg-static opacity-20" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(255,229,0,0.06),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(200,241,63,0.06),transparent)]" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 flex flex-col min-h-screen">
 
@@ -313,8 +331,7 @@ export default function SDKPage() {
               {/* Left — staggered headline */}
               <div>
                 <motion.h1
-                  className="font-display font-extrabold text-white leading-[0.9] mb-8"
-                  style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)' }}
+                  className="font-display font-extrabold text-white text-hero mb-8"
                   initial="hidden"
                   animate="show"
                   variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } } }}
@@ -416,11 +433,39 @@ console.log("confirmed:", receipt.blockNumber)`}
           </div>
         </section>
 
+        {/* ── REPLACES — animated background, near-fullscreen statements ─────── */}
+        <section className="relative py-32 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] overflow-hidden bg-black">
+          <ParticleNetwork count={46} maxDist={140} opacity={0.4} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none" />
+
+          <div className="relative max-w-6xl mx-auto">
+            <Reveal>
+              <span className="sys-label opacity-65 block mb-10">WHAT IT REPLACES // NO MORE BOILERPLATE</span>
+            </Reveal>
+
+            <RevealGroup className="mb-10" stagger={0.12}>
+              {REPLACES.map((line) => (
+                <RevealItem key={line}>
+                  <p className="font-display font-extrabold text-statement text-white/45 line-through decoration-white/25 leading-[1.05]">
+                    {line}
+                  </p>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+
+            <Reveal delay={0.15}>
+              <p className="font-display font-extrabold text-hero gradient-text">
+                Just import and ship.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── PACKAGES ─────────────────────────────────────── */}
-        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-[#030303]">
+        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-accent-wash">
           <div className="max-w-6xl mx-auto">
             <div className="mb-12 reveal">
-              <span className="sys-label opacity-40 block mb-3">PACKAGES // THREE MODULES</span>
+              <span className="sys-label opacity-65 block mb-3">PACKAGES // THREE MODULES</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent" />
             </div>
 
@@ -457,9 +502,9 @@ console.log("confirmed:", receipt.blockNumber)`}
         <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-6xl mx-auto">
             <div className="mb-10 reveal">
-              <span className="sys-label opacity-40 block mb-3">CODE_SAMPLES // LIVE EXAMPLES</span>
+              <span className="sys-label opacity-65 block mb-3">CODE_SAMPLES // LIVE EXAMPLES</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent mb-6" />
-              <h2 className="font-display font-bold text-3xl md:text-4xl text-white">
+              <h2 className="font-display font-bold text-h2 text-white">
                 From zero to on-chain in minutes.
               </h2>
             </div>
@@ -489,12 +534,12 @@ console.log("confirmed:", receipt.blockNumber)`}
         </section>
 
         {/* ── SCAFFOLD ─────────────────────────────────────── */}
-        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-[#030303]">
+        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-accent-wash-soft">
           <div className="max-w-6xl mx-auto">
             <div className="mb-10 reveal">
-              <span className="sys-label opacity-40 block mb-3">CREATE_APP // SCAFFOLD A PROJECT</span>
+              <span className="sys-label opacity-65 block mb-3">CREATE_APP // SCAFFOLD A PROJECT</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent mb-6" />
-              <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
+              <h2 className="font-display font-bold text-h2 text-white mb-4">
                 Scaffold a full project<br className="hidden sm:block" /> in one command.
               </h2>
               <p className="font-body text-lg text-muted max-w-xl">
@@ -562,9 +607,9 @@ console.log("confirmed:", receipt.blockNumber)`}
         <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-[#030303]">
           <div className="max-w-6xl mx-auto">
             <div className="mb-12 reveal">
-              <span className="sys-label opacity-40 block mb-3">CAPABILITIES // WHAT IT DOES</span>
+              <span className="sys-label opacity-65 block mb-3">CAPABILITIES // WHAT IT DOES</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent mb-6" />
-              <h2 className="font-display font-bold text-3xl md:text-4xl text-white">
+              <h2 className="font-display font-bold text-h2 text-white">
                 Everything you need to build on-chain.
               </h2>
             </div>
@@ -574,8 +619,48 @@ console.log("confirmed:", receipt.blockNumber)`}
                 <RevealItem key={f.title} y={20}>
                   <div className="bg-black p-6 hover:bg-[#030303] transition-colors group h-full">
                     <span className="font-mono text-xl text-accent/40 group-hover:text-accent/70 transition-colors block mb-4">{f.icon}</span>
-                    <h3 className="font-display font-semibold text-white text-sm mb-2">{f.title}</h3>
+                    <h3 className="font-display font-semibold text-white text-h4 mb-2">{f.title}</h3>
                     <p className="font-body text-[13px] text-dim leading-relaxed">{f.body}</p>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* ── VS COMPARISON — animated background, catches attention ─────────── */}
+        <section className="relative py-28 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] overflow-hidden bg-[#030303]">
+          <FloatingOrbs orbs={[
+            { w: 560, h: 420, left: '-10%', top: '0%',  delay: '0s',  duration: '11s', opacity: 0.05  },
+            { w: 380, h: 300, left: '70%',  top: '45%', delay: '2s',  duration: '13s', opacity: 0.035 },
+          ]} />
+
+          <div className="relative max-w-6xl mx-auto">
+            <div className="mb-14 reveal">
+              <span className="sys-label opacity-65 block mb-3">THE DIFFERENCE // AWARIZON VS. HAND-ROLLING IT</span>
+              <div className="h-px bg-gradient-to-r from-accent/30 to-transparent mb-6" />
+              <h2 className="font-display font-extrabold text-hero text-white">
+                Why teams switch.
+              </h2>
+            </div>
+
+            <RevealGroup className="border border-[#1A1A1A] bg-black" stagger={0.08}>
+              {COMPARISON_ROWS.map((row, i) => (
+                <RevealItem key={row.label}>
+                  <div
+                    className={`grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr] items-center gap-3 sm:gap-4 px-6 py-5 ${
+                      i !== COMPARISON_ROWS.length - 1 ? 'border-b border-[#141414]' : ''
+                    }`}
+                  >
+                    <span className="font-body text-sm text-muted">{row.label}</span>
+                    <div className="text-left sm:text-center">
+                      <span className="font-mono text-[9px] text-dim/70 tracking-widest block mb-1">WITHOUT</span>
+                      <span className="font-display font-bold text-white/60 text-base">{row.without}</span>
+                    </div>
+                    <div className="text-left sm:text-center px-4 py-2 bg-accent/5 border border-accent/15 w-fit sm:w-full">
+                      <span className="font-mono text-[9px] text-accent/70 tracking-widest block mb-1">AWARIZON</span>
+                      <span className="font-display font-bold text-accent text-base">{row.with}</span>
+                    </div>
                   </div>
                 </RevealItem>
               ))}
@@ -587,9 +672,9 @@ console.log("confirmed:", receipt.blockNumber)`}
         <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-6xl mx-auto">
             <div className="mb-10 reveal">
-              <span className="sys-label opacity-40 block mb-3">CHAIN_SUPPORT // 15+ NETWORKS</span>
+              <span className="sys-label opacity-65 block mb-3">CHAIN_SUPPORT // 15+ NETWORKS</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent mb-6" />
-              <h2 className="font-display font-bold text-3xl text-white">
+              <h2 className="font-display font-bold text-h2 text-white">
                 One SDK. Every chain that matters.
               </h2>
             </div>
@@ -603,7 +688,7 @@ console.log("confirmed:", receipt.blockNumber)`}
                       {`"${c.id}"`}
                     </code>
                     <span className="font-body text-[11px] text-dim block">{c.label}</span>
-                    <span className="font-mono text-[9px] text-dim/50 block">{c.tag}</span>
+                    <span className="font-mono text-[9px] text-dim/70 block">{c.tag}</span>
                   </div>
                 </RevealItem>
               ))}
@@ -624,10 +709,9 @@ console.log("confirmed:", receipt.blockNumber)`}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[30vw] bg-accent/[0.04] blur-3xl pointer-events-none" />
 
           <div className="relative max-w-4xl mx-auto text-center reveal">
-            <span className="sys-label opacity-40 block mb-6">START_NOW // 60 SECONDS</span>
+            <span className="sys-label opacity-65 block mb-6">START_NOW // 60 SECONDS</span>
             <h2
-              className="font-display font-extrabold text-white mb-6 leading-tight"
-              style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
+              className="font-display font-extrabold text-white text-statement mb-6"
             >
               Start building on-chain<br />
               <span className="gradient-text">in 60 seconds.</span>

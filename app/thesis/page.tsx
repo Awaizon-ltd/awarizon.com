@@ -56,7 +56,7 @@ export default function ThesisPage() {
     <ScrollProvider>
       <PageTransition>
         {/* ── HERO ──────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+        <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
           <div className="absolute inset-0 grid-bg-static opacity-20" />
           <div className="absolute bottom-0 left-1/3 w-96 h-96 rounded-full bg-accent/[0.05] blur-3xl pointer-events-none" />
 
@@ -71,12 +71,11 @@ export default function ThesisPage() {
             <div className="flex-1 grid lg:grid-cols-2 gap-16 items-start">
               {/* Left: thesis */}
               <div>
-                <span className="sys-label opacity-40 block mb-5 reveal">
+                <span className="sys-label opacity-65 block mb-5 reveal">
                   GLOBAL ADOPTION THESIS
                 </span>
                 <h1
-                  className="font-display font-extrabold leading-[0.92] reveal"
-                  style={{ fontSize: "clamp(2.2rem, 5.5vw, 6rem)" }}
+                  className="font-display font-extrabold text-hero reveal"
                 >
                   <span className="block text-white">The next major</span>
                   <span className="block text-white">blockchain</span>
@@ -108,8 +107,8 @@ export default function ThesisPage() {
                   key={active.code}
                   className="min-h-[190px] animate-slide-up reveal reveal-delay-3"
                 >
-                  <div className="sys-label opacity-35 mb-3">{active.code}</div>
-                  <h2 className="font-display font-bold text-xl md:text-2xl text-white mb-2 leading-snug">
+                  <div className="sys-label opacity-65 mb-3">{active.code}</div>
+                  <h2 className="font-display font-bold text-h3 text-white mb-2 leading-snug">
                     {active.headline}
                   </h2>
                   <p className="font-body text-lg text-accent/75 mb-4">
@@ -159,10 +158,10 @@ export default function ThesisPage() {
         </section>
 
         {/* ── STRATEGIC TEXT ────────────────────────────────── */}
-        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
+        <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-accent-wash-soft">
           <div className="max-w-4xl mx-auto space-y-10">
             <div className="reveal">
-              <span className="sys-label opacity-40 block mb-8">
+              <span className="sys-label opacity-65 block mb-8">
                 STRATEGIC_THESIS // FULL STATEMENT
               </span>
               <div className="h-rule mb-8" />
@@ -229,8 +228,8 @@ export default function ThesisPage() {
                   className="bg-black/88 backdrop-blur-sm p-10 reveal"
                   style={{ transitionDelay: `${i * 100}ms` }}
                 >
-                  <div className="sys-label opacity-40 mb-4">{geo.code}</div>
-                  <h3 className="font-display font-bold text-3xl text-white mb-4">
+                  <div className="sys-label opacity-65 mb-4">{geo.code}</div>
+                  <h3 className="font-display font-bold text-h2 text-white mb-4">
                     {geo.title}
                   </h3>
                   <p className="font-body text-base text-muted leading-relaxed">
@@ -246,7 +245,7 @@ export default function ThesisPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20">
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-8">
             <div className="reveal">
-              <span className="sys-label opacity-40 block mb-2">
+              <span className="sys-label opacity-65 block mb-2">
                 FINAL_LAYER
               </span>
               <p className="font-display font-semibold text-3xl text-white">

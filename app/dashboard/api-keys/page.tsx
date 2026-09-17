@@ -178,8 +178,7 @@ export default function ApiKeysPage() {
         <span className="font-mono text-[9px] tracking-[0.3em] text-dim block mb-3">
           DASHBOARD // API_KEYS
         </span>
-        <h1 className="font-display font-extrabold text-white leading-tight mb-2"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>
+        <h1 className="font-display font-extrabold text-white text-page-title mb-2">
           API Keys
         </h1>
         <p className="font-body text-muted text-base">
@@ -398,7 +397,7 @@ export default function ApiKeysPage() {
       {revokedKeys.length > 0 && (
         <div className="border border-[#0D0D0D] bg-[#020202]">
           <div className="px-6 py-4 border-b border-[#0D0D0D]">
-            <span className="font-mono text-[9px] text-dim/50 tracking-widest">
+            <span className="font-mono text-[9px] text-dim/70 tracking-widest">
               REVOKED KEYS ({revokedKeys.length})
             </span>
           </div>

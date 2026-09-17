@@ -52,8 +52,7 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="mb-10">
         <span className="font-mono text-[9px] tracking-[0.3em] text-dim block mb-3">DASHBOARD // PROFILE</span>
-        <h1 className="font-display font-extrabold text-white leading-tight mb-2"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
+        <h1 className="font-display font-extrabold text-white text-page-title mb-2">
           Your Profile
         </h1>
         <p className="font-body text-muted text-base">
@@ -108,7 +107,7 @@ export default function ProfilePage() {
                 disabled
                 className="w-full bg-[#050505] border border-[#0D0D0D] text-dim font-body text-sm px-4 py-3 outline-none cursor-not-allowed"
               />
-              <p className="font-mono text-[8px] text-dim/50 mt-1.5 tracking-wide">
+              <p className="font-mono text-[8px] text-dim/70 mt-1.5 tracking-wide">
                 Email cannot be changed here.
               </p>
             </div>

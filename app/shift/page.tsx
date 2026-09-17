@@ -10,7 +10,6 @@ import Reveal, { RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import Button from "@/components/ui/Button";
 import CountUp from "@/components/ui/CountUp";
 import FloatingOrbs from "@/components/ui/FloatingOrbs";
-import LiveTxFeed from "@/components/ui/LiveTxFeed";
 import { ALL_CHAINS } from "@/lib/chainLogos";
 
 const BOOT_SEQUENCE = [
@@ -72,22 +71,22 @@ function ComparisonIllustration() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div className="border border-black/10 p-6">
-        <div className="font-mono text-[9px] text-black/40 tracking-widest mb-5 uppercase">
+        <div className="font-mono text-[9px] text-black/60 tracking-widest mb-5 uppercase">
           Without Awarizon
         </div>
         <div className="space-y-2.5">
           {withoutItems.map((item) => (
             <div key={item} className="flex items-center gap-2.5">
-              <div className="w-3.5 h-3.5 border border-black/15 rounded-sm flex items-center justify-center shrink-0">
-                <span className="text-[8px] text-black/30">✕</span>
+              <div className="w-3.5 h-3.5 border border-black/25 rounded-sm flex items-center justify-center shrink-0">
+                <span className="text-[8px] text-black/50">✕</span>
               </div>
-              <span className="font-body text-[12px] text-black/40 line-through decoration-black/20">
+              <span className="font-body text-[12px] text-black/65 line-through decoration-black/30">
                 {item}
               </span>
             </div>
           ))}
-          <div className="pt-3 mt-3 border-t border-black/8">
-            <span className="font-mono text-[10px] text-black/30 tracking-widest">
+          <div className="pt-3 mt-3 border-t border-black/15">
+            <span className="font-mono text-[10px] text-black/55 tracking-widest">
               ~3–6 MONTHS OF SETUP
             </span>
           </div>
@@ -109,7 +108,7 @@ function ComparisonIllustration() {
         </div>
         <div className="mt-6 pt-5 border-t border-white/10">
           <span className="font-display font-extrabold text-accent text-2xl">90% less</span>
-          <span className="font-mono text-[9px] text-white/40 block mt-0.5 tracking-widest">
+          <span className="font-mono text-[9px] text-white/55 block mt-0.5 tracking-widest">
             SETUP & CONFIGURATION TIME
           </span>
         </div>
@@ -147,7 +146,7 @@ export default function ShiftPage() {
         gyroControls: false,
         minHeight: 200,
         minWidth: 200,
-        color: 0xffe500,
+        color: 0xc8f13f,
         backgroundColor: 0x000000,
         points: 9.0,
         maxDistance: 22.0,
@@ -274,7 +273,7 @@ export default function ShiftPage() {
               variants={{ show: { transition: { staggerChildren: 0.13 } } }}
             >
               <motion.span
-                className="sys-label opacity-35 tracking-[0.4em] block mb-6"
+                className="sys-label opacity-65 tracking-[0.4em] block mb-6"
                 variants={{
                   hidden: { opacity: 0, y: 12 },
                   show: { opacity: 0.35, y: 0, transition: { duration: 0.5, ease } },
@@ -283,7 +282,7 @@ export default function ShiftPage() {
                 AWARIZON // INFRASTRUCTURE PLATFORM
               </motion.span>
 
-              <h1 className="font-display font-extrabold leading-[0.92] mb-10 overflow-hidden text-5xl lg:text-[8rem]">
+              <h1 className="font-display font-extrabold text-hero mb-10 overflow-hidden">
                 {[
                   { text: "Build",      cls: "block text-white"    },
                   { text: "on-chain.",  cls: "block text-white"    },
@@ -367,16 +366,6 @@ export default function ShiftPage() {
                 SCROLL TO EXPLORE
               </span>
             </motion.div>
-
-            {/* Live TX feed — xl desktop only */}
-            <motion.div
-              className="hidden xl:block absolute right-20 bottom-16"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: heroVisible ? 1 : 0, y: heroVisible ? 0 : 20 }}
-              transition={{ duration: 0.8, ease, delay: 0.8 }}
-            >
-              <LiveTxFeed />
-            </motion.div>
           </div>
         </section>
 
@@ -390,12 +379,11 @@ export default function ShiftPage() {
             <div className="grid lg:grid-cols-2 gap-16 items-start">
               <div>
                 <Reveal>
-                  <span className="font-mono text-[10px] tracking-[0.3em] text-black/40 block mb-5 uppercase">
+                  <span className="font-mono text-[10px] tracking-[0.3em] text-black/60 block mb-5 uppercase">
                     The Platform // Built for Builders
                   </span>
                   <h2
-                    className="font-display font-extrabold text-black leading-[0.93] mb-6"
-                    style={{ fontSize: "clamp(2rem, 4.5vw, 3.8rem)" }}
+                    className="font-display font-extrabold text-black text-statement mb-6"
                   >
                     Everything your team needs to build on-chain — without starting from zero.
                   </h2>
@@ -415,7 +403,7 @@ export default function ShiftPage() {
                         <div className="font-display font-extrabold text-3xl md:text-4xl text-black mb-1">
                           <CountUp to={s.to} suffix={s.suffix} />
                         </div>
-                        <div className="font-mono text-[9px] text-black/40 tracking-widest uppercase">
+                        <div className="font-mono text-[9px] text-black/60 tracking-widest uppercase">
                           {s.label}
                         </div>
                       </div>
@@ -423,7 +411,7 @@ export default function ShiftPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["SDK", "REST APIs", "Wallet Infrastructure", "Payments", "Identity", "Smart Contracts"].map((p) => (
-                      <span key={p} className="font-mono text-[9px] px-3 py-1.5 border border-black/15 text-black/50 tracking-widest">
+                      <span key={p} className="font-mono text-[9px] px-3 py-1.5 border border-black/20 text-black/65 tracking-widest">
                         {p}
                       </span>
                     ))}
@@ -446,9 +434,9 @@ export default function ShiftPage() {
 
           <div className="relative max-w-6xl mx-auto">
             <Reveal className="mb-20">
-              <span className="sys-label opacity-40 block mb-4">SIGNAL_ANALYSIS // THE PROBLEM</span>
+              <span className="sys-label opacity-65 block mb-4">SIGNAL_ANALYSIS // THE PROBLEM</span>
               <div className="h-px bg-gradient-to-r from-accent/40 to-transparent mb-8" />
-              <h2 className="font-display font-bold text-5xl md:text-6xl text-white">
+              <h2 className="font-display font-bold text-h2 text-white">
                 Why teams need us.
               </h2>
             </Reveal>
@@ -463,10 +451,10 @@ export default function ShiftPage() {
                   <div className="font-display text-7xl font-extrabold text-[#0F0F0F] mb-6 select-none leading-none">
                     {layer.num}
                   </div>
-                  <h3 className="font-display font-bold text-2xl text-white mb-1 leading-tight">
+                  <h3 className="font-display font-bold text-h3 text-white mb-1 leading-tight">
                     {layer.title}
                   </h3>
-                  <h3 className="font-display font-bold text-2xl text-accent mb-6 leading-tight">
+                  <h3 className="font-display font-bold text-h3 text-accent mb-6 leading-tight">
                     {layer.sub}
                   </h3>
                   <p className="font-body text-base text-muted leading-relaxed">{layer.body}</p>
@@ -480,7 +468,7 @@ export default function ShiftPage() {
         <section className="relative py-32 px-6 md:px-12 lg:px-20 overflow-hidden">
           <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full bg-accent/[0.03] blur-3xl pointer-events-none" />
           <Reveal className="relative max-w-4xl">
-            <span className="sys-label opacity-40 block mb-6">OPERATIONAL CONTEXT</span>
+            <span className="sys-label opacity-65 block mb-6">OPERATIONAL CONTEXT</span>
             <blockquote className="font-display font-bold leading-tight text-3xl md:text-5xl text-white mb-10">
               "We build the infrastructure that moves{" "}
               <span className="text-accent">developers and businesses</span>{" "}
@@ -519,8 +507,7 @@ export default function ShiftPage() {
                   THE PRODUCT // AWARIZON SDK
                 </span>
                 <h2
-                  className="font-display font-extrabold text-white leading-[0.92] mb-6"
-                  style={{ fontSize: "clamp(2.4rem, 5vw, 4.5rem)" }}
+                  className="font-display font-extrabold text-white text-statement mb-6"
                 >
                   One SDK.<br />Any chain.<br />
                   <span className="gradient-text">Ship faster.</span>
@@ -659,8 +646,8 @@ export default function ShiftPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-[#0E0E0E] bg-[#020202]">
           <div className="max-w-6xl mx-auto">
             <Reveal className="mb-10">
-              <span className="sys-label opacity-40 block mb-3">CHAIN_SUPPORT // EVM_NATIVE</span>
-              <h2 className="font-display font-bold text-2xl md:text-3xl text-white">
+              <span className="sys-label opacity-65 block mb-3">CHAIN_SUPPORT // EVM_NATIVE</span>
+              <h2 className="font-display font-bold text-h2 text-white">
                 Supported across every major chain.
               </h2>
             </Reveal>
@@ -700,7 +687,7 @@ export default function ShiftPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-[#111]">
           <div className="max-w-6xl mx-auto flex items-start justify-between flex-wrap gap-8">
             <Reveal>
-              <span className="sys-label opacity-40 block mb-2">DISTRIBUTION_LAYER // NEXT</span>
+              <span className="sys-label opacity-65 block mb-2">DISTRIBUTION_LAYER // NEXT</span>
               <p className="font-display font-semibold text-3xl text-white">
                 Build on the infrastructure.
               </p>

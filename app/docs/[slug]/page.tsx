@@ -26,7 +26,7 @@ function StepHeading({ id, n, title }: { id: string; n: string; title: string })
       <span className="font-mono text-[9px] tracking-widest border border-accent/40 text-accent/80 px-1.5 py-0.5 flex-shrink-0">
         {n}
       </span>
-      <h3 className="font-display font-semibold text-white text-base">{title}</h3>
+      <h3 className="font-display font-semibold text-white text-h4">{title}</h3>
     </div>
   )
 }
@@ -101,7 +101,7 @@ function renderItem(item: DocItem, idx: number) {
         <h3
           key={idx}
           id={item.id}
-          className="font-display font-semibold text-white text-[1.05rem] mt-10 mb-3 scroll-mt-24"
+          className="font-display font-semibold text-white text-h4 mt-10 mb-3 scroll-mt-24"
         >
           {item.title}
         </h3>
@@ -138,7 +138,7 @@ function renderItem(item: DocItem, idx: number) {
         <div key={idx} className="border border-[#1E1E1E] my-5 bg-[#080808]">
           {item.header && (
             <div className="px-4 py-2 border-b border-[#1E1E1E]">
-              <span className="font-mono text-[9px] tracking-[0.2em] text-dim/60 uppercase">{item.header}</span>
+              <span className="font-mono text-[9px] tracking-[0.2em] text-dim/75 uppercase">{item.header}</span>
             </div>
           )}
           {item.rows.map((row, i) => (
@@ -242,8 +242,7 @@ export default async function DocsSlugPage({ params }: { params: Promise<{ slug:
             @AWARIZON // SDK REFERENCE
           </span>
           <h1
-            className="font-display font-extrabold text-white mb-4"
-            style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', lineHeight: 1.1 }}
+            className="font-display font-extrabold text-white text-page-title mb-4"
           >
             Awarizon SDK
           </h1>
@@ -251,8 +250,7 @@ export default async function DocsSlugPage({ params }: { params: Promise<{ slug:
       ) : (
         <div className="mb-8">
           <h1
-            className="font-display font-bold text-white mb-3"
-            style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', lineHeight: 1.15 }}
+            className="font-display font-bold text-white text-doc-title mb-3"
           >
             {section.title}
           </h1>
@@ -274,7 +272,7 @@ export default async function DocsSlugPage({ params }: { params: Promise<{ slug:
           >
             <span className="font-mono text-[12px] group-hover:-translate-x-0.5 transition-transform">←</span>
             <div>
-              <p className="font-mono text-[9px] tracking-widest text-dim/50 uppercase mb-0.5">Previous</p>
+              <p className="font-mono text-[9px] tracking-widest text-dim/70 uppercase mb-0.5">Previous</p>
               <p className="font-body text-[13px]">{prev.title}</p>
             </div>
           </Link>
@@ -286,7 +284,7 @@ export default async function DocsSlugPage({ params }: { params: Promise<{ slug:
             className="group flex items-center gap-2 text-dim hover:text-white transition-colors text-right"
           >
             <div>
-              <p className="font-mono text-[9px] tracking-widest text-dim/50 uppercase mb-0.5">Next</p>
+              <p className="font-mono text-[9px] tracking-widest text-dim/70 uppercase mb-0.5">Next</p>
               <p className="font-body text-[13px]">{next.title}</p>
             </div>
             <span className="font-mono text-[12px] group-hover:translate-x-0.5 transition-transform">→</span>

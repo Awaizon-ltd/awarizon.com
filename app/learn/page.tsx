@@ -81,9 +81,9 @@ export default function LearnPage() {
       <PageTransition>
 
         {/* ── HERO ─────────────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-black border-b border-[#0D0D0D]">
+        <section className="relative overflow-hidden bg-accent-wash border-b border-[#0D0D0D]">
           <div className="absolute inset-0 grid-bg-static opacity-15" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-5%,rgba(255,229,0,0.06),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-5%,rgba(200,241,63,0.06),transparent)]" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 max-w-6xl mx-auto">
             <div className="flex items-center gap-3 mb-10">
@@ -99,8 +99,7 @@ export default function LearnPage() {
                   </span>
                   <span className="font-mono text-[9px] text-dim">{article.readTime}</span>
                 </div>
-                <h1 className="font-display font-extrabold leading-[0.95] mb-4 text-white"
-                  style={{ fontSize: 'clamp(2.2rem, 5.5vw, 5rem)' }}>
+                <h1 className="font-display font-extrabold text-article-title mb-4 text-white">
                   {article.title}
                 </h1>
                 <p className="font-body text-lg text-muted leading-relaxed mb-6">
@@ -133,7 +132,7 @@ export default function LearnPage() {
                 </div>
               ) : (
                 <div key={section.id} className="mb-12">
-                  <h2 className="font-display font-bold text-white text-2xl md:text-3xl mb-6 leading-tight">
+                  <h2 className="font-display font-bold text-white text-h2 mb-6 leading-tight">
                     {section.title}
                   </h2>
                   <div className="space-y-4">
@@ -149,9 +148,9 @@ export default function LearnPage() {
 
         {/* ── KEY TERMS ────────────────────────────────────── */}
         {article.keyTerms.length > 0 && (
-          <section className="py-12 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-[#030303]">
+          <section className="py-12 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-accent-wash-soft">
             <div className="max-w-3xl mx-auto">
-              <span className="sys-label opacity-40 block mb-6">KEY TERMS</span>
+              <span className="sys-label opacity-65 block mb-6">KEY TERMS</span>
               <div className="grid sm:grid-cols-2 gap-3">
                 {article.keyTerms.map(({ term, def }) => (
                   <div key={term} className="p-4 border border-[#111] hover:border-[#1A1A1A] transition-colors">
@@ -168,7 +167,7 @@ export default function LearnPage() {
         <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center gap-4 mb-10">
-              <span className="sys-label opacity-40">CONTINUE LEARNING</span>
+              <span className="sys-label opacity-65">CONTINUE LEARNING</span>
               <div className="flex-1 h-px bg-gradient-to-r from-accent/20 to-transparent" />
             </div>
 
@@ -184,7 +183,7 @@ export default function LearnPage() {
                   </div>
                   <div className="min-w-0">
                     <span className="font-mono text-[8px] text-dim tracking-widest block mb-1">{a.category}</span>
-                    <h3 className="font-display font-semibold text-white text-sm leading-tight group-hover:text-accent transition-colors mb-1">
+                    <h3 className="font-display font-semibold text-white text-h4 leading-tight group-hover:text-accent transition-colors mb-1">
                       {a.title}
                     </h3>
                     <p className="font-body text-xs text-muted leading-relaxed line-clamp-2">{a.description}</p>
@@ -198,8 +197,8 @@ export default function LearnPage() {
         {/* ── CTA ──────────────────────────────────────────── */}
         <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
           <div className="max-w-2xl reveal">
-            <span className="sys-label opacity-40 block mb-4">READY TO BUILD?</span>
-            <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-4 leading-tight">
+            <span className="sys-label opacity-65 block mb-4">READY TO BUILD?</span>
+            <h2 className="font-display font-bold text-h2 text-white mb-4 leading-tight">
               Understanding Web3 is step one.
             </h2>
             <p className="font-body text-muted mb-6 leading-relaxed">

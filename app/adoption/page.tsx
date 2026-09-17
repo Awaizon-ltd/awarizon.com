@@ -33,7 +33,7 @@ export default function AdoptionPage() {
       <PageTransition>
 
         {/* ── HERO ──────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+        <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
           <div className="absolute inset-0 grid-bg-static opacity-20 z-0" />
           <FloatingOrbs />
           {/* Signal waves SVG — subtle expanding rings */}
@@ -41,14 +41,14 @@ export default function AdoptionPage() {
             <svg viewBox="0 0 100 100" className="w-full h-full">
               {[22, 38, 54, 70].map((r, i) => (
                 <circle key={r} cx="50" cy="50" r={r} fill="none"
-                  stroke="#FFE500" strokeWidth="0.3" strokeOpacity="0.4">
+                  stroke="#C8F13F" strokeWidth="0.3" strokeOpacity="0.4">
                   <animate attributeName="r" from={r} to={r + 18} dur={`${3 + i * 0.7}s`}
                     begin={`${i * 0.9}s`} repeatCount="indefinite" />
                   <animate attributeName="stroke-opacity" from="0.4" to="0" dur={`${3 + i * 0.7}s`}
                     begin={`${i * 0.9}s`} repeatCount="indefinite" />
                 </circle>
               ))}
-              <circle cx="50" cy="50" r="3" fill="#FFE500" fillOpacity="0.6">
+              <circle cx="50" cy="50" r="3" fill="#C8F13F" fillOpacity="0.6">
                 <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite" />
               </circle>
             </svg>
@@ -81,8 +81,7 @@ export default function AdoptionPage() {
                 </motion.span>
 
                 <motion.h1
-                  className="font-display font-extrabold leading-[0.92] mb-8"
-                  style={{ fontSize: 'clamp(2.4rem, 6vw, 6.5rem)' }}
+                  className="font-display font-extrabold text-hero mb-8"
                   initial="hidden"
                   animate="show"
                   variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.5 } } }}
@@ -155,7 +154,7 @@ export default function AdoptionPage() {
                           <button
                             className={`w-full flex items-center gap-4 p-4 border transition-all duration-300 text-left ${
                               isActive
-                                ? 'border-accent bg-accent/5 shadow-[0_0_16px_rgba(255,229,0,0.06)]'
+                                ? 'border-accent bg-accent/5 shadow-[0_0_16px_rgba(200,241,63,0.06)]'
                                 : 'border-[#141414] hover:border-[#2A2A2A]'
                             }`}
                             onMouseEnter={() => setActiveStep(i)}
@@ -192,8 +191,8 @@ export default function AdoptionPage() {
                                 className="absolute left-0 right-0 h-5 animate-flow-down"
                                 style={{
                                   background: isActive
-                                    ? 'linear-gradient(to bottom, transparent, rgba(255,229,0,0.7), transparent)'
-                                    : 'linear-gradient(to bottom, transparent, rgba(255,229,0,0.18), transparent)',
+                                    ? 'linear-gradient(to bottom, transparent, rgba(200,241,63,0.7), transparent)'
+                                    : 'linear-gradient(to bottom, transparent, rgba(200,241,63,0.18), transparent)',
                                 }}
                               />
                             </div>
@@ -216,8 +215,8 @@ export default function AdoptionPage() {
 
           <div className="max-w-6xl mx-auto">
             <Reveal className="mb-14">
-              <span className="sys-label opacity-40 block mb-4">DISTRIBUTION_ARCHITECTURE // CORE PRINCIPLES</span>
-              <h2 className="font-display font-bold text-3xl md:text-4xl text-white">
+              <span className="sys-label opacity-65 block mb-4">DISTRIBUTION_ARCHITECTURE // CORE PRINCIPLES</span>
+              <h2 className="font-display font-bold text-h2 text-white">
                 Distribution is part of the product.
               </h2>
             </Reveal>
@@ -226,10 +225,10 @@ export default function AdoptionPage() {
               {PRINCIPLES.map((p) => (
                 <RevealItem key={p.code}>
                   <div className="bg-black/88 backdrop-blur-sm p-8 group hover:bg-black/95 transition-all duration-300 h-full">
-                    <div className="sys-label opacity-40 mb-5">{p.code}</div>
+                    <div className="sys-label opacity-65 mb-5">{p.code}</div>
                     <div className="flex items-start gap-4 mb-4">
                       <div className="w-px h-12 bg-gradient-to-b from-accent to-transparent mt-1 shrink-0" />
-                      <h3 className="font-display font-bold text-white text-xl leading-snug group-hover:text-accent/90 transition-colors duration-300">
+                      <h3 className="font-display font-bold text-white text-h3 leading-snug group-hover:text-accent/90 transition-colors duration-300">
                         {p.title}
                       </h3>
                     </div>
@@ -242,7 +241,7 @@ export default function AdoptionPage() {
         </section>
 
         {/* ── METRICS ───────────────────────────────────────── */}
-        <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-b border-[#0D0D0D] bg-[#030303]">
+        <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-b border-[#0D0D0D] bg-accent-wash-soft">
           <div className="max-w-6xl mx-auto">
             <RevealGroup className="grid grid-cols-2 md:grid-cols-4 gap-8" stagger={0.1}>
               {METRICS.map((m) => (
@@ -274,7 +273,7 @@ export default function AdoptionPage() {
         <section className="py-20 px-6 md:px-12 lg:px-20">
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-8">
             <Reveal>
-              <span className="sys-label opacity-40 block mb-2">NEXT_LAYER</span>
+              <span className="sys-label opacity-65 block mb-2">NEXT_LAYER</span>
               <p className="font-display font-semibold text-3xl text-white">Explore the ecosystem.</p>
             </Reveal>
             <Reveal delay={0.15} className="flex flex-wrap gap-3">

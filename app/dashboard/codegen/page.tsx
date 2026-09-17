@@ -211,8 +211,7 @@ export default function CodeGenPage() {
           DASHBOARD // CODE_GEN
         </span>
         <h1
-          className="font-display font-extrabold text-white leading-tight mb-2"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
+          className="font-display font-extrabold text-white text-page-title mb-2"
         >
           Code Generator
         </h1>
@@ -278,13 +277,13 @@ export default function CodeGenPage() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="font-mono text-[9px] tracking-widest text-dim">
-                  ABI  <span className="text-dim/40">(JSON array or Hardhat/Foundry artifact)</span>
+                  ABI  <span className="text-dim/65">(JSON array or Hardhat/Foundry artifact)</span>
                 </label>
                 {abiText && (
                   <button
                     type="button"
                     onClick={() => setAbiText('')}
-                    className="font-mono text-[8px] text-dim/50 hover:text-dim tracking-widest transition-colors"
+                    className="font-mono text-[8px] text-dim/70 hover:text-dim tracking-widest transition-colors"
                   >
                     CLEAR ×
                   </button>
@@ -317,7 +316,7 @@ export default function CodeGenPage() {
                   </div>
                 )}
               </div>
-              <p className="font-mono text-[8px] text-dim/40 tracking-widest mt-1.5">
+              <p className="font-mono text-[8px] text-dim/65 tracking-widest mt-1.5">
                 DRAG & DROP a .json ABI file, or paste JSON directly above
               </p>
             </div>
@@ -377,7 +376,7 @@ export default function CodeGenPage() {
                 ].join(' ')}
               >
                 <span className="font-mono text-[9px] tracking-widest">{tab.label}</span>
-                <code className="font-mono text-[8px] text-dim/50 hidden sm:block">{tab.file}</code>
+                <code className="font-mono text-[8px] text-dim/70 hidden sm:block">{tab.file}</code>
               </button>
             ))}
           </div>

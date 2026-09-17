@@ -19,9 +19,9 @@ export default function LearnArticlePage({ params }: Props) {
       <PageTransition>
 
         {/* ── HERO ─────────────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-black border-b border-[#0D0D0D]">
+        <section className="relative overflow-hidden bg-accent-wash border-b border-[#0D0D0D]">
           <div className="absolute inset-0 grid-bg-static opacity-15" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-5%,rgba(255,229,0,0.05),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-5%,rgba(200,241,63,0.05),transparent)]" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 max-w-6xl mx-auto">
             {/* Breadcrumb */}
@@ -42,8 +42,7 @@ export default function LearnArticlePage({ params }: Props) {
                   </span>
                   <span className="font-mono text-[9px] text-dim">{article.readTime}</span>
                 </div>
-                <h1 className="font-display font-extrabold leading-[0.95] mb-4 text-white"
-                  style={{ fontSize: 'clamp(2rem, 5vw, 4.5rem)' }}>
+                <h1 className="font-display font-extrabold text-article-title mb-4 text-white">
                   {article.title}
                 </h1>
                 <p className="font-body text-lg text-muted leading-relaxed mb-6">
@@ -78,7 +77,7 @@ export default function LearnArticlePage({ params }: Props) {
                 </div>
               ) : (
                 <div key={section.id} className="mb-12">
-                  <h2 className="font-display font-bold text-white text-2xl md:text-3xl mb-6 leading-tight">
+                  <h2 className="font-display font-bold text-white text-h2 mb-6 leading-tight">
                     {section.title}
                   </h2>
                   <div className="space-y-4">
@@ -96,7 +95,7 @@ export default function LearnArticlePage({ params }: Props) {
         {article.keyTerms.length > 0 && (
           <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D] bg-[#030303]">
             <div className="max-w-3xl mx-auto">
-              <span className="sys-label opacity-40 block mb-8">KEY TERMS GLOSSARY</span>
+              <span className="sys-label opacity-65 block mb-8">KEY TERMS GLOSSARY</span>
               <div className="grid sm:grid-cols-2 gap-3">
                 {article.keyTerms.map(({ term, def }) => (
                   <div key={term} className="p-4 border border-[#111] hover:border-[#1A1A1A] transition-colors">
@@ -113,7 +112,7 @@ export default function LearnArticlePage({ params }: Props) {
         {related.length > 0 && (
           <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
             <div className="max-w-3xl mx-auto">
-              <span className="sys-label opacity-40 block mb-8">READ NEXT</span>
+              <span className="sys-label opacity-65 block mb-8">READ NEXT</span>
               <div className="grid sm:grid-cols-3 gap-3">
                 {related.map(rel => (
                   <Link
@@ -125,7 +124,7 @@ export default function LearnArticlePage({ params }: Props) {
                       <LearnIllustration slug={rel.slug} size={80} />
                     </div>
                     <div className="font-mono text-[9px] text-dim mb-1 tracking-widest">{rel.category}</div>
-                    <h3 className="font-display font-semibold text-sm text-white group-hover:text-accent transition-colors leading-tight">
+                    <h3 className="font-display font-semibold text-h4 text-white group-hover:text-accent transition-colors leading-tight">
                       {rel.title}
                     </h3>
                   </Link>

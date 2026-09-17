@@ -30,9 +30,9 @@ export default function InfrastructurePage() {
       <PageTransition>
 
         {/* ── HERO ───────────────────────────────────────── */}
-        <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+        <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
           <div className="absolute inset-0 grid-bg-static opacity-20" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(255,229,0,0.07),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(200,241,63,0.07),transparent)]" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 flex flex-col min-h-screen">
             <div className="flex items-center gap-3 mb-16">
@@ -46,7 +46,7 @@ export default function InfrastructurePage() {
               animate="show"
               variants={{ show: { transition: { staggerChildren: 0.09, delayChildren: 0.3 } } }}
             >
-              <h1 className="font-display font-extrabold leading-[0.92] mb-6" style={{ fontSize: 'clamp(2.8rem, 7.5vw, 9rem)' }}>
+              <h1 className="font-display font-extrabold text-hero mb-6">
                 {[
                   { text: 'We build',             cls: 'text-white'    },
                   { text: 'the protocols',         cls: 'text-white'    },
@@ -87,10 +87,10 @@ export default function InfrastructurePage() {
                     return (
                       <g key={`${from}-${to}`}>
                         <line x1={`${p1.x}%`} y1={`${p1.y}%`} x2={`${p2.x}%`} y2={`${p2.y}%`}
-                          stroke={hi ? '#FFE500' : '#1C1C1C'} strokeWidth={hi ? '0.4' : '0.25'}
+                          stroke={hi ? '#C8F13F' : '#1C1C1C'} strokeWidth={hi ? '0.4' : '0.25'}
                           style={{ transition:'all .3s' }} />
                         <line x1={`${p1.x}%`} y1={`${p1.y}%`} x2={`${p2.x}%`} y2={`${p2.y}%`}
-                          stroke="#FFE500" strokeWidth="0.35" strokeDasharray="3 6"
+                          stroke="#C8F13F" strokeWidth="0.35" strokeDasharray="3 6"
                           strokeOpacity={hi ? '0.75' : '0.25'} className="flow-line" />
                       </g>
                     )
@@ -110,7 +110,7 @@ export default function InfrastructurePage() {
                           fill="none"
                           stroke="none"
                         />
-                        <circle r="1.1" fill="#FFE500" fillOpacity="0.95">
+                        <circle r="1.1" fill="#C8F13F" fillOpacity="0.95">
                           <animateMotion
                             dur={`${dur}s`}
                             repeatCount="indefinite"
@@ -120,7 +120,7 @@ export default function InfrastructurePage() {
                           </animateMotion>
                         </circle>
                         {/* Trailing glow particle */}
-                        <circle r="0.6" fill="#FFE500" fillOpacity="0.35">
+                        <circle r="0.6" fill="#C8F13F" fillOpacity="0.35">
                           <animateMotion
                             dur={`${dur}s`}
                             repeatCount="indefinite"
@@ -138,30 +138,30 @@ export default function InfrastructurePage() {
                     return (
                       <g key={node.id}>
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r={hi ? '3.8' : '3'}
-                          fill="none" stroke="#FFE500" strokeOpacity={hi ? '0.4' : '0.15'} strokeWidth="0.3"
+                          fill="none" stroke="#C8F13F" strokeOpacity={hi ? '0.4' : '0.15'} strokeWidth="0.3"
                           style={{ transition:'all .3s' }} />
                         {hi && <circle cx={`${node.x}%`} cy={`${node.y}%`} r="5.5"
-                          fill="none" stroke="#FFE500" strokeOpacity="0.08" strokeWidth="0.25" />}
+                          fill="none" stroke="#C8F13F" strokeOpacity="0.08" strokeWidth="0.25" />}
                         {/* Pulse ring — always running */}
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r="3"
-                          fill="none" stroke="#FFE500" strokeWidth="0.3" strokeOpacity="0">
+                          fill="none" stroke="#C8F13F" strokeWidth="0.3" strokeOpacity="0">
                           <animate attributeName="r" from="3" to="8" dur="2.4s" repeatCount="indefinite" begin={`${INFRASTRUCTURE_NODES.indexOf(node) * 0.5}s`} />
                           <animate attributeName="stroke-opacity" from="0.4" to="0" dur="2.4s" repeatCount="indefinite" begin={`${INFRASTRUCTURE_NODES.indexOf(node) * 0.5}s`} />
                         </circle>
                         <circle cx={`${node.x}%`} cy={`${node.y}%`} r={hi ? '2.2' : '1.6'}
-                          fill={hi ? '#FFE500' : '#0D0D0D'} stroke="#FFE500"
+                          fill={hi ? '#C8F13F' : '#0D0D0D'} stroke="#C8F13F"
                           strokeOpacity={hi ? '1' : '0.45'} strokeWidth="0.3"
                           className="cursor-pointer" style={{ transition:'all .3s' }}
                           onMouseEnter={() => setActiveNode(node.id)}
                           onMouseLeave={() => setActiveNode(null)}
                           onClick={() => setModalNode(node.id)} />
                         <text x={`${node.x}%`} y={`${node.y + 6.5}%`} textAnchor="middle" fontSize="2.4"
-                          fill={hi ? '#FFE500' : '#555'} fontFamily="JetBrains Mono, monospace"
+                          fill={hi ? '#C8F13F' : '#555'} fontFamily="JetBrains Mono, monospace"
                           style={{ transition:'all .3s', userSelect:'none', pointerEvents:'none' }}>
                           {node.label}
                         </text>
                         <text x={`${node.x}%`} y={`${node.y - 5.5}%`} textAnchor="middle" fontSize="1.5"
-                          fill={hi ? '#FFE50070' : '#2A2A2A'} fontFamily="JetBrains Mono, monospace"
+                          fill={hi ? '#C8F13F70' : '#2A2A2A'} fontFamily="JetBrains Mono, monospace"
                           style={{ transition:'all .3s', userSelect:'none', pointerEvents:'none' }}>
                           {node.code}
                         </text>
@@ -186,7 +186,7 @@ export default function InfrastructurePage() {
 
           <div className="max-w-6xl mx-auto">
             <div className="mb-14 reveal">
-              <span className="sys-label opacity-40 block mb-3">SYSTEM MANIFEST // COMPONENTS</span>
+              <span className="sys-label opacity-65 block mb-3">SYSTEM MANIFEST // COMPONENTS</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent" />
             </div>
             <RevealGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#111]/70" stagger={0.08}>
@@ -201,7 +201,7 @@ export default function InfrastructurePage() {
                       <span className="font-mono text-[9px] text-dim">ACTIVE</span>
                     </div>
                   </div>
-                  <h3 className="font-display font-semibold text-white text-lg mb-3">{node.label}</h3>
+                  <h3 className="font-display font-semibold text-white text-h3 mb-3">{node.label}</h3>
                   <p className="font-body text-sm text-muted leading-relaxed mb-5">{node.description}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {node.tags.map(tag => (
@@ -233,10 +233,10 @@ export default function InfrastructurePage() {
 
               {/* Left — copy */}
               <div>
-                <span className="font-mono text-[10px] tracking-[0.3em] text-black/40 block mb-5 uppercase">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-black/60 block mb-5 uppercase">
                   Strategic Context // Why Infrastructure Matters
                 </span>
-                <h2 className="font-display font-bold text-black leading-tight mb-6" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)' }}>
+                <h2 className="font-display font-bold text-black text-h2 mb-6">
                   The next generation of global businesses will not be defined by who{' '}
                   <em className="not-italic underline decoration-dotted">uses</em> blockchain.
                 </h2>
@@ -257,7 +257,7 @@ export default function InfrastructurePage() {
               <div className="space-y-1">
                 {[
                   { label: 'Your Business / Application', tag: 'TOP_LAYER',    bg: 'bg-black',     text: 'text-white',     tagColor: 'text-gray-400'  },
-                  { label: 'Awarizon SDK (@awarizon/web3)', tag: 'CORE_SDK',  bg: 'bg-[#FFE500]', text: 'text-black',     tagColor: 'text-black/50'  },
+                  { label: 'Awarizon SDK (@awarizon/web3)', tag: 'CORE_SDK',  bg: 'bg-[#C8F13F]', text: 'text-black',     tagColor: 'text-black/50'  },
                   { label: 'Wallets  ·  Payments  ·  Identity', tag: 'INFRA', bg: 'bg-[#111]',    text: 'text-gray-300',  tagColor: 'text-gray-600'  },
                   { label: 'APIs  ·  Smart Contracts',  tag: 'PROTOCOL',      bg: 'bg-[#1a1a1a]', text: 'text-gray-400',  tagColor: 'text-gray-700'  },
                   { label: 'EVM Chains  (15+ Networks)', tag: 'FOUNDATION',   bg: 'bg-[#222]',    text: 'text-gray-500',  tagColor: 'text-gray-700', chains: ['ethereum','arbitrum','base','polygon','optimism','bnb'] },
@@ -281,7 +281,7 @@ export default function InfrastructurePage() {
         {activeNodeData && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6" onClick={() => setModalNode(null)}>
             <div className="absolute inset-0 bg-black/92 backdrop-blur-md" />
-            <div className="relative max-w-lg w-full bg-black border border-accent/30 shadow-[0_0_80px_rgba(255,229,0,0.1)] animate-slide-up" onClick={e => e.stopPropagation()}>
+            <div className="relative max-w-lg w-full bg-black border border-accent/30 shadow-[0_0_80px_rgba(200,241,63,0.1)] animate-slide-up" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between px-6 py-4 border-b border-[#1A1A1A]">
                 <div className="flex items-center gap-3">
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
@@ -290,7 +290,7 @@ export default function InfrastructurePage() {
                 <button onClick={() => setModalNode(null)} className="font-mono text-xs text-dim hover:text-white transition-colors">ESC ✕</button>
               </div>
               <div className="p-6">
-                <h2 className="font-display font-bold text-2xl text-white mb-4">{activeNodeData.label}</h2>
+                <h2 className="font-display font-bold text-h3 text-white mb-4">{activeNodeData.label}</h2>
                 <p className="font-body text-base text-muted leading-relaxed mb-6">{activeNodeData.description}</p>
                 <span className="font-mono text-[10px] text-dim tracking-widest block mb-3">CAPABILITIES</span>
                 <div className="flex flex-wrap gap-2">

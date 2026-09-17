@@ -85,7 +85,7 @@ function BarChart({ days }: { days: DayStat[] }) {
               className="w-full bg-accent/20 group-hover:bg-accent/40 transition-colors"
               style={{ height: `${height}%` }}
             />
-            <span className="font-mono text-[7px] text-dim/60 tracking-wider">
+            <span className="font-mono text-[7px] text-dim/80 tracking-wider">
               {day.date.slice(8)}
             </span>
           </div>
@@ -140,8 +140,7 @@ export default function UsagePage() {
         <span className="font-mono text-[9px] tracking-[0.3em] text-dim block mb-3">
           DASHBOARD // SDK_USAGE
         </span>
-        <h1 className="font-display font-extrabold text-white leading-tight mb-2"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>
+        <h1 className="font-display font-extrabold text-white text-page-title mb-2">
           SDK Usage
         </h1>
         <p className="font-body text-muted text-base">
@@ -193,7 +192,7 @@ export default function UsagePage() {
           <div className="mb-8 border border-[#111] bg-[#030303]">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#0D0D0D]">
               <span className="font-mono text-[9px] text-dim tracking-widest">CALLS — LAST 7 DAYS</span>
-              <span className="font-mono text-[9px] text-dim/50 tracking-widest">
+              <span className="font-mono text-[9px] text-dim/70 tracking-widest">
                 {t!.lastCallAt ? `LAST CALL ${fmtDate(t!.lastCallAt)}` : 'NO CALLS YET'}
               </span>
             </div>
@@ -276,7 +275,7 @@ export default function UsagePage() {
                     </div>
                     <div className="text-right flex-shrink-0">
                       <div className="font-display font-bold text-white text-lg">{fmtNum(k.calls)}</div>
-                      <div className="font-mono text-[8px] text-dim/50 tracking-widest">
+                      <div className="font-mono text-[8px] text-dim/70 tracking-widest">
                         {k.lastCallAt ? fmtDate(k.lastCallAt) : 'NEVER'}
                       </div>
                     </div>
