@@ -454,7 +454,7 @@ export default function ShiftPage() {
                   <Link href="/sdk" className="font-mono text-[10px] tracking-widest px-5 py-3 bg-accent text-black font-semibold hover:bg-white transition-colors">
                     EXPLORE THE SDK →
                   </Link>
-                  <CrossDomainLink to="dashboard" path="/docs" className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors">
+                  <CrossDomainLink to="dashboard" path="/docs" withAuthHandoff className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors">
                     DOCUMENTATION
                   </CrossDomainLink>
                 </div>

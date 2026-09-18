@@ -2,8 +2,9 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import { onAuthStateChanged, type User } from 'firebase/auth'
+import { onAuthStateChanged, signInWithCustomToken, type User } from 'firebase/auth'
 import { auth } from '@/lib/firebase/client'
+import { mainUrl } from '@/lib/domains'
 import Sidebar from '@/components/dashboard/Sidebar'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,16 +26,37 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [loading,      setLoading]      = useState(true)
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
 
+  // Cross-subdomain session handoff — dashboard.awarizon.com is a different
+  // origin from awarizon.com, so it can't see a session started there on its
+  // own. CrossDomainLink mints a one-time custom token and appends it here;
+  // read it once on mount (avoids a next/navigation Suspense requirement).
+  const [handoffToken] = useState(() =>
+    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('handoff') : null,
+  )
+  const [handoffPending, setHandoffPending] = useState(() => handoffToken !== null)
+
+  useEffect(() => {
+    if (!handoffToken) return
+    signInWithCustomToken(auth, handoffToken)
+      .catch(() => { /* falls through to the normal signed-out flow below */ })
+      .finally(() => {
+        setHandoffPending(false)
+        router.replace(window.location.pathname) // strip ?handoff= from the URL
+      })
+  }, [handoffToken, router])
+
   useEffect(() => {
     return onAuthStateChanged(auth, (u) => {
       if (!u) {
-        router.replace('/auth')
+        // Don't bounce to /auth while a handoff sign-in is still resolving —
+        // the first onAuthStateChanged callback fires null before it completes.
+        if (!handoffPending) window.location.href = mainUrl('/auth')
       } else {
         setUser(u)
         setLoading(false)
       }
     })
-  }, [router])
+  }, [handoffPending])
 
   if (loading) return <LoadingScreen />
   if (!user)   return null
