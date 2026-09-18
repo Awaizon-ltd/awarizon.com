@@ -6,12 +6,12 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { NAV_LAYERS } from '@/lib/constants'
-import CrossDomainLink from '@/components/CrossDomainLink'
+import NewTabLink from '@/components/NewTabLink'
 
 // Desktop pill nav grouped into 4 dropdown menus — /shift is covered by the
 // logo, /access is the "Get started" CTA pill, so both sit outside these groups.
-// `crossApp` marks items that live on a different subdomain (sdks.awarizon.com)
-// and should open in a new tab via CrossDomainLink instead of a same-app Link.
+// `crossApp` marks items that should open in a new tab via NewTabLink
+// instead of a same-tab Link (e.g. docs, so the current page stays open).
 const MENU_GROUPS = [
   {
     label: 'Platform',
@@ -137,9 +137,9 @@ export default function Navigation() {
                             )
                             if ('crossApp' in item && item.crossApp) {
                               return (
-                                <CrossDomainLink key={item.href} to={item.crossApp} path="/" className={itemClassName}>
+                                <NewTabLink key={item.href} to={item.crossApp} path="/" className={itemClassName}>
                                   {itemContent}
-                                </CrossDomainLink>
+                                </NewTabLink>
                               )
                             }
                             return (

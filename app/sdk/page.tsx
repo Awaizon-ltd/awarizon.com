@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import PageTransition from '@/components/motion/PageTransition'
 import ScrollProvider from '@/components/motion/ScrollProvider'
@@ -11,7 +12,7 @@ import { CodeEditor, ShellBlock } from '@/components/docs/CodeEditor'
 import ChainsMarquee from '@/components/ui/ChainsMarquee'
 import ParticleNetwork from '@/components/ui/ParticleNetwork'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
-import CrossDomainLink from '@/components/CrossDomainLink'
+import NewTabLink from '@/components/NewTabLink'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -376,12 +377,12 @@ export default function SDKPage() {
                   >
                     GET API KEY →
                   </Link>
-                  <CrossDomainLink
+                  <NewTabLink
                     to="docs"
                     className="font-mono text-[11px] tracking-widest px-6 py-3.5 border border-[#2A2A2A] text-muted hover:text-white hover:border-white/30 transition-colors"
                   >
                     READ THE DOCS
-                  </CrossDomainLink>
+                  </NewTabLink>
                   <a
                     href="https://www.npmjs.com/org/awarizon"
                     target="_blank"
@@ -407,27 +408,15 @@ export default function SDKPage() {
                 </div>
               </div>
 
-              {/* Right — install + quick code */}
-              <Reveal delay={0.2} className="lg:pt-4">
-                <ShellBlock command="npm install @awarizon/web3 @awarizon/react" label="INSTALL" />
-                <CodeEditor
-                  filename="quickstart.ts"
-                  code={`import { AwarizonWeb3 } from "@awarizon/web3"
-
-const awz = new AwarizonWeb3({
-  chain:  "base",
-  apiKey: process.env.AWARIZON_API_KEY,
-})
-
-// ERC-20 — no ABI needed
-const usdc = await awz.erc20("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
-
-const symbol  = await usdc.symbol()              // "USDC"
-const balance = await usdc.balanceOf("0x...")    // 1000000n
-
-const tx = await usdc.transfer("0xRecipient", 500_000n)
-const receipt = await tx.wait()
-console.log("confirmed:", receipt.blockNumber)`}
+              {/* Right — illustration */}
+              <Reveal delay={0.2} className="flex items-center justify-center lg:pt-4">
+                <Image
+                  src="/sdk-theme.png"
+                  alt=""
+                  width={1400}
+                  height={1400}
+                  priority
+                  className="w-full max-w-lg h-auto object-contain select-none pointer-events-none"
                 />
               </Reveal>
             </div>
@@ -732,19 +721,19 @@ console.log("confirmed:", receipt.blockNumber)`}
               >
                 GET API KEY →
               </Link>
-              <CrossDomainLink
+              <NewTabLink
                 to="docs"
                 className="font-mono text-[11px] tracking-widest px-8 py-4 border border-[#2A2A2A] text-muted hover:text-white hover:border-white/30 transition-colors"
               >
                 READ THE DOCS
-              </CrossDomainLink>
-              <CrossDomainLink
+              </NewTabLink>
+              <NewTabLink
                 to="dashboard"
                 path="/docs"
                 className="font-mono text-[11px] tracking-widest px-8 py-4 text-dim hover:text-accent transition-colors"
               >
                 FULL API REFERENCE →
-              </CrossDomainLink>
+              </NewTabLink>
             </div>
           </div>
         </section>

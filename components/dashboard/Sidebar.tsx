@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, type User } from 'firebase/auth'
 import { auth } from '@/lib/firebase/client'
-import CrossDomainLink from '@/components/CrossDomainLink'
+import NewTabLink from '@/components/NewTabLink'
 
 interface Props {
   user:    User
@@ -54,7 +54,7 @@ export default function Sidebar({ user, open, onClose }: Props) {
 
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-[#202020]">
-        <CrossDomainLink to="main" path="/shift" onClick={onClose} className="group flex items-center gap-3 flex-1 min-w-0">
+        <NewTabLink to="main" path="/shift" onClick={onClose} className="group flex items-center gap-3 flex-1 min-w-0">
           <Image
             src="/logo.png"
             alt="Awarizon"
@@ -62,7 +62,7 @@ export default function Sidebar({ user, open, onClose }: Props) {
             width={110}
             className="h-7 w-auto object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
           />
-        </CrossDomainLink>
+        </NewTabLink>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="font-mono text-[10px] text-dim tracking-widest hidden sm:block">DASHBOARD</span>
           {/* Close button — mobile only */}
@@ -129,7 +129,7 @@ export default function Sidebar({ user, open, onClose }: Props) {
         {/* Site links */}
         <div className="font-mono text-[10px] text-dim/80 tracking-widest px-2 pt-5 pb-2">EXPLORE</div>
         {SITE_LINKS.map(link => (
-          <CrossDomainLink
+          <NewTabLink
             key={link.label}
             to={link.to}
             path={link.path}
@@ -138,7 +138,7 @@ export default function Sidebar({ user, open, onClose }: Props) {
           >
             <span className="font-mono text-[10px] text-dim/60 group-hover:text-accent/60 transition-colors">↗</span>
             <span className="font-mono text-[12px] tracking-widest">{link.label}</span>
-          </CrossDomainLink>
+          </NewTabLink>
         ))}
       </nav>
 

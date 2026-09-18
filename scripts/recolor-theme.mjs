@@ -21,12 +21,14 @@ const PUBLIC = join(__dirname, '..', 'public')
 const ACCENT     = { r: 0xC8, g: 0xF1, b: 0x3F } // --accent
 const ACCENT_DIM = { r: 0x8C, g: 0xA9, b: 0x2C } // --accent-dim
 
-async function duotone(file, color, outFile) {
+async function duotone(file, color, outFile, { maxSize } = {}) {
   // .tint() greyscales internally — chaining an explicit .greyscale() first
   // collapses to a single channel and the tint becomes a no-op.
-  await sharp(join(PUBLIC, file))
+  let pipeline = sharp(join(PUBLIC, file))
+  if (maxSize) pipeline = pipeline.resize({ width: maxSize, height: maxSize, fit: 'inside', withoutEnlargement: true })
+  await pipeline
     .tint(color)
-    .png()
+    .png({ compressionLevel: 9 })
     .toFile(join(PUBLIC, outFile))
   console.log(`  duotone  ${file} -> ${outFile}`)
 }
@@ -51,4 +53,5 @@ console.log('Recoloring to theme…')
 await duotone('infranstructure.png', ACCENT, 'infrastructure-theme.png')
 await flatRecolor('mesh.png', ACCENT_DIM, 'mesh-theme.png')
 await duotone('pngwing.com (5).png', ACCENT, 'blocks-theme.png')
+await duotone('sdk.png', ACCENT, 'sdk-theme.png', { maxSize: 1400 })
 console.log('Done.')

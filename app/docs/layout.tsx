@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { DOCS } from '@/lib/docs'
 import { LangProvider, useLang } from '@/components/docs/LangContext'
-import CrossDomainLink from '@/components/CrossDomainLink'
+import NewTabLink from '@/components/NewTabLink'
 
 // ─── Nav tree ─────────────────────────────────────────────────────────────────
 // Top-level items → pages (/docs/{id})
@@ -213,9 +213,9 @@ function DocsLayoutInner({ children }: { children: ReactNode }) {
 
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-30 bg-black/95 backdrop-blur border-b border-[#1E1E1E] flex items-center gap-4 px-5 h-14 flex-shrink-0">
-        <CrossDomainLink to="main" path="/" className="flex items-center gap-3 mr-4">
+        <NewTabLink to="main" path="/" className="flex items-center gap-3 mr-4">
           <Image src="/logo.png" alt="Awarizon" width={100} height={24} className="h-6 w-auto brightness-0 invert" />
-        </CrossDomainLink>
+        </NewTabLink>
         <div className="flex items-center gap-1.5">
           <span className="font-mono text-[9px] text-dim tracking-widest hidden sm:block">DOCS</span>
           <span className="font-mono text-[9px] text-accent/50 tracking-widest hidden sm:block">/ v1</span>
@@ -229,13 +229,13 @@ function DocsLayoutInner({ children }: { children: ReactNode }) {
           >
             NPM ↗
           </a>
-          <CrossDomainLink
+          <NewTabLink
             to="main"
             path="/auth"
             className="font-mono text-[10px] tracking-widest px-4 py-2 bg-accent text-black hover:bg-white transition-colors"
           >
             GET API KEY
-          </CrossDomainLink>
+          </NewTabLink>
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(v => !v)}

@@ -35,8 +35,7 @@ export default function InfrastructurePage() {
           <ScrollZoomImage
             src="/infrastructure-theme.png"
             direction="in"
-            scaleTo={1.18}
-            className="opacity-[0.13] object-[80%_30%]"
+            className="opacity-[0.13]"
           />
           <div className="absolute inset-0 grid-bg-static opacity-20" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(200,241,63,0.07),transparent)]" />

@@ -12,7 +12,7 @@ import CountUp from "@/components/ui/CountUp";
 import FloatingOrbs from "@/components/ui/FloatingOrbs";
 import ScrollZoomImage from "@/components/ui/ScrollZoomImage";
 import { ALL_CHAINS } from "@/lib/chainLogos";
-import CrossDomainLink from "@/components/CrossDomainLink";
+import NewTabLink from "@/components/NewTabLink";
 
 const PROBLEM_LAYERS = [
   {
@@ -302,9 +302,6 @@ export default function ShiftPage() {
           <ScrollZoomImage
             src="/mesh-theme.png"
             direction="in"
-            scaleFrom={1.5}
-            scaleTo={1.9}
-            fit="contain"
             spin
             spinDuration={50}
             className="opacity-[0.35]"
@@ -410,8 +407,6 @@ export default function ShiftPage() {
           <ScrollZoomImage
             src="/grok_image_1789741949904.jpg"
             direction="out"
-            scaleFrom={1.15}
-            scaleTo={1.4}
             className="opacity-[0.14]"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black pointer-events-none" />
@@ -444,150 +439,39 @@ export default function ShiftPage() {
           </Reveal>
         </section>
 
-        {/* ── SDK SHOWCASE ──────────────────────────────────────── */}
+        {/* ── SDK TEASER ─────────────────────────────────────────── */}
         <section className="relative py-28 px-6 md:px-12 lg:px-20 bg-[#020202] border-t border-[#0E0E0E] overflow-hidden">
           <div className="absolute inset-0 grid-bg-static opacity-10 pointer-events-none" />
           <div className="absolute left-0 top-0 w-[40vw] h-[40vw] bg-accent/[0.03] blur-3xl pointer-events-none" />
 
-          <div className="relative max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <Reveal>
-                <span className="font-mono text-[10px] tracking-[0.3em] text-accent/70 block mb-5">
-                  THE PRODUCT // AWARIZON SDK
-                </span>
-                <h2
-                  className="font-display font-extrabold text-white text-statement mb-6"
-                >
-                  One SDK.<br />Any chain.<br />
-                  <span className="gradient-text">Ship faster.</span>
-                </h2>
-                <p className="font-body text-lg text-muted leading-relaxed mb-8 max-w-md">
-                  <code className="font-mono text-accent text-sm">@awarizon/web3</code> gives developers typed reads, writes, events, and codegen across 15+ EVM chains — without configuring RPC providers, managing ABIs, or writing boilerplate.
-                </p>
-                <div className="grid grid-cols-2 gap-y-3 gap-x-6 mb-8">
-                  {["15+ EVM chains","Full TypeScript","React hooks built-in","CLI code generation","Zero config reads","Event subscriptions"].map((f) => (
-                    <div key={f} className="flex items-center gap-2">
-                      <span className="w-1 h-1 bg-accent flex-shrink-0" />
-                      <span className="font-mono text-[11px] text-muted tracking-wide">{f}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <Link href="/sdk" className="font-mono text-[10px] tracking-widest px-5 py-3 bg-accent text-black font-semibold hover:bg-white transition-colors">
-                    EXPLORE THE SDK →
-                  </Link>
-                  <CrossDomainLink to="dashboard" path="/docs" className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors">
-                    DOCUMENTATION
-                  </CrossDomainLink>
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.15}>
-                <div className="border border-[#2D2D2D] mb-3">
-                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b border-[#2D2D2D]">
-                    <span className="font-mono text-[9px] tracking-widest text-[#9D9D9D]">INSTALL</span>
-                    <div className="flex gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-                    </div>
+          <div className="relative max-w-4xl mx-auto text-center">
+            <Reveal>
+              <span className="font-mono text-[10px] tracking-[0.3em] text-accent/70 block mb-5">
+                THE PRODUCT // AWARIZON SDK
+              </span>
+              <h2 className="font-display font-extrabold text-white text-statement mb-6 text-balance">
+                One SDK. Any chain. <span className="gradient-text">Ship faster.</span>
+              </h2>
+              <p className="font-body text-lg text-muted leading-relaxed mb-10 max-w-lg mx-auto">
+                <code className="font-mono text-accent text-sm">@awarizon/web3</code> gives developers typed reads, writes, events, and codegen across 15+ EVM chains — without configuring RPC providers, managing ABIs, or writing boilerplate.
+              </p>
+              <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
+                {["15+ EVM chains", "Full TypeScript", "Zero config reads"].map((f) => (
+                  <div key={f} className="flex items-center gap-2">
+                    <span className="w-1 h-1 bg-accent flex-shrink-0" />
+                    <span className="font-mono text-[11px] text-muted tracking-wide">{f}</span>
                   </div>
-                  <div className="flex items-center gap-3 px-5 py-4 bg-[#1E1E1E]">
-                    <span className="font-mono text-sm text-[#28CA41] select-none">$</span>
-                    <span className="font-mono text-sm text-[#D4D4D4]">
-                      npm install{" "}
-                      <span style={{ color: "#CE9178" }}>@awarizon/web3</span>{" "}
-                      <span style={{ color: "#CE9178" }}>@awarizon/react</span>
-                    </span>
-                  </div>
-                </div>
-                <div className="border border-[#2D2D2D]">
-                  <div className="flex items-center gap-3 px-4 py-2.5 bg-[#252526] border-b border-[#2D2D2D]">
-                    <div className="flex gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-                    </div>
-                    <span className="font-mono text-[11px] text-[#9D9D9D]">quickstart.ts</span>
-                  </div>
-                  <pre className="font-mono text-[13px] leading-[1.75] p-5 bg-[#1E1E1E] overflow-x-auto whitespace-pre">
-                    <span style={{ color: "#C586C0" }}>import</span>
-                    <span style={{ color: "#D4D4D4" }}>{" { "}</span>
-                    <span style={{ color: "#4EC9B0" }}>AwarizonWeb3</span>
-                    <span style={{ color: "#D4D4D4" }}>{" } "}</span>
-                    <span style={{ color: "#C586C0" }}>from</span>
-                    <span style={{ color: "#CE9178" }}>{' "@awarizon/web3"'}</span>
-                    {"\n\n"}
-                    <span style={{ color: "#C586C0" }}>const</span>
-                    <span style={{ color: "#D4D4D4" }}> awz = </span>
-                    <span style={{ color: "#C586C0" }}>new </span>
-                    <span style={{ color: "#DCDCAA" }}>AwarizonWeb3</span>
-                    <span style={{ color: "#D4D4D4" }}>{"({"}</span>
-                    {"\n"}
-                    <span style={{ color: "#D4D4D4" }}>{"  "}</span>
-                    <span style={{ color: "#9CDCFE" }}>chain</span>
-                    <span style={{ color: "#D4D4D4" }}>{": "}</span>
-                    <span style={{ color: "#CE9178" }}>"base"</span>
-                    <span style={{ color: "#D4D4D4" }}>,</span>
-                    {"\n"}
-                    <span style={{ color: "#D4D4D4" }}>{"  "}</span>
-                    <span style={{ color: "#9CDCFE" }}>apiKey</span>
-                    <span style={{ color: "#D4D4D4" }}>{": process.env."}</span>
-                    <span style={{ color: "#9CDCFE" }}>AWARIZON_API_KEY</span>
-                    {"\n"}
-                    <span style={{ color: "#D4D4D4" }}>{"})"})</span>
-                    {"\n\n"}
-                    <span style={{ color: "#6A9955" }}>{"// ERC-20 in one line"}</span>
-                    {"\n"}
-                    <span style={{ color: "#C586C0" }}>const</span>
-                    <span style={{ color: "#D4D4D4" }}> token = </span>
-                    <span style={{ color: "#C586C0" }}>await </span>
-                    <span style={{ color: "#9CDCFE" }}>awz</span>
-                    <span style={{ color: "#D4D4D4" }}>.</span>
-                    <span style={{ color: "#DCDCAA" }}>erc20</span>
-                    <span style={{ color: "#CE9178" }}>("0x8335..."</span>
-                    <span style={{ color: "#D4D4D4" }}>)</span>
-                    {"\n"}
-                    <span style={{ color: "#C586C0" }}>const</span>
-                    <span style={{ color: "#D4D4D4" }}> bal = </span>
-                    <span style={{ color: "#C586C0" }}>await </span>
-                    <span style={{ color: "#9CDCFE" }}>token</span>
-                    <span style={{ color: "#D4D4D4" }}>.</span>
-                    <span style={{ color: "#DCDCAA" }}>balanceOf</span>
-                    <span style={{ color: "#D4D4D4" }}>(</span>
-                    <span style={{ color: "#CE9178" }}>"0xYourAddress"</span>
-                    <span style={{ color: "#D4D4D4" }}>)</span>
-                    {"\n"}
-                    <span style={{ color: "#6A9955" }}>{"// → 1000000n"}</span>
-                    {"\n\n"}
-                    <span style={{ color: "#C586C0" }}>const</span>
-                    <span style={{ color: "#D4D4D4" }}> tx = </span>
-                    <span style={{ color: "#C586C0" }}>await </span>
-                    <span style={{ color: "#9CDCFE" }}>token</span>
-                    <span style={{ color: "#D4D4D4" }}>.</span>
-                    <span style={{ color: "#DCDCAA" }}>transfer</span>
-                    <span style={{ color: "#D4D4D4" }}>(</span>
-                    <span style={{ color: "#CE9178" }}>"0xRecipient"</span>
-                    <span style={{ color: "#D4D4D4" }}>, </span>
-                    <span style={{ color: "#B5CEA8" }}>500_000n</span>
-                    <span style={{ color: "#D4D4D4" }}>)</span>
-                    {"\n"}
-                    <span style={{ color: "#C586C0" }}>await </span>
-                    <span style={{ color: "#9CDCFE" }}>tx</span>
-                    <span style={{ color: "#D4D4D4" }}>.</span>
-                    <span style={{ color: "#DCDCAA" }}>wait</span>
-                    <span style={{ color: "#D4D4D4" }}>()</span>
-                  </pre>
-                </div>
-                <div className="grid grid-cols-3 gap-px bg-[#111] mt-3">
-                  {["@awarizon/web3", "@awarizon/react", "@awarizon/cli"].map((p) => (
-                    <div key={p} className="bg-[#020202] px-3 py-2.5 text-center">
-                      <code className="font-mono text-[10px] text-dim">{p}</code>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link href="/sdk" className="font-mono text-[10px] tracking-widest px-5 py-3 bg-accent text-black font-semibold hover:bg-white transition-colors">
+                  EXPLORE THE SDK →
+                </Link>
+                <NewTabLink to="dashboard" path="/docs" className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors">
+                  DOCUMENTATION
+                </NewTabLink>
+              </div>
+            </Reveal>
           </div>
         </section>
 

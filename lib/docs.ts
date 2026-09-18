@@ -425,7 +425,7 @@ await staking.stake(100n)`,
 
 const awarizon = new AwarizonWeb3({
   chain:   "base",         // required — target EVM chain
-  apiKey:  "awz_live_...", // required — from dashboard.awarizon.com
+  apiKey:  "awz_live_...", // required — from your dashboard
   timeout: 30_000,         // optional, ms  (default: 30 000)
   retries: 3,              // optional      (default: 3)
 })`,

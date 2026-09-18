@@ -15,7 +15,7 @@ interface Props {
   scaleFrom?: number
   scaleTo?: number
   className?: string
-  /** 'cover' fills the box (crops to fit); 'contain' fits the whole image inside it (letterboxed). Use 'contain' for transparent/isolated subjects where cropping would cut off the shape. */
+  /** 'contain' (default) fits the whole image inside the box, centered, never cropped. 'cover' fills the box edge-to-edge, cropping as needed. */
   fit?: 'cover' | 'contain'
   /** Adds a slow, continuous 360° spin on top of the scroll-driven scale, for subjects (wireframes, isometric shapes) that read well rotating in place. */
   spin?: boolean
@@ -27,9 +27,9 @@ export default function ScrollZoomImage({
   alt = '',
   direction = 'in',
   scaleFrom = 1,
-  scaleTo = 1.28,
+  scaleTo = 1.1,
   className = '',
-  fit = 'cover',
+  fit = 'contain',
   spin = false,
   spinDuration = 40,
 }: Props) {
