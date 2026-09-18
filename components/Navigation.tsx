@@ -6,9 +6,12 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { NAV_LAYERS } from '@/lib/constants'
+import CrossDomainLink from '@/components/CrossDomainLink'
 
 // Desktop pill nav grouped into 4 dropdown menus — /shift is covered by the
 // logo, /access is the "Get started" CTA pill, so both sit outside these groups.
+// `crossApp` marks items that live on a different subdomain (docs.awarizon.com)
+// and should open in a new tab via CrossDomainLink instead of a same-app Link.
 const MENU_GROUPS = [
   {
     label: 'Platform',
@@ -30,7 +33,7 @@ const MENU_GROUPS = [
     label: 'Resources',
     items: [
       { href: '/learn', label: 'Web3 Academy', sub: 'Blockchain education hub' },
-      { href: '/docs',  label: 'Documentation', sub: 'SDK reference & guides' },
+      { href: '/docs',  label: 'Documentation', sub: 'SDK reference & guides', crossApp: 'docs' as const },
     ],
   },
   {
@@ -121,18 +124,27 @@ export default function Navigation() {
                         >
                           {group.items.map((item) => {
                             const isItemActive = pathname === item.href
-                            return (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`block px-3.5 py-2.5 rounded-xl transition-colors duration-150 ${
-                                  isItemActive ? 'bg-accent/10' : 'hover:bg-white/[0.06]'
-                                }`}
-                              >
+                            const itemClassName = `block px-3.5 py-2.5 rounded-xl transition-colors duration-150 ${
+                              isItemActive ? 'bg-accent/10' : 'hover:bg-white/[0.06]'
+                            }`
+                            const itemContent = (
+                              <>
                                 <div className={`font-body text-[13px] ${isItemActive ? 'text-accent' : 'text-white'}`}>
                                   {item.label}
                                 </div>
                                 <div className="font-mono text-[10px] text-dim mt-0.5">{item.sub}</div>
+                              </>
+                            )
+                            if ('crossApp' in item && item.crossApp) {
+                              return (
+                                <CrossDomainLink key={item.href} to={item.crossApp} path="/" className={itemClassName}>
+                                  {itemContent}
+                                </CrossDomainLink>
+                              )
+                            }
+                            return (
+                              <Link key={item.href} href={item.href} className={itemClassName}>
+                                {itemContent}
                               </Link>
                             )
                           })}

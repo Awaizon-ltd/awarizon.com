@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { signOut, type User } from 'firebase/auth'
 import { auth } from '@/lib/firebase/client'
+import { mainUrl } from '@/lib/domains'
+import CrossDomainLink from '@/components/CrossDomainLink'
 
 interface Props {
   user:    User
@@ -21,10 +23,10 @@ const NAV_ITEMS = [
   { href: '/dashboard/settings',  label: 'Settings',  code: '06', icon: '⬡' },
 ]
 
-const SITE_LINKS = [
-  { href: '/docs',          label: 'SDK Docs'      },
-  { href: '/infrastructure', label: 'Infrastructure' },
-  { href: '/learn',          label: 'Web3 Academy'   },
+const SITE_LINKS: { to: 'main' | 'docs'; path: string; label: string }[] = [
+  { to: 'docs', path: '/',              label: 'SDK Docs'       },
+  { to: 'main', path: '/infrastructure', label: 'Infrastructure' },
+  { to: 'main', path: '/learn',          label: 'Web3 Academy'   },
 ]
 
 function Initials({ user }: { user: User }) {
@@ -41,11 +43,10 @@ function Initials({ user }: { user: User }) {
 
 export default function Sidebar({ user, open, onClose }: Props) {
   const pathname = usePathname()
-  const router   = useRouter()
 
   async function handleSignOut() {
     await signOut(auth)
-    router.replace('/auth')
+    window.location.href = mainUrl('/auth') // /auth lives on the main site
   }
 
   const sidebarContent = (
@@ -53,7 +54,7 @@ export default function Sidebar({ user, open, onClose }: Props) {
 
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-[#202020]">
-        <Link href="/shift" className="group flex items-center gap-3 flex-1 min-w-0">
+        <CrossDomainLink to="main" path="/shift" onClick={onClose} className="group flex items-center gap-3 flex-1 min-w-0">
           <Image
             src="/logo.png"
             alt="Awarizon"
@@ -61,7 +62,7 @@ export default function Sidebar({ user, open, onClose }: Props) {
             width={110}
             className="h-7 w-auto object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
           />
-        </Link>
+        </CrossDomainLink>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="font-mono text-[10px] text-dim tracking-widest hidden sm:block">DASHBOARD</span>
           {/* Close button — mobile only */}
@@ -128,15 +129,16 @@ export default function Sidebar({ user, open, onClose }: Props) {
         {/* Site links */}
         <div className="font-mono text-[10px] text-dim/80 tracking-widest px-2 pt-5 pb-2">EXPLORE</div>
         {SITE_LINKS.map(link => (
-          <Link
-            key={link.href}
-            href={link.href}
+          <CrossDomainLink
+            key={link.label}
+            to={link.to}
+            path={link.path}
             onClick={onClose}
             className="flex items-center gap-3 px-3 py-2.5 border-l-2 border-transparent text-muted hover:text-white hover:bg-[#0A0A0A] transition-all group"
           >
             <span className="font-mono text-[10px] text-dim/60 group-hover:text-accent/60 transition-colors">↗</span>
             <span className="font-mono text-[12px] tracking-widest">{link.label}</span>
-          </Link>
+          </CrossDomainLink>
         ))}
       </nav>
 

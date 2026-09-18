@@ -11,6 +11,7 @@ import { CodeEditor, ShellBlock } from '@/components/docs/CodeEditor'
 import ChainsMarquee from '@/components/ui/ChainsMarquee'
 import ParticleNetwork from '@/components/ui/ParticleNetwork'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
+import CrossDomainLink from '@/components/CrossDomainLink'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -375,12 +376,12 @@ export default function SDKPage() {
                   >
                     GET API KEY →
                   </Link>
-                  <Link
-                    href="/docs"
+                  <CrossDomainLink
+                    to="docs"
                     className="font-mono text-[11px] tracking-widest px-6 py-3.5 border border-[#2A2A2A] text-muted hover:text-white hover:border-white/30 transition-colors"
                   >
                     READ THE DOCS
-                  </Link>
+                  </CrossDomainLink>
                   <a
                     href="https://www.npmjs.com/org/awarizon"
                     target="_blank"
@@ -731,18 +732,20 @@ console.log("confirmed:", receipt.blockNumber)`}
               >
                 GET API KEY →
               </Link>
-              <Link
-                href="/docs"
+              <CrossDomainLink
+                to="docs"
                 className="font-mono text-[11px] tracking-widest px-8 py-4 border border-[#2A2A2A] text-muted hover:text-white hover:border-white/30 transition-colors"
               >
                 READ THE DOCS
-              </Link>
-              <Link
-                href="/dashboard/docs"
+              </CrossDomainLink>
+              <CrossDomainLink
+                to="dashboard"
+                path="/docs"
+                withAuthHandoff
                 className="font-mono text-[11px] tracking-widest px-8 py-4 text-dim hover:text-accent transition-colors"
               >
                 FULL API REFERENCE →
-              </Link>
+              </CrossDomainLink>
             </div>
           </div>
         </section>

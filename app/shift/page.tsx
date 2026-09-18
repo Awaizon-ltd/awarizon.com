@@ -11,15 +11,7 @@ import Button from "@/components/ui/Button";
 import CountUp from "@/components/ui/CountUp";
 import FloatingOrbs from "@/components/ui/FloatingOrbs";
 import { ALL_CHAINS } from "@/lib/chainLogos";
-
-const BOOT_SEQUENCE = [
-  { text: "INITIALIZING AWARIZON INFRASTRUCTURE LAYER…", delay: 200, speed: 32 },
-  { text: "LOADING SDK MODULES — @awarizon/web3…",       delay: 600, speed: 26 },
-  { text: "CONNECTING TO 15+ EVM CHAIN NETWORKS…",       delay: 500, speed: 32 },
-  { text: "SCANNING DEVELOPER BUILD ENVIRONMENT…",       delay: 500, speed: 26 },
-  { text: "CALIBRATING BUILD ACCELERATION ENGINE…",      delay: 600, speed: 22 },
-  { text: "● SYSTEM ONLINE: AWARIZON — BUILD 5× FASTER", delay: 400, speed: 40 },
-];
+import CrossDomainLink from "@/components/CrossDomainLink";
 
 const PROBLEM_LAYERS = [
   {
@@ -119,13 +111,9 @@ function ComparisonIllustration() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-type BootLine = { text: string; done: boolean; current: string };
-
 export default function ShiftPage() {
-  const [bootLines, setBootLines] = useState<BootLine[]>([]);
-  const [heroVisible, setHeroVisible] = useState(false);
+  const heroVisible = true;
   const [tooltip, setTooltip] = useState<string | null>(null);
-  const ran = useRef(false);
 
   // Vanta
   const vantaRef = useRef<HTMLDivElement>(null);
@@ -158,30 +146,6 @@ export default function ShiftPage() {
     return () => { vantaEffect.current?.destroy(); };
   }, []);
 
-  // Boot sequence
-  useEffect(() => {
-    if (ran.current) return;
-    ran.current = true;
-    async function runBoot() {
-      for (let i = 0; i < BOOT_SEQUENCE.length; i++) {
-        const { text, delay, speed } = BOOT_SEQUENCE[i];
-        await new Promise((r) => setTimeout(r, delay));
-        setBootLines((prev) => [...prev, { text: "", done: false, current: "" }]);
-        for (let j = 0; j <= text.length; j++) {
-          await new Promise((r) => setTimeout(r, speed));
-          setBootLines((prev) => {
-            const u = [...prev];
-            u[i] = { text, done: j === text.length, current: text.slice(0, j) };
-            return u;
-          });
-        }
-      }
-      await new Promise((r) => setTimeout(r, 400));
-      setHeroVisible(true);
-    }
-    runBoot();
-  }, []);
-
   return (
     <ScrollProvider>
       <PageTransition>
@@ -201,7 +165,7 @@ export default function ShiftPage() {
 
             {/* Status bar */}
             <motion.div
-              className="flex items-center gap-4 mb-12 flex-wrap"
+              className="flex items-center justify-center gap-4 mb-12 flex-wrap"
               initial="hidden"
               animate="show"
               variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } } }}
@@ -228,46 +192,9 @@ export default function ShiftPage() {
               ))}
             </motion.div>
 
-            {/* Terminal */}
+            {/* Hero text */}
             <motion.div
-              className="mb-16 max-w-xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease, delay: 0.5 }}
-            >
-              <div className="border border-[#1A1A1A] bg-[#040404]/95 backdrop-blur-sm">
-                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#1A1A1A]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-                  <span className="ml-3 font-mono text-[9px] text-dim tracking-widest">
-                    awz_boot — v3.2.1
-                  </span>
-                </div>
-                <div className="p-5 min-h-[152px] space-y-1.5">
-                  {bootLines.map((line, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <span className="font-mono text-dim text-sm mt-px select-none shrink-0">›</span>
-                      <span
-                        className={`font-mono text-sm leading-relaxed ${
-                          line.text.startsWith("●")
-                            ? "text-accent font-medium"
-                            : line.done ? "text-[#888]" : "text-[#555]"
-                        }`}
-                      >
-                        {line.current}
-                        {!line.done && i === bootLines.length - 1 && (
-                          <span className="inline-block w-2 h-[14px] bg-accent ml-0.5 animate-flicker" />
-                        )}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Hero text — animates in after boot */}
-            <motion.div
+              className="text-center mx-auto flex flex-col items-center"
               initial="hidden"
               animate={heroVisible ? "show" : "hidden"}
               variants={{ show: { transition: { staggerChildren: 0.13 } } }}
@@ -307,7 +234,7 @@ export default function ShiftPage() {
               </h1>
 
               <motion.div
-                className="max-w-lg"
+                className="max-w-lg mx-auto"
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
@@ -356,7 +283,7 @@ export default function ShiftPage() {
 
             {/* Scroll indicator */}
             <motion.div
-              className="mt-auto pt-14"
+              className="mt-auto pt-14 mx-auto flex flex-col items-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: heroVisible ? 1 : 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
@@ -527,9 +454,9 @@ export default function ShiftPage() {
                   <Link href="/sdk" className="font-mono text-[10px] tracking-widest px-5 py-3 bg-accent text-black font-semibold hover:bg-white transition-colors">
                     EXPLORE THE SDK →
                   </Link>
-                  <Link href="/dashboard/docs" className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors">
+                  <CrossDomainLink to="dashboard" path="/docs" withAuthHandoff className="font-mono text-[10px] tracking-widest px-5 py-3 border border-[#252525] text-muted hover:text-white hover:border-white/20 transition-colors">
                     DOCUMENTATION
-                  </Link>
+                  </CrossDomainLink>
                 </div>
               </Reveal>
 
