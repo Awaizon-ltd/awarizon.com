@@ -25,7 +25,7 @@ interface Props {
 
 /**
  * A link that crosses an app boundary (awarizon.com ↔ dashboard.awarizon.com
- * ↔ docs.awarizon.com). Always opens a new tab, and — for dashboard links,
+ * ↔ sdks.awarizon.com). Always opens a new tab, and — for dashboard links,
  * when the visitor is already signed in — hands off the current session so
  * they land there already authenticated instead of hitting a second login.
  */

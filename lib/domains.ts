@@ -4,7 +4,7 @@
 // rewrites on the real *.awarizon.com subdomains.
 export const MAIN_HOST      = 'awarizon.com'
 export const DASHBOARD_HOST = 'dashboard.awarizon.com'
-export const DOCS_HOST      = 'docs.awarizon.com'
+export const DOCS_HOST      = 'sdks.awarizon.com'
 
 function isKnownHost(hostname: string): boolean {
   return hostname === MAIN_HOST || hostname.endsWith(`.${MAIN_HOST}`)

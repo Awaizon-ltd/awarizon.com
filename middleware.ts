@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 /**
  * Subdomain routing:
  *   dashboard.awarizon.com/* → /dashboard/*
- *   docs.awarizon.com/*      → /docs/*
+ *   sdks.awarizon.com/*      → /docs/*
  *
- * DNS: point *.awarizon.com (wildcard A/CNAME) to the same host/Vercel deployment.
- * Vercel: add dashboard.awarizon.com and docs.awarizon.com as custom domains.
+ * DNS: dashboard.awarizon.com and sdks.awarizon.com are CNAMEs to the same
+ * Hostinger-hosted app as the main site (see hPanel → Websites → Domains → Subdomains).
  */
 export function middleware(req: NextRequest) {
   const hostname = req.headers.get('host') ?? ''
@@ -28,8 +28,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.rewrite(url)
   }
 
-  // docs.awarizon.com → /docs/*
-  if (hostname.startsWith('docs.') && !pathname.startsWith('/docs')) {
+  // sdks.awarizon.com → /docs/*
+  if (hostname.startsWith('sdks.') && !pathname.startsWith('/docs')) {
     const url = req.nextUrl.clone()
     url.pathname = pathname === '/' ? '/docs' : `/docs${pathname}`
     return NextResponse.rewrite(url)

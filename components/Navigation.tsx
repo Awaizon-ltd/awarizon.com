@@ -10,7 +10,7 @@ import CrossDomainLink from '@/components/CrossDomainLink'
 
 // Desktop pill nav grouped into 4 dropdown menus — /shift is covered by the
 // logo, /access is the "Get started" CTA pill, so both sit outside these groups.
-// `crossApp` marks items that live on a different subdomain (docs.awarizon.com)
+// `crossApp` marks items that live on a different subdomain (sdks.awarizon.com)
 // and should open in a new tab via CrossDomainLink instead of a same-app Link.
 const MENU_GROUPS = [
   {
