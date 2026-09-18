@@ -8,6 +8,7 @@ import Reveal, { RevealGroup, RevealItem } from '@/components/motion/Reveal'
 import Button from '@/components/ui/Button'
 import ChainBadge from '@/components/ui/ChainBadge'
 import ChainsMarquee from '@/components/ui/ChainsMarquee'
+import ScrollZoomImage from '@/components/ui/ScrollZoomImage'
 import { INFRASTRUCTURE_NODES } from '@/lib/constants'
 
 const ease = [0.16, 1, 0.3, 1] as const
@@ -31,8 +32,15 @@ export default function InfrastructurePage() {
 
         {/* ── HERO ───────────────────────────────────────── */}
         <section className="relative min-h-screen flex flex-col overflow-hidden bg-accent-wash">
+          <ScrollZoomImage
+            src="/infrastructure-theme.png"
+            direction="in"
+            scaleTo={1.18}
+            className="opacity-[0.13] object-[80%_30%]"
+          />
           <div className="absolute inset-0 grid-bg-static opacity-20" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(200,241,63,0.07),transparent)]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
 
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pt-28 pb-16 flex flex-col min-h-screen">
             <div className="flex items-center gap-3 mb-16">
@@ -178,13 +186,15 @@ export default function InfrastructurePage() {
         </section>
 
         {/* ── CARDS — section bg image ───────────────────── */}
-        <section className="section-img-bg py-24 px-6 md:px-12 lg:px-20">
-          {/* Server-room texture */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="s-img" src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1400&q=70" alt="" aria-hidden="true" />
-          <div className="s-overlay bg-gradient-to-b from-black via-black/60 to-black" />
+        <section className="relative overflow-hidden py-24 px-6 md:px-12 lg:px-20">
+          <ScrollZoomImage
+            src="/grok_image_1789742131660.jpg"
+            direction="in"
+            className="opacity-[0.15]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black pointer-events-none" />
 
-          <div className="max-w-6xl mx-auto">
+          <div className="relative max-w-6xl mx-auto">
             <div className="mb-14 reveal">
               <span className="sys-label opacity-65 block mb-3">SYSTEM MANIFEST // COMPONENTS</span>
               <div className="h-px bg-gradient-to-r from-accent/30 to-transparent" />

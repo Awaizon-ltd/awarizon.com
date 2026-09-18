@@ -8,6 +8,7 @@ import Reveal, { RevealGroup, RevealItem } from '@/components/motion/Reveal'
 import Button from '@/components/ui/Button'
 import CountUp from '@/components/ui/CountUp'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
+import ScrollZoomImage from '@/components/ui/ScrollZoomImage'
 import { ADOPTION_FLOW } from '@/lib/constants'
 
 const ease = [0.16, 1, 0.3, 1] as const
@@ -208,12 +209,15 @@ export default function AdoptionPage() {
         </section>
 
         {/* ── PRINCIPLES ────────────────────────────────────── */}
-        <section className="section-img-bg py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="s-img" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1400&q=70" alt="" aria-hidden="true" />
-          <div className="s-overlay bg-gradient-to-r from-black via-black/70 to-black" />
+        <section className="relative overflow-hidden py-24 px-6 md:px-12 lg:px-20 border-t border-[#0D0D0D]">
+          <ScrollZoomImage
+            src="/grok_image_1789742077329.jpg"
+            direction="out"
+            className="opacity-[0.15]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black pointer-events-none" />
 
-          <div className="max-w-6xl mx-auto">
+          <div className="relative max-w-6xl mx-auto">
             <Reveal className="mb-14">
               <span className="sys-label opacity-65 block mb-4">DISTRIBUTION_ARCHITECTURE // CORE PRINCIPLES</span>
               <h2 className="font-display font-bold text-h2 text-white">

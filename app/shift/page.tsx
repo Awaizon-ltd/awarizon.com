@@ -10,6 +10,7 @@ import Reveal, { RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import Button from "@/components/ui/Button";
 import CountUp from "@/components/ui/CountUp";
 import FloatingOrbs from "@/components/ui/FloatingOrbs";
+import ScrollZoomImage from "@/components/ui/ScrollZoomImage";
 import { ALL_CHAINS } from "@/lib/chainLogos";
 import CrossDomainLink from "@/components/CrossDomainLink";
 
@@ -234,7 +235,7 @@ export default function ShiftPage() {
               </h1>
 
               <motion.div
-                className="max-w-lg mx-auto"
+                className="max-w-lg w-full mx-auto"
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
@@ -298,11 +299,21 @@ export default function ShiftPage() {
 
         {/* ── VALUE PROP — white section ──────────────────────── */}
         <section className="bg-white py-28 px-6 md:px-12 lg:px-20 relative overflow-hidden">
+          <ScrollZoomImage
+            src="/mesh-theme.png"
+            direction="in"
+            scaleFrom={1.5}
+            scaleTo={1.9}
+            fit="contain"
+            spin
+            spinDuration={50}
+            className="opacity-[0.35]"
+          />
           <FloatingOrbs color="0,0,0" orbs={[
             { w: 600, h: 400, left: '-5%',  top: '10%', delay: '0s',  duration: '12s', opacity: 0.018 },
             { w: 400, h: 350, left: '65%',  top: '40%', delay: '3s',  duration: '14s', opacity: 0.012 },
           ]} />
-          <div className="max-w-6xl mx-auto">
+          <div className="relative max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-16 items-start">
               <div>
                 <Reveal>
@@ -354,10 +365,13 @@ export default function ShiftPage() {
         </section>
 
         {/* ── PROBLEM CARDS ─────────────────────────────────────── */}
-        <section className="section-img-bg relative py-32 px-6 md:px-12 lg:px-20">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="s-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=75" alt="" aria-hidden="true" />
-          <div className="s-overlay bg-gradient-to-b from-black via-transparent to-black" />
+        <section className="relative overflow-hidden py-32 px-6 md:px-12 lg:px-20">
+          <ScrollZoomImage
+            src="/grok_image_1789742427607.jpg"
+            direction="in"
+            className="opacity-[0.16]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none" />
 
           <div className="relative max-w-6xl mx-auto">
             <Reveal className="mb-20">
@@ -393,6 +407,14 @@ export default function ShiftPage() {
 
         {/* ── QUOTE ─────────────────────────────────────────────── */}
         <section className="relative py-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+          <ScrollZoomImage
+            src="/grok_image_1789741949904.jpg"
+            direction="out"
+            scaleFrom={1.15}
+            scaleTo={1.4}
+            className="opacity-[0.14]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black pointer-events-none" />
           <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full bg-accent/[0.03] blur-3xl pointer-events-none" />
           <Reveal className="relative max-w-4xl">
             <span className="sys-label opacity-65 block mb-6">OPERATIONAL CONTEXT</span>

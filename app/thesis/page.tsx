@@ -5,6 +5,7 @@ import PageTransition from "@/components/motion/PageTransition";
 import ScrollProvider from "@/components/motion/ScrollProvider";
 import Button from "@/components/ui/Button";
 import WorldMap from "@/components/system/WorldMap";
+import ScrollZoomImage from "@/components/ui/ScrollZoomImage";
 import { MARKET_STATS } from "@/lib/constants";
 
 const THESIS_SECTIONS = [
@@ -193,18 +194,15 @@ export default function ThesisPage() {
         </section>
 
         {/* ── GEO CARDS — section bg image ──────────────────── */}
-        <section className="section-img-bg py-20 px-6 md:px-12 lg:px-20">
-          {/* Aerial city image */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="s-img"
-            src="https://images.unsplash.com/photo-1577415124269-fc1140a69e91?w=1400&q=70"
-            alt=""
-            aria-hidden="true"
+        <section className="relative overflow-hidden py-20 px-6 md:px-12 lg:px-20">
+          <ScrollZoomImage
+            src="/grok_image_1789742336722.jpg"
+            direction="in"
+            className="opacity-[0.12]"
           />
-          <div className="s-overlay bg-black/82" />
+          <div className="absolute inset-0 bg-black/82 pointer-events-none" />
 
-          <div className="max-w-6xl mx-auto">
+          <div className="relative max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-px bg-[#0D0D0D]/80">
               {[
                 {
