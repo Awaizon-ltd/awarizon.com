@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,7 +10,6 @@ import {
   AuthError,
 } from 'firebase/auth'
 import { auth, googleProvider } from '@/lib/firebase/client'
-import { dashboardUrl } from '@/lib/domains'
 
 type Mode  = 'signin' | 'signup'
 type State = 'idle' | 'loading' | 'error'
@@ -38,25 +38,8 @@ async function syncToFirestore(idToken: string) {
   if (!res.ok) throw new Error('Failed to sync user data')
 }
 
-async function goToDashboard(idToken: string) {
-  try {
-    const res = await fetch('/api/auth/handoff', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ idToken }),
-    })
-    if (res.ok) {
-      const { token } = await res.json()
-      window.location.href = `${dashboardUrl('/')}?handoff=${encodeURIComponent(token)}`
-      return
-    }
-  } catch {
-    // fall through to plain redirect below
-  }
-  window.location.href = dashboardUrl('/')
-}
-
 export default function AuthPage() {
+  const router = useRouter()
   const [mode,     setMode]     = useState<Mode>('signin')
   const [state,    setState]    = useState<State>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -80,15 +63,12 @@ export default function AuthPage() {
         }
         const token = await cred.user.getIdToken()
         await syncToFirestore(token)
-        await goToDashboard(token)
-        return
       } else {
         const cred  = await signInWithEmailAndPassword(auth, email, password)
         const token = await cred.user.getIdToken()
         await syncToFirestore(token)
-        await goToDashboard(token)
-        return
       }
+      router.push('/dashboard')
     } catch (err) {
       setState('error')
       setErrorMsg(parseFirebaseError(err as AuthError))
@@ -102,7 +82,7 @@ export default function AuthPage() {
       const cred  = await signInWithPopup(auth, googleProvider)
       const token = await cred.user.getIdToken()
       await syncToFirestore(token)
-      await goToDashboard(token)
+      router.push('/dashboard')
     } catch (err) {
       setState('error')
       setErrorMsg(parseFirebaseError(err as AuthError))

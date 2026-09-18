@@ -2,10 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { signOut, type User } from 'firebase/auth'
 import { auth } from '@/lib/firebase/client'
-import { mainUrl } from '@/lib/domains'
 import CrossDomainLink from '@/components/CrossDomainLink'
 
 interface Props {
@@ -43,10 +42,11 @@ function Initials({ user }: { user: User }) {
 
 export default function Sidebar({ user, open, onClose }: Props) {
   const pathname = usePathname()
+  const router   = useRouter()
 
   async function handleSignOut() {
     await signOut(auth)
-    window.location.href = mainUrl('/auth') // /auth lives on the main site
+    router.push('/auth')
   }
 
   const sidebarContent = (

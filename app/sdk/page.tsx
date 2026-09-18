@@ -741,7 +741,6 @@ console.log("confirmed:", receipt.blockNumber)`}
               <CrossDomainLink
                 to="dashboard"
                 path="/docs"
-                withAuthHandoff
                 className="font-mono text-[11px] tracking-widest px-8 py-4 text-dim hover:text-accent transition-colors"
               >
                 FULL API REFERENCE →
