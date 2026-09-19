@@ -416,7 +416,7 @@ export default function SDKPage() {
                   width={1400}
                   height={1400}
                   priority
-                  className="w-full max-w-lg h-auto object-contain select-none pointer-events-none"
+                  className="w-full h-auto object-contain select-none pointer-events-none"
                 />
               </Reveal>
             </div>
